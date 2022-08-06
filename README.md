@@ -16,3 +16,6 @@ After modifying the database, run:
 # Fix Typescript error relating to `prisma.ts`
 
 run `yarn add -D @prisma/client`
+
+# Guidelines
+- Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
