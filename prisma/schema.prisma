@@ -6,6 +6,7 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x", "darwin"]
 }
 
+
 generator prisma {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "darwin", "debian-openssl-1.1.x"]
