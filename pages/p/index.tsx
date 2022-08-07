@@ -16,7 +16,7 @@ const WithStaticProps = ({ feed }: Props) => (
       Example fetching data from inside <code>getStaticProps()</code>.
     </p>
     <p>You are currently on: /p</p>
-    {feed.map(post => (
+    {feed?.map(post => (
       <div key={post.id} className='post'>
         {/* mouse over cursor pointer */}
         <div
