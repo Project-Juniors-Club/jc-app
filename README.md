@@ -2,8 +2,9 @@
 
 1. Setup Prettier on VScode
 2. Install Yarn
-3. `yarn`
-4. `yarn dev`
+3. Create `.env` file with `DATABASE_URL`
+4. `yarn`
+5. `yarn dev`
 
 # Database
 
