@@ -24,4 +24,4 @@ function useSnackbar() {
   };
 }
 
-export default useSnackbar
+export default useSnackbar;
