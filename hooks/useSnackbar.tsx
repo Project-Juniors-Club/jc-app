@@ -1,6 +1,6 @@
 import { useToast } from '@chakra-ui/react';
 
-function useSnackbar() {
+const useSnackbar = () => {
   const toast = useToast();
   return {
     openSuccessNotification: (title: string, description?: string) => {
@@ -22,6 +22,6 @@ function useSnackbar() {
       });
     },
   };
-}
+};
 
 export default useSnackbar;
