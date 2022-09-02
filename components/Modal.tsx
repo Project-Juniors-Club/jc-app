@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   Modal as ModalComponent,
   ModalBody,
   ModalCloseButton,
@@ -10,23 +11,22 @@ import {
 } from '@chakra-ui/react';
 
 type Props = {
-  title?: string,
+  title?: string;
+  body?: React.ReactNode;
+  footer?: React.ReactNode;
   onClose: () => void;
   isOpen?: boolean;
-  children?: React.ReactNode;
 };
 
-const Modal = ({title = "Modal Title", onClose, isOpen = false, children, ...rest }: Props) => {
+const Modal = ({ title = 'Modal Title', body, footer, onClose, isOpen = false, ...rest }: Props) => {
   return (
     <ModalComponent onClose={onClose} isOpen={isOpen} {...rest}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>{children}</ModalBody>
-        <ModalFooter>
-          <Button onClick={onClose}>Close</Button>
-        </ModalFooter>
+        <ModalBody>{body}</ModalBody>
+        <ModalFooter>{footer}</ModalFooter>
       </ModalContent>
     </ModalComponent>
   );
