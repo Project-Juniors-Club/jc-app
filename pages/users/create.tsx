@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState , useRef} from 'react';
+import { useForm } from 'react-hook-form'
 import {
   Flex,
   Box,
   Heading,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   Button,
@@ -14,31 +14,21 @@ import {
 } from '@chakra-ui/react';
 
 export default function CreateAccount() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const { 
+    register, 
+    handleSubmit, 
+    watch, 
+    formState: {errors}
+  } = useForm({mode: 'onChange'});
+  const password = useRef({});
+  password.current = watch("password", "");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const handleSubmit = async event => {
-    if (isError) {
-      event.preventDefault();
-      window.alert("Password don't match");
-    } else {
-      event.preventDefault();
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      setShowPassword(false);
-      setShowConfirmPassword(false);
-    }
-  };
+  const onSubmit = data => console.log(data);
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-
-  const isError = password !== confirmPassword;
 
   return (
     <Flex width='full' align='center' justifyContent='center'>
@@ -48,26 +38,35 @@ export default function CreateAccount() {
             <Heading>Create Account</Heading>
           </Box>
           <Box textAlign='left'>
-            <form onSubmit={handleSubmit}>
-              <FormControl isRequired>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl isRequired isInvalid={Boolean(errors.email)}>
                 <FormLabel>Email</FormLabel>
                 <Input
-                  value={email}
-                  type='email'
+                  id='email'
                   placeholder='test@test.com'
                   size='md'
-                  onChange={event => setEmail(event.currentTarget.value)}
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: { 
+                      value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                      message: 'Invalid Email Format'
+                    }
+                  })}
                 />
+                {errors.email && <FormErrorMessage>{String(errors.email.message)}</FormErrorMessage>}
               </FormControl>
-              <FormControl isRequired mt={6}>
+              <FormControl isRequired mt={6} isInvalid={Boolean(errors.password)}>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
                   <Input
-                    value={password}
+                    id='password'
                     type={showPassword ? 'text' : 'password'}
                     placeholder='*******'
                     size='md'
-                    onChange={event => setPassword(event.currentTarget.value)}
+                    {...register('password', {
+                      required: 'Email is required',
+                      minLength: { value: 8, message: "Password should be at least 8 characters long"}
+                    })}
                   />
                   <InputRightElement width='3rem' mr={'0.5rem'}>
                     <Button h='1.5rem' size='sm' onClick={handlePasswordVisibility}>
@@ -75,16 +74,22 @@ export default function CreateAccount() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
+                {errors.password && <FormErrorMessage>{String(errors.password.message)}</FormErrorMessage>}
+
               </FormControl>
-              <FormControl isRequired mt={6} isInvalid={isError}>
+              <FormControl isRequired mt={6} isInvalid={Boolean(errors.confirmPassword)}>
                 <FormLabel>Confirm Password</FormLabel>
                 <InputGroup>
                   <Input
-                    value={confirmPassword}
+                    id='confirmPassword'
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder='*******'
                     size='md'
-                    onChange={event => setConfirmPassword(event.currentTarget.value)}
+                    {...register('confirmPassword', {
+                      required: 'Email is required',
+                      validate: value => 
+                        value === password.current || "The password do not match"
+                    })}
                   />
                   <InputRightElement width='3rem' mr={'0.5rem'}>
                     <Button h='1.5rem' size='sm' onClick={handleConfirmPasswordVisibility}>
@@ -92,7 +97,7 @@ export default function CreateAccount() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                {isError ? <FormErrorMessage>Password does not match.</FormErrorMessage> : <FormHelperText>✔️</FormHelperText>}
+                {errors.confirmPassword && <FormErrorMessage>{String(errors.confirmPassword.message)}</FormErrorMessage>}
               </FormControl>
               <Box textAlign='center' width='100%'>
                 <Button variant='outline' type='submit' width='5rem' mt={4}>
