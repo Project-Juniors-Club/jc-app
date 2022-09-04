@@ -31,21 +31,21 @@ model Admin {
   PK               String  @id @default(cuid())
   FK               User?   @relation(fields: [userPK], references: [PK])
   permission_level Int?    @default(1)
-  userPK           String?
+  userPK           String? @unique
 }
 
 model NormalUser {
   PK               String  @id @default(cuid())
   FK               User?   @relation(fields: [userPK], references: [PK])
   permission_level Int?    @default(0)
-  userPK           String?
+  userPK           String? @unique
 }
 
 model Superadmin {
   PK               String  @id @default(cuid())
   FK               User?   @relation(fields: [userPK], references: [PK])
   permission_level Int?    @default(2)
-  userPK           String?
+  userPK           String? @unique
 }
 
 model Post {

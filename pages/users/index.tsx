@@ -2,23 +2,36 @@ import { GetStaticProps } from 'next';
 import Link from 'next/link';
 
 import { User } from '../../interfaces';
-import { sampleUserData } from '../../utils/sample-data';
 import Layout from '../../components/Layout';
-import List from '../../components/List';
-import prisma from '../../lib/prisma';
 
 type Props = {
-  items: User[];
+  users: User[];
 };
 
-const WithStaticProps = ({ items }: Props) => (
+const WithStaticProps = ({ users }: Props) => (
   <Layout title='Users List | Next.js + TypeScript Example'>
     <h1>Users List</h1>
     <p>
       Example fetching data from inside <code>getStaticProps()</code>.
     </p>
     <p>You are currently on: /users</p>
-    <List items={items} />
+    {users?.map(user => (
+      <div
+        key={user.pk}
+        className='user'
+        style={{
+          // cursor: 'pointer',
+          padding: 10,
+          border: '1px solid #ccc',
+          borderRadius: 5,
+          margin: 10,
+          backgroundColor: '#f0f0f0',
+        }}
+      >
+        <h3>Username: {user.username}</h3>
+        <h3>Email: {user.email}</h3>
+      </div>
+    ))}
     <p>
       <Link href='/'>
         <a>Go home</a>
@@ -32,16 +45,11 @@ export const getStaticProps: GetStaticProps = async () => {
   // Example for including static props in a Next.js function component page.
   // Don't forget to include the respective types for any props passed into
   // the component.
-  const feed = await prisma.user.findMany();
-  return { props: { feed } };
-};
 
-// export const getStaticProps: GetStaticProps = async () => {
-//   // Example for including static props in a Next.js function component page.
-//   // Don't forget to include the respective types for any props passed into
-//   // the component.
-//   const items: User[] = sampleUserData;
-//   return { props: { items } };
-// };
+  const response = await fetch('http://localhost:3000/api/users');
+  const users = await response.json();
+
+  return { props: { users } };
+};
 
 export default WithStaticProps;
