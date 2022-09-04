@@ -16,22 +16,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  PK         String       @id @default(cuid())
+  username   String      @unique
+  password   String
+  email      String      @unique
+  Admin      Admin?
+  NormalUser NormalUser?
+  Superadmin Superadmin?
+  Post Post[]
+}
+
+model Admin {
+  PK               String  @id @default(cuid())
+  FK               User?   @relation(fields: [userPK], references: [PK])
+  permission_level Int?    @default(1)
+  userPK           String?
+}
+
+model NormalUser {
+  PK               String  @id @default(cuid())
+  FK               User?   @relation(fields: [userPK], references: [PK])
+  permission_level Int?    @default(0)
+  userPK           String?
+}
+
+model Superadmin {
+  PK               String  @id @default(cuid())
+  FK               User?   @relation(fields: [userPK], references: [PK])
+  permission_level Int?    @default(2)
+  userPK           String?
+}
+
 model Post {
-  id        String  @id @default(cuid())
+  PK       String  @id @default(cuid())
   title     String
   content   String?
   published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
+  author    User?   @relation(fields: [authorId], references: [PK])
   authorId  String?
-}
-
-model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  posts     Post[]
-
-  @@map(name: "users")
 }

@@ -4,10 +4,15 @@
 //
 // import { User } from 'path/to/interfaces';
 
+import internal from "stream";
+
 export type User = {
-  id: number;
-  name: string;
+  pk: number;
+  username: string;
+  email: string;
+  password: string;
 };
+
 
 export type Post = {
   id: string;
@@ -16,6 +21,6 @@ export type Post = {
   published: boolean;
   authorId: string;
   author: {
-    name: string;
+    username: string;
   };
-};
+}

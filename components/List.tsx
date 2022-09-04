@@ -8,8 +8,8 @@ type Props = {
 
 const List = ({ items }: Props) => (
   <ul>
-    {items.map((item) => (
-      <li key={item.id}>
+    {items && items.map((item) => (
+      <li key={item.pk}>
         <ListItem data={item} />
       </li>
     ))}

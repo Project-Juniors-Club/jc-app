@@ -5,6 +5,7 @@ import { User } from '../../interfaces';
 import { sampleUserData } from '../../utils/sample-data';
 import Layout from '../../components/Layout';
 import List from '../../components/List';
+import prisma from '../../lib/prisma';
 
 type Props = {
   items: User[];
@@ -26,12 +27,21 @@ const WithStaticProps = ({ items }: Props) => (
   </Layout>
 );
 
+// get all the users
 export const getStaticProps: GetStaticProps = async () => {
   // Example for including static props in a Next.js function component page.
   // Don't forget to include the respective types for any props passed into
   // the component.
-  const items: User[] = sampleUserData;
-  return { props: { items } };
+  const feed = await prisma.user.findMany();
+  return { props: { feed } };
 };
+
+// export const getStaticProps: GetStaticProps = async () => {
+//   // Example for including static props in a Next.js function component page.
+//   // Don't forget to include the respective types for any props passed into
+//   // the component.
+//   const items: User[] = sampleUserData;
+//   return { props: { items } };
+// };
 
 export default WithStaticProps;

@@ -5,11 +5,6 @@ import prisma from "../../../lib/prisma";
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const feed = await prisma.post.findMany({
     where: { published: true },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
   });
 
   res.status(200).json(feed);

@@ -32,7 +32,7 @@ const WithStaticProps = ({ feed }: Props) => (
         >
           <h2>{`Title: ${post.title}`}</h2>
           <div>{`Contents: ${post.content}`}</div>
-          <small>By {post.author.name}</small>
+          <small>By {post.author.username}</small>
         </div>
       </div>
     ))}
@@ -49,14 +49,7 @@ export const getStaticProps: GetStaticProps = async () => {
   // Don't forget to include the respective types for any props passed into
   // the component.
 
-  const feed = await prisma.post.findMany({
-    where: { published: true },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
-  });
+  const feed = await prisma.post.findMany();
 
   return { props: { feed } };
 };
