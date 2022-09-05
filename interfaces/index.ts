@@ -19,29 +19,21 @@ export type User = {
 };
 
 export type NormalUser = {
-  id: string;
   userId: string;
-  permissionLevel: number;
   user: {
     username: string
   }
 }
-
 
 export type Admin = {
-  id: string;
   userId: string;
-  permissionLevel: number;
   user: {
     username: string
   }
 }
 
-
 export type SuperAdmin = {
-  id: string;
   userId: string;
-  permissionLevel: number;
   user: {
     username: string
   }
