@@ -40,7 +40,8 @@
     "recoil": "^0.7.5",
     "ts-node": "^10.9.1",
     "word-wrap": "^1.2.3",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "react-youtube": "^9.0.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
