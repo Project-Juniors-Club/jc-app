@@ -17,6 +17,7 @@
     "@heroicons/react": "^2.0.13",
     "@netlify/plugin-nextjs": "^4.23.1",
     "@next-auth/prisma-adapter": "^1.0.5",
+    "@google-cloud/local-auth": "^2.1.0",
     "@prisma/client": "^4.1.1",
     "@tailwindcss/forms": "^0.5.3",
     "@tanstack/react-query": "^4.3.1",
@@ -31,6 +32,8 @@
     "framer-motion": "^7.2.1",
     "frames-react": "^1.0.12",
     "intercept-stdout": "^0.1.2",
+    "google-auth-library": "^8.5.1",
+    "googleapis": "^107.0.0",
     "next": "^12.2.5",
     "next-auth": "^4.10.3",
     "nodemailer": "^6.7.8",
@@ -41,7 +44,8 @@
     "ts-node": "^10.9.1",
     "word-wrap": "^1.2.3",
     "yarn": "^1.22.19",
-    "react-youtube": "^9.0.3"
+    "react-youtube": "^9.0.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
