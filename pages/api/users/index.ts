@@ -1,93 +1,75 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
-
-async function createAdmin(req, res){
-  const {username, password, email} = req.body
-  await prisma.admin.create({
-    data: {
-      FK: {
-         create: {
-          username: username,
-          email: email,
-          password: password, 
-          type: "admin"
-         }
-      },
-    }, 
-  })
-}
-
-async function createSuperadmin(req, res){
-  const {username, password, email} = req.body
-  await prisma.superadmin.create({
-    data: {
-      FK: {
-         create: {
-          username: username,
-          email: email,
-          password: password, 
-          type: "superAdmin"
-         }
-      },
-    }, 
-  })
-}
-    
-async function createNormal(req, res){
-  const {username, password, email} = req.body
-  await prisma.normalUser.create({
-    data: {
-      FK: {
-        create: {
-          username: username,
-          email: email,
-          password: password, 
-          type: "normalUser"
-         }
-      },
-    }, 
-  })
-}
+import prisma from '../../../lib/prisma';
 
 export default async function handler(
     req: NextApiRequest, res: NextApiResponse
 ) {
   try {
-
     const httpMethod = req.method;
-    const {username, password, email, type} = req.body
-
-    switch (httpMethod) {
+    if (httpMethod == 'GET') {
       // GET ALL USERS
-      case 'GET':
         const users = await prisma.user.findMany();
         res.status(200).json(users);
-        break;
+    }
 
-      case 'POST':
+    else if (httpMethod == 'POST') {
+      const {username, password, email, type} = req.body
         // CREATE USER
         if (type == "superAdmin") {
-          createSuperadmin;
+          await prisma.superadmin.create({
+            data: {
+              FK: {
+                 create: {
+                  username: username,
+                  email: email,
+                  password: password, 
+                  type: "superAdmin"
+                 }
+              }
+            }})
         } else if (type == "admin") {
-          createAdmin;
+          await prisma.admin.create({
+            data: {
+              FK: {
+                 create: {
+                  username: username,
+                  email: email,
+                  password: password, 
+                  type: "admin"
+                 }
+              },
+            }, 
+          })
         } else {
-          createNormal;
+          await prisma.normalUser.create({
+            data: {
+              FK: {
+                create: {
+                  username: username,
+                  email: email,
+                  password: password, 
+                  type: "normalUser"
+                 }
+              },
+            }, 
+          })
         }
-        break;
+      }
 
-      case 'DELETE':
+      else if (httpMethod == 'DELETE') {
         // DELETE USER
+        const {email} = req.body
         const deleteUser = await prisma.user.delete({
           where: {
               email: email,
             },
           })
           res.status(200).json(deleteUser);
-          break;
+      }
 
-      case 'PUT':
+      else if (httpMethod == 'PUT') {
         // UPDATE USER PASSWORD
+        const {email, password} = req.body
         const updateUser = await prisma.user.update({
           where: {
               email: email,
@@ -97,15 +79,13 @@ export default async function handler(
             },
           })
       res.status(200).json(updateUser)
-      break;
+        }
 
-      default:
-        res.setHeader('Allow', ['GET', 'POST']);
-        res.status(405).end(`Method ${httpMethod} not allowed`)
-        
-    }
-  
-  } catch (error) {
+      else {
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Method ${httpMethod} not allowed`)
+      }
+    } catch (error) {
     console.log(error)
     res.status(400).json({ message: error })
   }

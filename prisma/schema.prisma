@@ -18,9 +18,9 @@ datasource db {
 
 model User {
   PK         String       @id @default(cuid())
-  username   String      @unique
-  password   String
-  email      String      @unique
+  username   String?      @unique
+  password   String?
+  email      String?      @unique
   Admin      Admin?
    type       UserType
   NormalUser NormalUser?
