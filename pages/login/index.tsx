@@ -1,7 +1,8 @@
 import { FormEvent, SyntheticEvent, useState } from 'react';
-import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid, Image } from '@chakra-ui/react';
 import Layout from '../../components/Layout';
 import useSnackbar from '../../hooks/useSnackbar';
+import Link from 'next/link';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -48,26 +49,53 @@ const LoginPage = () => {
   return (
     <Layout title='Login'>
       <Flex width='full' align='center' justifyContent='center'>
-        <Box p={8} width={['90%', '60%']} borderWidth={1} borderRadius={12} boxShadow='md'>
-          <>
-            <Heading>Login</Heading>
-            <Box textAlign='left'>
-              <FormControl isRequired isInvalid={!isValidEmail} mt={4}>
-                <FormLabel htmlFor='email'>Email</FormLabel>
-                <Input id='email' type='email' placeholder='Email' value={email} onChange={handleEmailChange} />
-                {isValidEmail ? '' : <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
-              </FormControl>
-              <FormControl isRequired mt={4}>
-                <FormLabel htmlFor='password'>Password</FormLabel>
-                <Input id='password' type='password' placeholder='Password' value={password} onChange={handlePasswordChange} />
-                <FormErrorMessage>Please enter a valid password.</FormErrorMessage>
-              </FormControl>
-              <Button type='submit' isLoading={isLoading} backgroundColor='#009100' color='white' onClick={handleSubmit} mt={4}>
-                Submit
-              </Button>
-            </Box>
-          </>
-        </Box>
+        <SimpleGrid columns={[1, 1, 1, 2]} spacing={0}>
+          <Box display={['none', 'none', 'none', 'block']}>
+            <Image src='https://foodbank.sg/wp-content/uploads/2020/07/IMG_9279-1024x768.jpg' alt='Food Bank' backgroundPosition='center' />
+          </Box>
+          <Box
+            marginBlock={[2, 0, 0, 0]}
+            p={8}
+            borderWidth={1}
+            borderRadius={0}
+            boxShadow='none'
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='center'
+            width='full'
+          >
+            <>
+              <Heading>Welcome back!</Heading>
+              <Box textAlign='left'>
+                <FormControl isRequired isInvalid={!isValidEmail} mt={4} width={{ sm: '200px', md: '300px', lg: '500px' }}>
+                  <FormLabel htmlFor='email'>Email</FormLabel>
+                  <Input id='email' type='email' placeholder='Email' value={email} onChange={handleEmailChange} />
+                  {isValidEmail ? '' : <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                </FormControl>
+                <FormControl isRequired mt={4} width={{ sm: '200px', md: '300px', lg: '500px' }}>
+                  <FormLabel htmlFor='password'>Password</FormLabel>
+                  <Input id='password' type='password' placeholder='Password' value={password} onChange={handlePasswordChange} />
+                  <FormErrorMessage>Please enter a valid password.</FormErrorMessage>
+                </FormControl>
+                <Box mt={4} color='black' fontWeight='medium'>
+                  <Link href='/forgot-password'>Forgot Password?</Link>
+                </Box>
+                <Button
+                  type='submit'
+                  isLoading={isLoading}
+                  backgroundColor='#009100'
+                  color='white'
+                  onClick={handleSubmit}
+                  mt={4}
+                  width='full'
+                >
+                  SUBMIT
+                </Button>
+              </Box>
+            </>
+          </Box>
+        </SimpleGrid>
       </Flex>
     </Layout>
   );
