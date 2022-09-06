@@ -5,7 +5,7 @@ import useSnackbar from '../../hooks/useSnackbar';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
-  const [isValidEmail, setIsValidEmail] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(true); // So that error does not pop up on first visit
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
