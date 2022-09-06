@@ -1,21 +1,21 @@
 import { atom, DefaultValue, selector } from 'recoil';
 
-const nameState = atom({
+export const nameState = atom({
     key: 'name',
     default: '',
 });
 
-const emailState = atom({
+export const emailState = atom({
     key: 'email',
     default: '',
 });
 
-const roleState = atom({
+export const roleState = atom({
     key: 'role',
     default: -1,
 });
 
-const userInfoState = selector({
+export const userInfoState = selector({
     key: 'userInfo',
     get: ({ get }) => {
         //get values from individual atoms
