@@ -10,7 +10,7 @@ async function createAdmin(req, res){
           username: username,
           email: email,
           password: password, 
-        
+          type: "admin"
          }
       },
     }, 
@@ -26,7 +26,7 @@ async function createSuperadmin(req, res){
           username: username,
           email: email,
           password: password, 
-        
+          type: "superAdmin"
          }
       },
     }, 
@@ -35,13 +35,14 @@ async function createSuperadmin(req, res){
     
 async function createNormal(req, res){
   const {username, password, email} = req.body
-  await prisma.normaluser.create({
+  await prisma.normalUser.create({
     data: {
       FK: {
         create: {
           username: username,
           email: email,
           password: password, 
+          type: "normalUser"
          }
       },
     }, 

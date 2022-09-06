@@ -50,9 +50,9 @@ model Superadmin {
 }
 
 enum UserType {
-  normalUser
-  admin
-  superAdmin
+  normalUser = "normalUser"
+  admin = "admin"
+  superAdmin = "superAdmin"
 }
 
 model Post {
