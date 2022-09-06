@@ -1,5 +1,5 @@
 import { FormEvent, SyntheticEvent, useState } from 'react';
-import { Button, FormControl, FormLabel, FormErrorMessage, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input } from '@chakra-ui/react';
 import Layout from '../../components/Layout';
 import useSnackbar from '../../hooks/useSnackbar';
 
@@ -8,8 +8,7 @@ const LoginPage = () => {
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { showSnackbar } = useSnackbar();
-
+  const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const handleEmailChange = (e: FormEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
@@ -19,14 +18,6 @@ const LoginPage = () => {
 
   const handlePasswordChange = (e: FormEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
-  };
-
-  const handleFailure = () => {
-    // showSnackbar.error({
-    //   title: 'Login failed!',
-    //   description: 'Please check your email and password.',
-    // });
-    alert('Login failed! Please check your email and password.');
   };
 
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -43,12 +34,12 @@ const LoginPage = () => {
       const data = await res.json();
       if (res.ok) {
         // login successful
-        alert(`Login successful!`);
+        openSuccessNotification('Login successful', 'You are now logged in.');
         window.location.href = '/';
       }
     } catch (err: any) {
       console.error(err);
-      handleFailure();
+      openErrorNotification('Login failed', 'Please recheck your email and password.');
     } finally {
       setIsLoading(false);
     }
@@ -56,19 +47,28 @@ const LoginPage = () => {
 
   return (
     <Layout title='Login'>
-      <FormControl isRequired isInvalid={!isValidEmail}>
-        <FormLabel htmlFor='email'>Email</FormLabel>
-        <Input id='email' type='email' placeholder='Email' value={email} onChange={handleEmailChange} />
-        {isValidEmail ? '' : <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
-      </FormControl>
-      <FormControl isRequired>
-        <FormLabel htmlFor='password'>Password</FormLabel>
-        <Input id='password' type='password' placeholder='Password' value={password} onChange={handlePasswordChange} />
-        <FormErrorMessage>Please enter a valid password.</FormErrorMessage>
-      </FormControl>
-      <Button type='submit' isLoading={isLoading} colorScheme='blue' onClick={handleSubmit}>
-        Submit
-      </Button>
+      <Flex width='full' align='center' justifyContent='center'>
+        <Box p={8} width={['90%', '60%']} borderWidth={1} borderRadius={12} boxShadow='md'>
+          <>
+            <Heading>Login</Heading>
+            <Box textAlign='left'>
+              <FormControl isRequired isInvalid={!isValidEmail} mt={4}>
+                <FormLabel htmlFor='email'>Email</FormLabel>
+                <Input id='email' type='email' placeholder='Email' value={email} onChange={handleEmailChange} />
+                {isValidEmail ? '' : <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+              </FormControl>
+              <FormControl isRequired mt={4}>
+                <FormLabel htmlFor='password'>Password</FormLabel>
+                <Input id='password' type='password' placeholder='Password' value={password} onChange={handlePasswordChange} />
+                <FormErrorMessage>Please enter a valid password.</FormErrorMessage>
+              </FormControl>
+              <Button type='submit' isLoading={isLoading} backgroundColor='#009100' color='white' onClick={handleSubmit} mt={4}>
+                Submit
+              </Button>
+            </Box>
+          </>
+        </Box>
+      </Flex>
     </Layout>
   );
 };
