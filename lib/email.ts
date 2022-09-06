@@ -10,7 +10,7 @@ const smtp: { host: string; port: number; user: string; pass: string } = {
 
 export const createEmail = (user: Prisma.UserCreateInput, url: string) => {
   //TODO: change from text
-  const from = `Juniors Club <juniorsclub@gmail.com>`;
+  const from = `Juniors Club <juniorsclub.nus@gmail.com>`;
   const to = user.email;
   //Private function to create new nodemailer transport
   const newTransport = () => {
