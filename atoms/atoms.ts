@@ -15,6 +15,11 @@ export const roleState = atom({
     default: -1,
 });
 
+export const authorizedState = atom({
+    key: 'authorized',
+    default: false,
+});
+
 export const userInfoState = selector({
     key: 'userInfo',
     get: ({ get }) => {

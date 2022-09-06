@@ -6,6 +6,7 @@ import '../styles/globals.css';
 import { ChakraProvider } from '@chakra-ui/react';
 
 import { extendTheme } from '@chakra-ui/react';
+import { RouteGuard } from '../components/RouteGuard';
 
 // TODO: add theme when we have the UI
 const colors = {
@@ -22,7 +23,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <RecoilRoot>
-        <Component {...pageProps} />
+        <RouteGuard>
+          <Component {...pageProps} />
+        </RouteGuard>
       </RecoilRoot>
     </ChakraProvider>
   );
