@@ -182,3 +182,4 @@ model SortingGame {
   game   Game   @relation(fields: [gameId], references: [id])
   gameId String @unique
 }
+
