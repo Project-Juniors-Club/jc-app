@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from '../../../lib/prisma';
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 async function createAdmin(req, res){
   const {username, password, email} = req.body
