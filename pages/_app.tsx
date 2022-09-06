@@ -1,5 +1,6 @@
 import React from 'react';
 import { AppProps } from 'next/app';
+import { RecoilRoot } from 'recoil';
 
 import '../styles/globals.css';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -20,7 +21,9 @@ const theme = extendTheme({ colors });
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
+      <RecoilRoot>
+        <Component {...pageProps} />
+      </RecoilRoot>
     </ChakraProvider>
   );
 }
