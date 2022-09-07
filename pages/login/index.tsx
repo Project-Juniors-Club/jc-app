@@ -78,6 +78,7 @@ const LoginPage = () => {
                 height='200px'
                 marginBottom={6}
               />
+              <Heading>Welcome back!</Heading>
               <Box textAlign='left'>
                 <FormControl isRequired isInvalid={!isValidEmail} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
                   <FormLabel htmlFor='email'>Email</FormLabel>
