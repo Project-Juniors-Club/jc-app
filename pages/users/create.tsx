@@ -39,8 +39,8 @@ export default function CreateAccount() {
           </Box>
           <Box textAlign='left'>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <FormControl isRequired isInvalid={Boolean(errors.email)}>
-                <FormLabel>Email</FormLabel>
+              <FormControl isInvalid={Boolean(errors.email)}>
+                <FormLabel htmlFor='email'>Email</FormLabel>
                 <Input
                   id='email'
                   placeholder='test@test.com'
@@ -55,8 +55,8 @@ export default function CreateAccount() {
                 />
                 {errors.email && <FormErrorMessage>{String(errors.email.message)}</FormErrorMessage>}
               </FormControl>
-              <FormControl isRequired mt={6} isInvalid={Boolean(errors.password)}>
-                <FormLabel>Password</FormLabel>
+              <FormControl mt={6} isInvalid={Boolean(errors.password)}>
+                <FormLabel htmlFor='password'>Password</FormLabel>
                 <InputGroup>
                   <Input
                     id='password'
@@ -64,7 +64,7 @@ export default function CreateAccount() {
                     placeholder='*******'
                     size='md'
                     {...register('password', {
-                      required: 'Email is required',
+                      required: 'Password is required',
                       minLength: { value: 8, message: "Password should be at least 8 characters long"}
                     })}
                   />
@@ -77,8 +77,8 @@ export default function CreateAccount() {
                 {errors.password && <FormErrorMessage>{String(errors.password.message)}</FormErrorMessage>}
 
               </FormControl>
-              <FormControl isRequired mt={6} isInvalid={Boolean(errors.confirmPassword)}>
-                <FormLabel>Confirm Password</FormLabel>
+              <FormControl mt={6} isInvalid={Boolean(errors.confirmPassword)}>
+                <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
                 <InputGroup>
                   <Input
                     id='confirmPassword'
@@ -86,7 +86,7 @@ export default function CreateAccount() {
                     placeholder='*******'
                     size='md'
                     {...register('confirmPassword', {
-                      required: 'Email is required',
+                      required: 'Confirm Password is required',
                       validate: value => 
                         value === password.current || "The password do not match"
                     })}
