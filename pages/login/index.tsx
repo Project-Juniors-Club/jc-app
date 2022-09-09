@@ -69,7 +69,7 @@ const LoginPage = () => {
               />
               <Heading color='black'>Welcome back!</Heading>
               <Box textAlign='left'>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} color='black'>
                   <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
                     <FormLabel htmlFor='email' color='black'>
                       Email
