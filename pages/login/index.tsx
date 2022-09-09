@@ -43,7 +43,7 @@ const LoginPage = () => {
         <SimpleGrid columns={[1, 1, 1, 2]} spacing={0}>
           <Box display={['none', 'none', 'none', 'block']}>
             <Image
-              src='https://foodbank.sg/wp-content/uploads/2020/07/IMG_9279-1024x768.jpg'
+              src='/assets/login_left.jpg'
               alt='Food Bank'
               backgroundPosition='center'
               height='100%'
@@ -61,8 +61,7 @@ const LoginPage = () => {
           >
             <>
               <Image
-                // Placeholder url
-                src='https://i.imgur.com/7izz9oQ.png'
+                src='/logo/Juniors_Club_logo.png'
                 alt='Food Bank'
                 backgroundPosition='center'
                 height='200px'
