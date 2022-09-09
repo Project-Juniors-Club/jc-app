@@ -1,38 +1,31 @@
-import { FormEvent, SyntheticEvent, useState } from 'react';
+// External imports
 import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid, Image } from '@chakra-ui/react';
-import Layout from '../../components/Layout';
-import useSnackbar from '../../hooks/useSnackbar';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+
+// Local imports
+import useSnackbar from '../../hooks/useSnackbar';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [isValidEmail, setIsValidEmail] = useState(true); // So that error does not pop up on first visit
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({ mode: 'onChange' });
+  
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
-  const handleEmailChange = (e: FormEvent<HTMLInputElement>) => {
-    setEmail(e.currentTarget.value);
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    setIsValidEmail(emailRegex.test(email));
-  };
-
-  const handlePasswordChange = (e: FormEvent<HTMLInputElement>) => {
-    setPassword(e.currentTarget.value);
-  };
-
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const onSubmit = async (data: any) => {
+    console.log(data);
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
       });
-      const data = await res.json();
+      const values = await res.json();
       if (res.ok) {
         // login successful
         openSuccessNotification('Login successful', 'You are now logged in.');
@@ -41,8 +34,6 @@ const LoginPage = () => {
     } catch (err: any) {
       console.error(err);
       openErrorNotification('Login failed', 'Please recheck your email and password.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -79,42 +70,56 @@ const LoginPage = () => {
               />
               <Heading color='black'>Welcome back!</Heading>
               <Box textAlign='left'>
-                <FormControl isRequired isInvalid={!isValidEmail} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
-                  <FormLabel htmlFor='email' color='black'>
-                    Email
-                  </FormLabel>
-                  <Input id='email' type='email' placeholder='Email' value={email} onChange={handleEmailChange} borderColor='#78be20' />
-                  {isValidEmail ? '' : <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
-                </FormControl>
-                <FormControl isRequired mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
-                  <FormLabel htmlFor='password' color='black'>
-                    Password
-                  </FormLabel>
-                  <Input
-                    id='password'
-                    type='password'
-                    placeholder='Password'
-                    value={password}
-                    onChange={handlePasswordChange}
-                    borderColor='#78be20'
-                  />
-                  <FormErrorMessage>Please enter a valid password.</FormErrorMessage>
-                </FormControl>
-                <Box mt={4} color='black' fontWeight='medium'>
-                  <Link href='/forgot-password'>Forgot Password?</Link>
-                </Box>
-                <Button
-                  type='submit'
-                  isLoading={isLoading}
-                  // Color: Pantone 368 C
-                  backgroundColor='#78be20'
-                  color='white'
-                  onClick={handleSubmit}
-                  mt={4}
-                  width='full'
-                >
-                  SUBMIT
-                </Button>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                    <FormLabel htmlFor='email' color='black'>
+                      Email
+                    </FormLabel>
+                    <Input
+                      id='email'
+                      type='email'
+                      placeholder='Email'
+                      borderColor='#78be20'
+                      {...register('email', {
+                        required: 'This is required.',
+                        pattern: {
+                          value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                          message: 'Please enter a valid email address.',
+                        },
+                      })}
+                    />
+                    {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                  </FormControl>
+                  <FormControl isInvalid={Boolean(errors.password)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                    <FormLabel htmlFor='password' color='black'>
+                      Password
+                    </FormLabel>
+                    <Input
+                      id='password'
+                      type='password'
+                      placeholder='Password'
+                      borderColor='#78be20'
+                      {...register('password', {
+                        required: 'This is required.',
+                      })}
+                    />
+                    {errors.password && <FormErrorMessage>Please enter a password.</FormErrorMessage>}
+                  </FormControl>
+                  <Box mt={4} color='black' fontWeight='medium'>
+                    <Link href='/forgot-password'>Forgot Password?</Link>
+                  </Box>
+                  <Button
+                    type='submit'
+                    isLoading={isSubmitting}
+                    // Color: Pantone 368 C
+                    backgroundColor='#78be20'
+                    color='white'
+                    mt={4}
+                    width='full'
+                  >
+                    SUBMIT
+                  </Button>
+                </form>
               </Box>
             </>
           </Box>
