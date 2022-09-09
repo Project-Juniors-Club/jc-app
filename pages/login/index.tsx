@@ -48,20 +48,19 @@ const LoginPage = () => {
 
   return (
     <Box height='100vh' display='flex' justifyContent='center' alignItems='center' backgroundColor='#f6f6f6'>
-      <Flex width='full' alignContent='center' justifyContent='center'>
+      <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
         <SimpleGrid columns={[1, 1, 1, 2]} spacing={0}>
           <Box display={['none', 'none', 'none', 'block']}>
             <Image
               src='https://foodbank.sg/wp-content/uploads/2020/07/IMG_9279-1024x768.jpg'
               alt='Food Bank'
               backgroundPosition='center'
-              height='100vh'
+              height='100%'
               fit='cover'
             />
           </Box>
           <Box
             marginBlock={[2, 0, 0, 0]}
-            p={8}
             boxShadow='none'
             display='flex'
             flexDirection='column'
@@ -78,15 +77,19 @@ const LoginPage = () => {
                 height='200px'
                 marginBottom={6}
               />
-              <Heading>Welcome back!</Heading>
+              <Heading color='black'>Welcome back!</Heading>
               <Box textAlign='left'>
                 <FormControl isRequired isInvalid={!isValidEmail} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
-                  <FormLabel htmlFor='email'>Email</FormLabel>
+                  <FormLabel htmlFor='email' color='black'>
+                    Email
+                  </FormLabel>
                   <Input id='email' type='email' placeholder='Email' value={email} onChange={handleEmailChange} borderColor='#78be20' />
                   {isValidEmail ? '' : <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
                 </FormControl>
                 <FormControl isRequired mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
-                  <FormLabel htmlFor='password'>Password</FormLabel>
+                  <FormLabel htmlFor='password' color='black'>
+                    Password
+                  </FormLabel>
                   <Input
                     id='password'
                     type='password'
