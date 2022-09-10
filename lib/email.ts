@@ -36,7 +36,7 @@ export const createEmail = (user: Prisma.UserCreateInput, url: string) => {
   };
 
   const sendPasswordToken = async () => {
-    await send('Your password reset token (valid for only 10 minutes)');
+    await send('Your password reset token (valid for only 10 minutes).');
   };
   //methods returned can be accessed
   return { sendPasswordToken };

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createHash } from 'node:crypto';
-
 import bcrypt from 'bcrypt';
+
 import prisma from '../../../../../lib/prisma';
 import { findUser } from '../../../../../lib/server/user';
 

@@ -29,7 +29,7 @@ model User {
   email    String @unique
 
   passwordResetToken String? @unique
-  passwordResetAt    DateTime?
+  passwordResetExpiryDate    DateTime?
 
   type       UserType
   admin      Admin?
