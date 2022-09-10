@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 import prisma from '../../../../../lib/prisma';
 import { findUser } from '../../../../../lib/server/user';
+import dayjs from 'dayjs';
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -13,8 +14,8 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     //TODO: change to API endpoint when getUser is ready
     const user = await findUser({
       passwordResetToken,
-      passwordResetAt: {
-        gt: new Date(),
+      passwordResetExpiryDate: {
+        gt: dayjs().toDate(),
       },
     });
     if (!user) {
@@ -30,7 +31,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
       data: {
         password: hashedPassword,
         passwordResetToken: null,
-        passwordResetAt: null,
+        passwordResetExpiryDate: null,
       },
     });
     console.log(hashedPassword);
