@@ -1,4 +1,5 @@
 // External imports
+import { useState } from 'react';
 import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid, Image } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -8,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
 
-const url = "/api/auth/login";
+const url = '/api/auth/login';
 
 const LoginPage = () => {
   const {
@@ -21,7 +22,7 @@ const LoginPage = () => {
 
   const login = (data: FormData) => {
     return axios.post(url, data);
-  }
+  };
 
   const mutation = useMutation(login, {
     onSuccess: () => {
@@ -59,7 +60,7 @@ const LoginPage = () => {
               <Heading color='black'>Welcome back!</Heading>
               <Box textAlign='left'>
                 <form onSubmit={handleSubmit(onSubmit)} color='black'>
-                  <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                  <FormControl isInvalid={Boolean(errors.email) || mutation.isError} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
                     <FormLabel htmlFor='email' color='black'>
                       Email
                     </FormLabel>
@@ -76,9 +77,13 @@ const LoginPage = () => {
                         },
                       })}
                     />
-                    {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                    {(errors.email || mutation.isError) && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
                   </FormControl>
-                  <FormControl isInvalid={Boolean(errors.password)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                  <FormControl
+                    isInvalid={Boolean(errors.password) || mutation.isError}
+                    mt={4}
+                    width={{ sm: '80vw', md: '80vw', lg: '500px' }}
+                  >
                     <FormLabel htmlFor='password' color='black'>
                       Password
                     </FormLabel>
@@ -91,7 +96,7 @@ const LoginPage = () => {
                         required: 'This is required.',
                       })}
                     />
-                    {errors.password && <FormErrorMessage>Please enter a password.</FormErrorMessage>}
+                    {(errors.password || mutation.isError) && <FormErrorMessage>Please enter a valid password.</FormErrorMessage>}
                   </FormControl>
                   <Box mt={4} color='black' fontWeight='medium'>
                     <Link href='/forgot-password'>Forgot Password?</Link>
