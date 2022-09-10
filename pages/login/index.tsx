@@ -2,39 +2,34 @@
 import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid, Image } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
+import login from './loginApiCall';
 
 const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({ mode: 'onChange' });
-  
+
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      const values = await res.json();
-      if (res.ok) {
-        // login successful
-        openSuccessNotification('Login successful', 'You are now logged in.');
-        window.location.href = '/';
-      }
-    } catch (err: any) {
-      console.error(err);
+  const mutation = useMutation(login, {
+    onSuccess: () => {
+      openSuccessNotification('Login successful', 'Wecome back!');
+    },
+    onError: error => {
       openErrorNotification('Login failed', 'Please recheck your email and password.');
-    }
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    mutation.mutate(data);
   };
 
   return (
@@ -42,13 +37,7 @@ const LoginPage = () => {
       <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
         <SimpleGrid columns={[1, 1, 1, 2]} spacing={0}>
           <Box display={['none', 'none', 'none', 'block']}>
-            <Image
-              src='/assets/login_left.jpg'
-              alt='Food Bank'
-              backgroundPosition='center'
-              height='100%'
-              fit='cover'
-            />
+            <Image src='/assets/login_left.jpg' alt='Food Bank' backgroundPosition='center' height='100%' fit='cover' />
           </Box>
           <Box
             marginBlock={[2, 0, 0, 0]}
@@ -60,13 +49,7 @@ const LoginPage = () => {
             width='full'
           >
             <>
-              <Image
-                src='/logo/Juniors_Club_logo.png'
-                alt='Food Bank'
-                backgroundPosition='center'
-                height='200px'
-                marginBottom={6}
-              />
+              <Image src='/logo/Juniors_Club_logo.png' alt='Food Bank' backgroundPosition='center' height='200px' marginBottom={6} />
               <Heading color='black'>Welcome back!</Heading>
               <Box textAlign='left'>
                 <form onSubmit={handleSubmit(onSubmit)} color='black'>
@@ -109,7 +92,7 @@ const LoginPage = () => {
                   </Box>
                   <Button
                     type='submit'
-                    isLoading={isSubmitting}
+                    isLoading={mutation.isLoading}
                     // Color: Pantone 368 C
                     backgroundColor='#78be20'
                     color='white'
