@@ -25,7 +25,8 @@ const LoginPage = () => {
 
   const mutation = useMutation(login, {
     onSuccess: () => {
-      openSuccessNotification('Login successful', 'Wecome back!');
+      openSuccessNotification('Login successful', 'Welcome back!');
+      window.location.href = '/';
     },
     onError: error => {
       openErrorNotification('Login failed', 'Please recheck your email and password.');
