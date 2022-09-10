@@ -7,7 +7,8 @@ import { useMutation } from '@tanstack/react-query';
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
-import login from './loginApiCall';
+
+const url = "/api/auth/login";
 
 const LoginPage = () => {
   const {
@@ -17,6 +18,10 @@ const LoginPage = () => {
   } = useForm({ mode: 'onChange' });
 
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
+
+  const login = (data: FormData) => {
+    return axios.post(url, data);
+  }
 
   const mutation = useMutation(login, {
     onSuccess: () => {
