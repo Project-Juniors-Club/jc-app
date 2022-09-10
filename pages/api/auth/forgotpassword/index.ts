@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createHash, randomBytes } from 'node:crypto';
 import { createEmail } from '../../../../lib/email';
@@ -21,7 +22,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
       { id: user.id },
       {
         passwordResetToken,
-        passwordResetAt: new Date(Date.now() + 10 * 60 * 1000),
+        passwordResetExpiryDate: dayjs().add(10, 'minute').toDate(),
       },
       { email: true },
     );
@@ -38,7 +39,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         { id: user.id },
         {
           passwordResetToken: null,
-          passwordResetAt: null,
+          passwordResetExpiryDate: null,
         },
       );
       return res.status(500).json({
