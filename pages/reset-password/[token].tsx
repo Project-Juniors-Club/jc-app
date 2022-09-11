@@ -20,7 +20,7 @@ const ResetPasswordPage = () => {
   const password = watch('password');
   const { query } = useRouter();
   const { token } = query;
-  
+
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data: FormValues) => {
@@ -48,7 +48,7 @@ const ResetPasswordPage = () => {
     <Layout title='Reset Password | Next.js + TypeScript Example'>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={4} justifyContent='center'>
-          <FormControl isInvalid={Boolean(errors.password)}>
+          <FormControl isInvalid={!!errors.password}>
             <FormLabel>New password</FormLabel>
             <Input
               type='password'
@@ -59,7 +59,7 @@ const ResetPasswordPage = () => {
             />
             <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={Boolean(errors.password)}>
+          <FormControl isInvalid={!!errors.password}>
             <FormLabel>Confirm password</FormLabel>
             <Input
               type='password'
