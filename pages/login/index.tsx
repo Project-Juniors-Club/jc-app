@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router'
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
 
-const url = '/api/auth/login';
+const URL = '/api/auth/login';
 
 const LoginPage = () => {
   const {
@@ -17,17 +18,17 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
-
+  const router = useRouter()
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const login = (data: FormData) => {
-    return axios.post(url, data);
+    return axios.post(URL, data);
   };
 
   const mutation = useMutation(login, {
     onSuccess: () => {
       openSuccessNotification('Login successful', 'Welcome back!');
-      window.location.href = '/';
+      router.push('/');
     },
     onError: error => {
       openErrorNotification('Login failed', 'Please recheck your email and password.');
@@ -35,7 +36,6 @@ const LoginPage = () => {
   });
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
     mutation.mutate(data);
   };
 
@@ -77,7 +77,7 @@ const LoginPage = () => {
                         },
                       })}
                     />
-                    {(errors.email || mutation.isError) && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                    {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
                   </FormControl>
                   <FormControl
                     isInvalid={Boolean(errors.password) || mutation.isError}
@@ -96,7 +96,7 @@ const LoginPage = () => {
                         required: 'This is required.',
                       })}
                     />
-                    {(errors.password || mutation.isError) && <FormErrorMessage>Please enter a valid password.</FormErrorMessage>}
+                    {(errors.password || mutation.isError) && <FormErrorMessage>Incorrect username or password.</FormErrorMessage>}
                   </FormControl>
                   <Box mt={4} color='black' fontWeight='medium'>
                     <Link href='/forgot-password'>Forgot Password?</Link>
