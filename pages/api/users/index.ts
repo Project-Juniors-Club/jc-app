@@ -30,7 +30,7 @@ export default async function handler(
         break;
 
         case 'PUT':
-          // UPDATE UPDATE USER PASSWORD
+          // UPDATE UPDATE USER PASSWORD WITH EMAIL
           var {email, password} = req.body
           const updatedUser = await prisma.user.update({
             where: {
@@ -43,6 +43,16 @@ export default async function handler(
           res.status(200).json({updatedUser});
           break;
 
+          case 'DELETE':
+            // DELETE USER WITH EMAIL
+            var {email} = req.body
+            const deletedUser = await prisma.user.delete({
+              where: {
+                email: email,
+              },
+            })
+            res.status(200).json({deletedUser});
+            break;
 
       default:
         res.setHeader('Allow', ['GET', 'POST']);
