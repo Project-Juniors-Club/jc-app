@@ -17,7 +17,7 @@ export default async function handler(
 
       case 'POST':
         // INSERT CREATE USERS CODE HERE
-        const {username, password, email, type} = req.body
+        var {username, password, email, type} = req.body
         const addedUser = await prisma.user.create({
           data: {
             username: username,
@@ -28,6 +28,20 @@ export default async function handler(
         });
         res.status(200).json({addedUser});
         break;
+
+        case 'PUT':
+          // UPDATE UPDATE USER PASSWORD
+          var {email, password} = req.body
+          const updatedUser = await prisma.user.update({
+            where: {
+              email: email,
+            },
+            data: {
+              password: password,
+            },
+          })
+          res.status(200).json({updatedUser});
+          break;
 
 
       default:
