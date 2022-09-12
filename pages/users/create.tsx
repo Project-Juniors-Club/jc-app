@@ -13,6 +13,17 @@ import {
   InputRightElement,
 } from '@chakra-ui/react';
 
+async function addUser(user) {
+  const response = await fetch('../api/index', {
+    method: 'POST', 
+    body: JSON.stringify(user)
+  });
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return await response.json();
+}
+
 export default function CreateAccount() {
   const { 
     register, 

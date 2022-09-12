@@ -1,25 +1,35 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma';
 
-
 export default async function handler(
     req: NextApiRequest, res: NextApiResponse
 ) {
   try {
 
     const httpMethod = req.method;
-    const {username, password, email} = req.body
+    
 
     switch (httpMethod) {
       case 'GET':
         const users = await prisma.user.findMany();
         res.status(200).json(users);
         break;
+
       case 'POST':
         // INSERT CREATE USERS CODE HERE
-        
-      
+        const {username, password, email, type} = req.body
+        const addedUser = await prisma.user.create({
+          data: {
+            username: username,
+            password: password, 
+            email: email, 
+            type: type
+          },
+        });
+        res.status(200).json({addedUser});
         break;
+
+
       default:
         res.setHeader('Allow', ['GET', 'POST']);
         res.status(405).end(`Method ${httpMethod} not allowed`)
