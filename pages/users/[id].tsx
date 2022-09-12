@@ -30,7 +30,7 @@ export default StaticPropsDetail;
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get the paths we want to pre-render based on users
   const paths = (await prisma.user.findMany()).map(user => ({
-    params: { id: user.PK.toString() },
+    params: { id: user.id.toString() },
   }));
 
   // We'll pre-render only these paths at build time.
@@ -44,7 +44,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const id = params?.id;
-    const item = (await prisma.user.findMany()).find(data => data.PK === id);
+    const item = (await prisma.user.findMany()).find(data => data.id === id);
     // By returning { props: item }, the StaticPropsDetail component
     // will receive `item` as a prop at build time
     return { props: { item } };

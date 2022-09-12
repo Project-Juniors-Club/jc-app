@@ -17,7 +17,7 @@ const WithStaticProps = ({ users }: Props) => (
     <p>You are currently on: /users</p>
     {users?.map(user => (
       <div
-        key={user.pk}
+        key={user.id}
         className='user'
         style={{
           // cursor: 'pointer',

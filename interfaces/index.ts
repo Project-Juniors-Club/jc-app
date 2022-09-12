@@ -4,23 +4,136 @@
 //
 // import { User } from 'path/to/interfaces';
 
-import internal from "stream";
+export enum UserType {
+  normalUser,
+  admin,
+  superAdmin
+}
 
 export type User = {
-  pk: number;
+  id: string;
   username: string;
-  email: string;
   password: string;
+  email: string;
+  type: UserType;
 };
 
+export type NormalUser = {
+  userId: string;
+  user: {
+    username: string
+  }
+}
 
-export type Post = {
+export type Admin = {
+  userId: string;
+  user: {
+    username: string
+  }
+}
+
+export type SuperAdmin = {
+  userId: string;
+  user: {
+    username: string
+  }
+}
+
+export type UserCourse = {
   id: string;
-  title: string;
-  content: string;
-  published: boolean;
-  authorId: string;
-  author: {
-    username: string;
-  };
+  userId: string;
+  courseId: string;
+  progress: number;
+  correctQns: number;
+  stars: number;
+  user: {
+    username: string
+  }
+  course: {
+    name: string
+  }
+}
+
+export type Course = {
+  id: string;
+  name: string;
+  description: string;
+  stars: number;
+  adminId: string;
+}
+
+export enum CourseItemType {
+  game,
+  image,
+  video,
+  article
+}
+
+export type CourseItem = {
+  id: string;
+  name: string;
+  description: string;
+  pageNumber: number;
+  courseId: string;
+  type: CourseItemType;
+  course: {
+    name: string;
+  }
+}
+
+export type Image = {
+  id: string;
+  courseItemId: string;
+  url: string;
+  courseItem: {
+    name: string;
+  }
+}
+
+export type Video = {
+  id: string;
+  courseItemId: string;
+  url: string;
+  courseItem: {
+    name: string;
+  }
+}
+
+export type Article = {
+  id: string;
+  courseItemId: string;
+  text: string;
+  courseItem: {
+    name: string;
+  }
+}
+
+export enum GameType {
+  spotTheDifferenceGame,
+  matchingGame,
+  sortingGame,
+}
+
+export type Game = {
+  id: string;
+  courseItemId: string;
+  type: GameType
+  courseItem: {
+    name: string;
+  }
+}
+
+export type SpotTheDifferenceGame = {
+  id: string;
+  gameId: string;
+}
+
+export type MatchingGame = {
+  id: string;
+  gameId: string;
+}
+
+export type SortingGame = {
+  id: string;
+  gameId: string;
 }

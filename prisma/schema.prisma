@@ -16,50 +16,174 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  PK         String       @id @default(cuid())
-  username   String?      @unique
-  password   String?
-  email      String?      @unique
-  Admin      Admin?
-   type       UserType
-  NormalUser NormalUser?
-  Superadmin Superadmin?
-  Post Post[]
-}
-
-model Admin {
-  PK               String  @id @default(cuid())
-  FK               User?   @relation(fields: [userPK], references: [PK])
-  permission_level Int?    @default(1)
-  userPK           String? @unique
-}
-
-model NormalUser {
-  PK               String  @id @default(cuid())
-  FK               User?   @relation(fields: [userPK], references: [PK])
-  permission_level Int?    @default(0)
-  userPK           String? @unique
-}
-
-model Superadmin {
-  PK               String  @id @default(cuid())
-  FK               User?   @relation(fields: [userPK], references: [PK])
-  permission_level Int?    @default(2)
-  userPK           String? @unique
-}
-
 enum UserType {
   normalUser
   admin
   superAdmin
 }
 
-model Post {
-  PK       String  @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [PK])
-  authorId  String?
+model User {
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+  email    String @unique
+
+  passwordResetToken String? @unique
+  passwordResetExpiryDate    DateTime?
+
+  type       UserType
+  admin      Admin?
+  normalUser NormalUser?
+  superAdmin SuperAdmin?
+
+  userCourses UserCourse[]
+  
+  @@index([passwordResetToken])
+  @@map("users")
 }
+
+model NormalUser {
+  user            User   @relation(fields: [userId], references: [id])
+  userId          String @id
+
+  @@map("normalUsers")
+}
+
+model Admin {
+  user            User   @relation(fields: [userId], references: [id])
+  userId          String @id
+
+  createdCourses Course[]
+
+  @@map("admins")
+}
+
+model SuperAdmin {
+  user            User   @relation(fields: [userId], references: [id])
+  userId          String @id
+
+  @@map("superAdmins")
+}
+
+model UserCourse {
+  id String @id @default(cuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  progress   Int
+  correctQns Int
+  stars      Int
+
+  @@unique([userId, courseId])
+
+  @@map("userCourses")
+}
+
+model Course {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  stars       Int
+  createdBy   Admin  @relation(fields: [adminId], references: [userId])
+  adminId     String
+
+  userCourses UserCourse[]
+
+  courseItems CourseItem[]
+
+  @@map("courses")
+}
+
+enum CourseItemType {
+  game
+  image
+  video
+  article
+}
+
+model CourseItem {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  pageNumber  Int
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  type    CourseItemType
+  game    Game?
+  image   Image?
+  video   Video?
+  article Article?
+
+  @@map("courseItems")
+}
+
+model Image {
+  id           String     @id @default(cuid())
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItemId String     @unique
+  url          String
+
+  @@map("images")
+}
+
+model Video {
+  id           String     @id @default(cuid())
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItemId String     @unique
+  url          String
+
+  @@map("videos")
+}
+
+model Article {
+  id           String     @id @default(cuid())
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItemId String     @unique
+  text         String     @db.Text
+
+  @@map("articles")
+}
+
+enum GameType {
+  spotTheDifferenceGame
+  matchingGame
+  sortingGame
+}
+
+model Game {
+  id           String     @id @default(cuid())
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItemId String     @unique
+
+  type                  GameType
+  spotTheDifferenceGame SpotTheDifferenceGame?
+  matchingGame          MatchingGame?
+  sortingGame           SortingGame?
+
+  @@map("games")
+}
+
+model SpotTheDifferenceGame {
+  id     String @id @default(cuid())
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId String @unique
+}
+
+model MatchingGame {
+  id     String @id @default(cuid())
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId String @unique
+}
+
+model SortingGame {
+  id     String @id @default(cuid())
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId String @unique
+}
+
