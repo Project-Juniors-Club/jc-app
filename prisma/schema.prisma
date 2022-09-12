@@ -43,14 +43,14 @@ model User {
 }
 
 model NormalUser {
-  user            User   @relation(fields: [userId], references: [id])
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String @id
 
   @@map("normalUsers")
 }
 
 model Admin {
-  user            User   @relation(fields: [userId], references: [id])
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String @id
 
   createdCourses Course[]
@@ -59,7 +59,7 @@ model Admin {
 }
 
 model SuperAdmin {
-  user            User   @relation(fields: [userId], references: [id])
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String @id
 
   @@map("superAdmins")
@@ -68,10 +68,10 @@ model SuperAdmin {
 model UserCourse {
   id String @id @default(cuid())
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  course   Course @relation(fields: [courseId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   progress   Int
@@ -88,7 +88,7 @@ model Course {
   name        String @unique
   description String
   stars       Int
-  createdBy   Admin  @relation(fields: [adminId], references: [userId])
+  createdBy   Admin  @relation(fields: [adminId], references: [userId], onDelete: SetNull)
   adminId     String
 
   userCourses UserCourse[]
@@ -111,7 +111,7 @@ model CourseItem {
   description String
   pageNumber  Int
 
-  course   Course @relation(fields: [courseId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   type    CourseItemType
@@ -125,7 +125,7 @@ model CourseItem {
 
 model Image {
   id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id], onDelete: Cascade)
   courseItemId String     @unique
   url          String
 
@@ -134,7 +134,7 @@ model Image {
 
 model Video {
   id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id], onDelete: Cascade)
   courseItemId String     @unique
   url          String
 
@@ -143,7 +143,7 @@ model Video {
 
 model Article {
   id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id], onDelete: Cascade)
   courseItemId String     @unique
   text         String     @db.Text
 
@@ -158,7 +158,7 @@ enum GameType {
 
 model Game {
   id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
+  courseItem   CourseItem @relation(fields: [courseItemId], references: [id], onDelete: Cascade)
   courseItemId String     @unique
 
   type                  GameType
@@ -170,20 +170,17 @@ model Game {
 }
 
 model SpotTheDifferenceGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String @id
 }
 
 model MatchingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String @id
 }
 
 model SortingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String @id
 }
 
