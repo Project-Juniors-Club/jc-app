@@ -7,10 +7,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const id = req.query.id as string
 
         if (httpMethod == 'GET') {
-            const courses = await prisma.course.findFirst({
+            const course = await prisma.course.findFirst({
                 where: {id: id}
             });
-            res.status(200).json(courses);
+            res.status(200).json(course);
         } else if (httpMethod == 'DELETE') {
             // DELETE COURSE
             const deleteCourse = await prisma.course.delete({
@@ -39,6 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     } catch (error) {
         console.log(error)
-        res.status(400).json({ message: error })
+        res.status(500).json({ message: error })
     }
 } 
