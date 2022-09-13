@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",
-    "seed": "node ./prisma/seed.ts"
+    "seed": "ts-node --script-mode ./prisma/seed.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.3.1",
@@ -17,11 +17,12 @@
     "dayjs": "^1.11.5",
     "framer-motion": "^7.2.1",
     "next": "^12.2.5",
-    "nodemailer": "^6.7.8",
     "next-auth": "^4.10.3",
+    "nodemailer": "^6.7.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.34.2"
+    "react-hook-form": "^7.34.2",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
