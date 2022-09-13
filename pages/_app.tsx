@@ -34,6 +34,7 @@ const memoize = (fn) => {
 }
 
 // ignore in-browser next/js recoil warnings until its fixed.
+// Relevant issue: https://github.com/facebookexperimental/Recoil/issues/733#issuecomment-925072943
 const mutedConsole = memoize((console) => ({
   ...console,
   warn: (...args) => args[0].includes('Duplicate atom key')
