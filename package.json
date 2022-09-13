@@ -4,7 +4,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "seed": "node ./prisma/seed.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.3.1",
