@@ -1,7 +1,5 @@
 import React, { useState , useRef, useEffect} from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
-
 import {
   Flex,
   Box,
@@ -14,9 +12,9 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
-import { authorizedState, nameState, emailState, roleState, userInfoState } from '../../atoms/atoms';
+import { userInfoState } from '../../atoms/atoms';
 
 
 export default function CreateAccount() {
@@ -26,30 +24,17 @@ export default function CreateAccount() {
     watch, 
     formState: {errors}
   } = useForm({ mode: 'onChange' });
-    
-  const { name, email, role } = useRecoilValue(userInfoState);
-  const setName = useSetRecoilState(nameState);
-  const setEmail = useSetRecoilState(emailState);
-  const setRole = useSetRecoilState(roleState);     
-  const [authorized, setAuthorized] = useRecoilState(authorizedState);
-  const router = useRouter();
+
+  const [_userInfo, setUserInfo] = useRecoilState(userInfoState);   
   
   const onSubmit = (data) => {
-      console.log(data);
-      // change to name
-      setName("temp name");
-      setEmail(data.email);
-      // default role 1
-      setRole(1);
-      setAuthorized(true);
+    console.log(data);
+    setUserInfo({
+      name: "temp name",
+      email: data.email,
+      role: 1
+    })
   }
-    
-  useEffect(() => {
-    if (authorized) {
-        console.log(authorized);
-        router.push('/');
-    }
-  }, [authorized]);
 
   const password = useRef({});
   password.current = watch("password", "");

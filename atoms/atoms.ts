@@ -15,11 +15,6 @@ export const roleState = atom({
     default: -1,
 });
 
-export const authorizedState = atom({
-    key: 'authorized',
-    default: false,
-});
-
 export const userInfoState = selector({
     key: 'userInfo',
     get: ({ get }) => {
@@ -31,11 +26,7 @@ export const userInfoState = selector({
         return { name, email, role };
     },
     set: ({ set }, value) => {
-        if (value instanceof DefaultValue) {
-            set(nameState, value);
-            set(emailState, value);
-            set(roleState, value);
-        } else {
+        if (!(value instanceof DefaultValue)) {
             set(nameState, value.name);
             set(emailState, value.email);
             set(roleState, value.role);
