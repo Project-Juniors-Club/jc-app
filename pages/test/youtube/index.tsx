@@ -1,5 +1,6 @@
-import React from 'react';
+import { useState } from 'react';
 import YouTube from 'react-youtube';
+import axios from 'axios';
 import { Button, Text, Input } from '@chakra-ui/react';
 
 const YoutubeVideo = () => {
@@ -11,8 +12,8 @@ const YoutubeVideo = () => {
     },
   };
 
-  const [videoTitle, setVideoTitle] = React.useState('');
-  const [videoId, setVideoId] = React.useState('I9q5eBizPHI');
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoId, setVideoId] = useState('I9q5eBizPHI');
   const appUrl = 'http://localhost:3000/'; // to be replaced with env variable during deployment
 
   return (
@@ -33,17 +34,11 @@ const YoutubeVideo = () => {
       <Button
         colorScheme='green'
         onClick={async () => {
-          const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ videoTitle: videoTitle }),
-          };
-          await fetch(appUrl + 'api/youtube', requestOptions)
-            .then(response => response.json())
-            .then(data => {
-              setVideoId(data.videoId);
-              setVideoTitle('');
-            });
+          const response = await axios
+            .post(appUrl + 'api/youtube', { videoTitle: videoTitle });
+          const { data } = response;
+          setVideoId(data.videoId);
+          setVideoTitle('');
         }}
       >
         Click to Upload

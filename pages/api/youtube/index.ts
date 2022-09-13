@@ -7,18 +7,20 @@ import { authenticate } from '@google-cloud/local-auth';
 import { v4 as uuidv4 } from 'uuid';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== 'POST') {
+    res.status(405).send({ message: 'Only POST requests allowed' });
+    return;
+  }
   const videoTitle = req.body.videoTitle;
   try {
-    const videoId = await YoutubeUpload(videoTitle);
-    console.log(videoId);
+    const videoId = await youtubeUpload(videoTitle);
     res.status(200).json({ videoId: videoId });
   } catch (err: any) {
-    console.log(err.message);
     res.status(500).json({ statusCode: 500, videoId: 'O-yi0LBDi3s' });
   }
 };
 
-const YoutubeUpload = async (videoTitle: string) => {
+const youtubeUpload = async (videoTitle: string) => {
   const uniqueVideoTitle = videoTitle + ' ' + uuidv4();
   const youtube = google.youtube('v3');
   const fileName = path.join(__dirname, '../../../../pages/api/youtube/example_video.mp4');
@@ -56,7 +58,6 @@ const YoutubeUpload = async (videoTitle: string) => {
       },
     },
   );
-  console.log(res.data);
   return res.data.id;
 };
 
