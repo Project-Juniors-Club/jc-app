@@ -9,8 +9,8 @@ import { useRouter } from 'next/router'
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
+import { URL } from '../../utils/links';
 
-const URL = '/api/auth/login';
 
 const LoginPage = () => {
   const {
@@ -69,6 +69,7 @@ const LoginPage = () => {
                       type='email'
                       placeholder='Email'
                       borderColor='#78be20'
+                      color='black'
                       {...register('email', {
                         required: 'This is required.',
                         pattern: {
@@ -92,6 +93,7 @@ const LoginPage = () => {
                       type='password'
                       placeholder='Password'
                       borderColor='#78be20'
+                      color='black'
                       {...register('password', {
                         required: 'This is required.',
                       })}
@@ -106,6 +108,7 @@ const LoginPage = () => {
                     isLoading={mutation.isLoading}
                     // Color: Pantone 368 C
                     backgroundColor='#78be20'
+                    _dark={{ backgroundColor: '#78be20' }}
                     color='white'
                     mt={4}
                     width='full'
