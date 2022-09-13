@@ -1,9 +1,6 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { useRecoilValue } from 'recoil';
-
-import { userInfoState } from '../atoms/atoms';
 
 type Props = {
   children?: ReactNode;
@@ -11,8 +8,6 @@ type Props = {
 };
 
 const Layout = ({ children, title = 'This is the default title' }: Props) => {
-  const { name, email, role } = useRecoilValue(userInfoState);
-
   return <div>
       <Head>
         <title>{title}</title>
