@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { User } from '../../interfaces';
 import Layout from '../../components/Layout';
+import prisma from '../../lib/prisma';
 
 type Props = {
   users: User[];
@@ -46,9 +47,7 @@ export const getStaticProps: GetStaticProps = async () => {
   // Don't forget to include the respective types for any props passed into
   // the component.
 
-  const response = await fetch('http://localhost:3000/api/users');
-  const users = await response.json();
-
+  const users = await prisma.user.findMany();
   return { props: { users } };
 };
 

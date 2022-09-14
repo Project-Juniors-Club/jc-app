@@ -5,13 +5,11 @@ export default async function handler(
     req: NextApiRequest, res: NextApiResponse
 ) {
   try {
-
     const httpMethod = req.method;
     
-
     switch (httpMethod) {
       case 'GET':
-        const users = await prisma.user.findMany();
+        const users = prisma.user.findMany()
         res.status(200).json(users);
         break;
 
