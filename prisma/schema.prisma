@@ -28,13 +28,17 @@ model User {
   password String
   email    String @unique
 
+  passwordResetToken String? @unique
+  passwordResetExpiryDate    DateTime?
+
   type       UserType
   admin      Admin?
   normalUser NormalUser?
   superAdmin SuperAdmin?
 
   userCourses UserCourse[]
-
+  
+  @@index([passwordResetToken])
   @@map("users")
 }
 
