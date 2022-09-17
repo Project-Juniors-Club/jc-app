@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sampleUserData } from '../../../utils/sample-data';
-import { apiHandler, usersRepo, omit } from '../../../helpers/api';
+import { apiHandler } from '../../../helpers/api/api-handler';
+import { usersRepo } from '../../../helpers/api/users-repo';
+import { omit } from '../../../helpers/api/omit';
 
 const handler = (_req: NextApiRequest, res: NextApiResponse) => {
   try {

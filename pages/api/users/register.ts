@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 
-import { apiHandler, usersRepo } from '../../../helpers/api';
+import { apiHandler } from '../../../helpers/api/api-handler';
+import { usersRepo } from '../../../helpers/api/users-repo';
 
 export default apiHandler({
     post: register
