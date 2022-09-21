@@ -2,8 +2,8 @@
 
 1. Setup Prettier on VScode
 2. Install Yarn
-3. Create `.env` file with `DATABASE_URL` and `SYSTEMROOT=C:\Windows`
-4. Download client_secret.json from dscJuniorClub@gmail.com Google Developer Console into the root folder. Add the client_secret field into the json.
+3. Create `.env` file with `DATABASE_URL`
+4. Download client_secret.json from juniorsclub.nus@gmail.com Google Developer Console into the root folder. Add the client_secret field into the json.
 5. `yarn`
 6. `yarn dev`
 
