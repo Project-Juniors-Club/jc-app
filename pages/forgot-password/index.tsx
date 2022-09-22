@@ -37,7 +37,7 @@ const ForgotPasswordPage = () => {
     setMessage(false);
     onClose();
   };
-  
+
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
     const { email } = data;
@@ -66,7 +66,7 @@ const ForgotPasswordPage = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
               {!message ? (
-                <FormControl isInvalid={Boolean(errors.email)}>
+                <FormControl isInvalid={!!errors.email}>
                   <Input
                     id='email'
                     placeholder='Email address'
