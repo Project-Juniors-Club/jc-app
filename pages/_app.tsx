@@ -6,6 +6,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 import { extendTheme } from '@chakra-ui/react';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 // TODO: add theme when we have the UI
 const colors = {
   brand: {
@@ -17,11 +19,15 @@ const colors = {
 
 const theme = extendTheme({ colors });
 
+const queryClient = new QueryClient();
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 }
 
