@@ -1,6 +1,6 @@
 import { User, UserType } from '../interfaces'
 
-const sampleDataPwArray = process.env.SAMPLE_DATA_PW_LIST;
+const sampleDataPwArray = process.env.SAMPLE_DATA_PW_ARRAY;
 const [alicePw, bobPw, carolinePw, davePw] = Array.from(sampleDataPwArray);
 
 /** Dummy user data. */
