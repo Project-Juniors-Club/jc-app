@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import { Frames, CardNumber, ExpiryDate, Cvv } from 'frames-react';
+import Script from 'next/script';
 
 
 async function callAPI() {
@@ -22,8 +23,9 @@ async function sendToken(e) {
 const CheckoutPage = () => (
   <Layout title='Checkout.com API'>
     <Head>
-        <script src="https://cdn.checkout.com/js/framesv2.min.js"></script>
+        <script src="https://cdn.checkout.com/js/framesv2.min.js" defer/>
     </Head>
+    
     
     <h1>Checkout.com API</h1>
     <p>This is the checkout.com API testing page</p>
