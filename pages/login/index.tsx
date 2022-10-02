@@ -1,16 +1,14 @@
 // External imports
-import { useState } from 'react';
 import { Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid, Image } from '@chakra-ui/react';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
 import { URL } from '../../utils/links';
-
+import ForgotPasswordModal from '../../components/login/ForgotPasswordModal';
 
 const LoginPage = () => {
   const {
@@ -18,7 +16,7 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
-  const router = useRouter()
+  const router = useRouter();
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const login = (data: FormData) => {
@@ -101,7 +99,7 @@ const LoginPage = () => {
                     {(errors.password || mutation.isError) && <FormErrorMessage>Incorrect username or password.</FormErrorMessage>}
                   </FormControl>
                   <Box mt={4} color='black' fontWeight='medium'>
-                    <Link href='/forgot-password'>Forgot Password?</Link>
+                    <ForgotPasswordModal />
                   </Box>
                   <Button
                     type='submit'

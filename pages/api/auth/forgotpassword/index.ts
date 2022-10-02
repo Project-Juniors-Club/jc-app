@@ -8,7 +8,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { email } = _req.body;
     //business logic from lib/server
-    const user = await findUser({ email: email.toLowerCase() }, { id: true });
+    const user = await findUser({ email: email.toLowerCase() }, { id: true, email: true });
     const message = 'You will receive a reset email if user with that email exists.';
     if (!user) {
       return res.status(200).json({

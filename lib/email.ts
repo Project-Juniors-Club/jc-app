@@ -15,7 +15,8 @@ export const createEmail = (user: Prisma.UserCreateInput, url: string) => {
   //Private function to create new nodemailer transport
   const newTransport = () => {
     return nodemailer.createTransport({
-      ...smtp,
+      host: smtp.host,
+      port: smtp.port,
       auth: {
         user: smtp.user,
         pass: smtp.pass,
@@ -23,16 +24,21 @@ export const createEmail = (user: Prisma.UserCreateInput, url: string) => {
     });
   };
   const send = async (subject: string = 'No subject') => {
-    //TODO: use templating engine to generate email
-    const mailOptions = {
-      from,
-      to,
-      subject,
-      text: url,
-      html: `<a href=${url}>${url}</a>`,
-    };
-    const info = await newTransport().sendMail(mailOptions);
-    console.log(nodemailer.getTestMessageUrl(info));
+    try {
+      //TODO: use templating engine to generate email
+      const mailOptions = {
+        from,
+        to,
+        subject,
+        text: url,
+        html: `<a href=${url}>${url}</a>`,
+      };
+
+      const info = await newTransport().sendMail(mailOptions);
+      console.log(nodemailer.getTestMessageUrl(info));
+    } catch (err: any) {
+      console.error(err)
+    }
   };
 
   const sendPasswordToken = async () => {
