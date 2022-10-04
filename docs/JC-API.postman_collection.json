@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6cae4cb6-fc3a-4798-b977-697b65753b3c",
+		"_postman_id": "5ff24940-ed3b-4c97-a197-b2936acf7bca",
 		"name": "JC-API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18777731"
 	},
 	"item": [
 		{
@@ -513,7 +514,8 @@
 								},
 								{
 									"key": "image",
-									"type": "file"
+									"type": "file",
+									"src": []
 								}
 							]
 						},
@@ -645,7 +647,7 @@
 					"response": []
 				},
 				{
-					"name": "Create 1 Image Copy",
+					"name": "Create 1 Image",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -677,7 +679,7 @@
 					"response": []
 				},
 				{
-					"name": "Update 1 Image Copy",
+					"name": "Update 1 Image",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -710,7 +712,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete 1 Image Copy",
+					"name": "Delete 1 Image",
 					"request": {
 						"method": "DELETE",
 						"header": [
