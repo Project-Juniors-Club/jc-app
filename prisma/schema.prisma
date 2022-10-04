@@ -37,7 +37,7 @@ model User {
   superAdmin SuperAdmin?
 
   userCourses UserCourse[]
-  
+
   @@index([passwordResetToken])
   @@map("users")
 }
@@ -124,9 +124,9 @@ model CourseItem {
 }
 
 model Image {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
+  id           String      @id @default(cuid())
+  courseItem   CourseItem? @relation(fields: [courseItemId], references: [id])
+  courseItemId String?     @unique
   url          String
 
   @@map("images")
