@@ -1,21 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma';
 
-export default async function handler(
-    req: NextApiRequest, res: NextApiResponse
-) {
+const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const httpMethod = req.method;
+    const httpMethod = _req.method;
     
-    switch (httpMethod) {
-      case 'GET':
+    if (httpMethod == 'GET') {
         const users = prisma.user.findMany()
         res.status(200).json(users);
-        break;
-
-      case 'POST':
+    } else if (httpMethod == 'POST') {
         // INSERT CREATE USERS CODE HERE
-        var {username, password, email, type} = req.body
+        var {username, password, email, type} = _req.body
         const addedUser = await prisma.user.create({
           data: {
             username: username,
@@ -25,11 +20,9 @@ export default async function handler(
           },
         });
         res.status(200).json({addedUser});
-        break;
-
-        case 'PUT':
+      } else if (httpMethod == 'PUT') {
           // UPDATE UPDATE USER PASSWORD WITH EMAIL
-          var {email, password} = req.body
+          var {email, password} = _req.body
           const updatedUser = await prisma.user.update({
             where: {
               email: email,
@@ -39,27 +32,23 @@ export default async function handler(
             },
           })
           res.status(200).json({updatedUser});
-          break;
-
-          case 'DELETE':
+        } else if (httpMethod == 'DELETE') {
             // DELETE USER WITH EMAIL
-            var {email} = req.body
+            var {email} = _req.body
             const deletedUser = await prisma.user.delete({
               where: {
                 email: email,
               },
             })
             res.status(200).json({deletedUser});
-            break;
-
-      default:
-        res.setHeader('Allow', ['GET', 'POST']);
-        res.status(405).end(`Method ${httpMethod} not allowed`)
-        
-    }
-  
-  } catch (error) {
-    console.log(error)
-    res.status(400).json({ message: error })
+          } else {
+              res.setHeader('Allow', ['GET', 'POST']);
+              res.status(405).end(`Method ${httpMethod} not allowed`)
+          }
+      } catch (error) {
+          console.log(error)
+          res.status(400).json({ message: error })
   }
-}
+};
+export default handler;
+
