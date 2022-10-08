@@ -28,8 +28,8 @@ model User {
   password String
   email    String @unique
 
-  passwordResetToken String? @unique
-  passwordResetExpiryDate    DateTime?
+  passwordResetToken      String?   @unique
+  passwordResetExpiryDate DateTime?
 
   type       UserType
   admin      Admin?
@@ -43,15 +43,15 @@ model User {
 }
 
 model NormalUser {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   @@map("normalUsers")
 }
 
 model Admin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   createdCourses Course[]
 
@@ -59,8 +59,8 @@ model Admin {
 }
 
 model SuperAdmin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   @@map("superAdmins")
 }
@@ -79,7 +79,6 @@ model UserCourse {
   stars      Int
 
   @@unique([userId, courseId])
-
   @@map("userCourses")
 }
 
@@ -93,7 +92,7 @@ model Course {
 
   userCourses UserCourse[]
 
-  courseItems CourseItem[]
+  chapters Chapter[]
 
   @@map("courses")
 }
@@ -105,47 +104,63 @@ enum CourseItemType {
   article
 }
 
-model CourseItem {
+model Chapter {
   id          String @id @default(cuid())
   name        String
   description String
-  pageNumber  Int
 
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
 
+  pages Page[]
+
+  @@map("chapters")
+}
+
+model Page {
+  id   String @id @default(cuid())
+  name String
+
+  duration Int
+
+  // maybe this is more suitable as AssetType
   type    CourseItemType
   game    Game?
   image   Image?
   video   Video?
   article Article?
 
-  @@map("courseItems")
+  Chapter   Chapter? @relation(fields: [chapterId], references: [id])
+  chapterId String?
+
+  @@map("pages")
 }
 
 model Image {
-  id           String      @id @default(cuid())
-  courseItem   CourseItem? @relation(fields: [courseItemId], references: [id])
-  courseItemId String?     @unique
-  url          String
+  id String @id @default(cuid())
+
+  // if we treat this as an asset that can be shared across multiple courses, then might not make sense to tie it to a page/chapter/course, same comment for the others (Video, Article)
+  page   Page?   @relation(fields: [pageId], references: [id])
+  pageId String? @unique
+  url    String
 
   @@map("images")
 }
 
 model Video {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-  url          String
+  id     String @id @default(cuid())
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique
+  url    String
 
   @@map("videos")
 }
 
 model Article {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-  text         String     @db.Text
+  id     String @id @default(cuid())
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique
+  text   String @db.Text
 
   @@map("articles")
 }
@@ -157,9 +172,9 @@ enum GameType {
 }
 
 model Game {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
+  id     String @id @default(cuid())
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique
 
   type                  GameType
   spotTheDifferenceGame SpotTheDifferenceGame?
@@ -186,4 +201,3 @@ model SortingGame {
   game   Game   @relation(fields: [gameId], references: [id])
   gameId String @unique
 }
-
