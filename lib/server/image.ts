@@ -1,4 +1,4 @@
-import { Prisma, Image, CourseItemType } from '@prisma/client';
+import { Prisma, Image } from '@prisma/client';
 import prisma from '../prisma';
 
 export const createImageInCourse = async (url: string, name: string, description: string, pageNumber: number, courseId: string) => {
