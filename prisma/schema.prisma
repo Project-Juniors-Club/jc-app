@@ -28,8 +28,8 @@ model User {
   password String
   email    String @unique
 
-  passwordResetToken String? @unique
-  passwordResetExpiryDate    DateTime?
+  passwordResetToken      String?   @unique
+  passwordResetExpiryDate DateTime?
 
   type       UserType
   admin      Admin?
@@ -43,15 +43,15 @@ model User {
 }
 
 model NormalUser {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   @@map("normalUsers")
 }
 
 model Admin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   createdCourses Course[]
 
@@ -59,8 +59,8 @@ model Admin {
 }
 
 model SuperAdmin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   @@map("superAdmins")
 }
@@ -79,7 +79,6 @@ model UserCourse {
   stars      Int
 
   @@unique([userId, courseId])
-
   @@map("userCourses")
 }
 
@@ -103,7 +102,8 @@ model Course {
   stars       Int
   createdBy   Admin        @relation(fields: [adminId], references: [userId])
   adminId     String
-  categories  Category[]
+  categories  Category     @relation(fields: [categoryId], references: [id])
+  categoryId  String
   price       Decimal      @db.Decimal(5, 2)
   status      CourseStatus @default(DRAFT)
 
@@ -202,4 +202,3 @@ model SortingGame {
   game   Game   @relation(fields: [gameId], references: [id])
   gameId String @unique
 }
-
