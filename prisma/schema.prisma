@@ -83,13 +83,29 @@ model UserCourse {
   @@map("userCourses")
 }
 
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  courses     Course[]
+}
+
+enum CourseStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
 model Course {
-  id          String @id @default(cuid())
-  name        String @unique
+  id          String       @id @default(cuid())
+  name        String       @unique
   description String
   stars       Int
-  createdBy   Admin  @relation(fields: [adminId], references: [userId])
+  createdBy   Admin        @relation(fields: [adminId], references: [userId])
   adminId     String
+  categories  Category[]
+  price       Decimal      @db.Decimal(5, 2)
+  status      CourseStatus @default(DRAFT)
 
   userCourses UserCourse[]
 
