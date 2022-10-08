@@ -118,10 +118,10 @@ model Chapter {
 }
 
 model Page {
-  id   String @id @default(cuid())
-  name String
-
-  duration Int
+  id          String @id @default(cuid())
+  name        String
+  description String
+  duration    Int
 
   // maybe this is more suitable as AssetType
   type    CourseItemType
