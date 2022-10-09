@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
 import { URL } from '../../utils/links';
-
+import { getProviders, signIn } from 'next-auth/react';
 
 const LoginPage = () => {
   const {
@@ -18,7 +18,7 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
-  const router = useRouter()
+  const router = useRouter();
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const login = (data: FormData) => {
@@ -115,6 +115,18 @@ const LoginPage = () => {
                   >
                     SUBMIT
                   </Button>
+                  <Button
+                    type='button'
+                    onClick={() => signIn()}
+                    // Color: Pantone 368 C
+                    backgroundColor='#78be20'
+                    _dark={{ backgroundColor: '#78be20' }}
+                    color='white'
+                    mt={4}
+                    width='full'
+                  >
+                    SUBMIT
+                  </Button>
                 </form>
               </Box>
             </>
@@ -126,3 +138,10 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+// export async function getServerSideProps(context) {
+//   const providers = await getProviders()
+//   return {
+//     props: { providers },
+//   }
+// }

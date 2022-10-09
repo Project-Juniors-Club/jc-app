@@ -1,5 +1,6 @@
 import React from 'react';
 import { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
 
 import '../styles/globals.css';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -21,13 +22,15 @@ const theme = extendTheme({ colors });
 
 const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
-    </QueryClientProvider>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider theme={theme}>
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }
 
