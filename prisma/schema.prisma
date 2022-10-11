@@ -83,10 +83,13 @@ model UserCourse {
 }
 
 model Category {
-  id          String   @id @default(cuid())
-  name        String
-  description String
-  courses     Course[]
+  id               String     @id @default(cuid())
+  parentCategory   Category   @relation("categoryRelation", fields: [parentCategoryId], references: [id])
+  parentCategoryId String
+  name             String
+  description      String
+  courses          Course[]
+  Category         Category[] @relation("categoryRelation")
 }
 
 enum CourseStatus {
