@@ -15,10 +15,14 @@ const load = async () => {
     await prisma.user.createMany({
       data: sampleUserData,
     });
+
+    console.log('User data seeded!');
   } catch (e) {
     console.error(e);
     process.exit(1);
   }
 };
+
+load();
 
 export default load;
