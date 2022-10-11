@@ -3,7 +3,6 @@ import prisma from '../lib/prisma';
 
 const load = async () => {
   try {
-    // Delete sample datauser records
     await prisma.user.deleteMany({
       where: {
         email: {
