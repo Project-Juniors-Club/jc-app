@@ -37,7 +37,7 @@ model User {
   superAdmin SuperAdmin?
 
   userCourses UserCourse[]
-  
+
   @@index([passwordResetToken])
   @@map("users")
 }
