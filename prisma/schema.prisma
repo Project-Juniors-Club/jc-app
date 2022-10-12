@@ -125,8 +125,8 @@ model CourseItem {
 
 model Image {
   id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id], onDelete: Cascade)
-  courseItemId String     @unique
+  courseItem   CourseItem? @relation(fields: [courseItemId], references: [id], onDelete: Cascade)
+  courseItemId String?     @unique
   url          String
 
   @@map("images")
