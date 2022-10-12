@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const fileParams = {
         Bucket: process.env.BUCKET_NAME,
-        Key: req.body.key,
+        Key: req.body.name,
         Expires: 120,
         ContentType: req.body.type,
     }
@@ -22,13 +22,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (method === 'GET') {
             const url = await s3.getSignedUrlPromise("getObject", fileParams);
-            res.status(200).json({message: messages.getFilesSuccess})
-        } else if (method === 'POST') {
+            // res.status(200).json({message: messages.getFilesSuccess})
+            res.status(200).json({ url })
+        } else if (method === 'PUT') {
             const url = await s3.getSignedUrlPromise("putObject", fileParams);
-            res.status(200).json({message: messages.uploadFileSuccess})
+            // res.status(200).json({message: messages.uploadFileSuccess})
+            res.status(200).json({ url })
         } else if (method === 'DELETE') {
             const url = await s3.getSignedUrlPromise("deleteObject", fileParams);
-            res.status(200).json({message: messages.deleteFileSuccess})
+            // res.status(200).json({message: messages.deleteFileSuccess})
+            res.status(200).json({ url })
         } else {
             res.status(405).end(`Method ${method} not allowed`)
         }

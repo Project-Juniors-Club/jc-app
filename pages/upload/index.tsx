@@ -1,9 +1,9 @@
-import { METHODS } from 'http';
+import axios from 'axios';
 import Link from 'next/link';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
 
-export default function upload() {
+export default function Upload() {
   const [message, setMessage] = useState<String | undefined>();
   const [file, setFile] = useState<File | undefined>();
 
@@ -14,13 +14,11 @@ export default function upload() {
 
   const uploadFile = async () => {
     setMessage('Uploading...');
-    // todo: api calls for get, post, delete
-    // const url = await fetch('/api/media/', {
-    //   method: 'POST',
-    //   {
-    //     key:
-    //   }
-    // });
+    const { data } = await axios.put('/api/media/', {
+      name: file.name,
+      type: file.type,
+    });
+    console.log(data);
 
     setMessage('Uploaded!');
     setFile(null);
