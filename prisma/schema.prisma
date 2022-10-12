@@ -97,7 +97,7 @@ model Course {
   @@map("courses")
 }
 
-enum CourseItemType {
+enum AssetType {
   game
   image
   video
@@ -118,49 +118,61 @@ model Chapter {
 }
 
 model Page {
-  id          String @id @default(cuid())
-  name        String
+  Chapter   Chapter? @relation(fields: [chapterId], references: [id])
+  chapterId String?
+
+  id         String @id @default(cuid())
+  name       String
+  pageNumber Int
+
   description String
   duration    Int
 
-  // maybe this is more suitable as AssetType
-  type    CourseItemType
-  game    Game?
-  image   Image?
-  video   Video?
-  article Article?
-
-  Chapter   Chapter? @relation(fields: [chapterId], references: [id])
-  chapterId String?
+  // page type is same as asset type
+  // all the assets here should be of the same type as type, doing array because image page can have multiple images
+  type  AssetType
+  asset Asset[]
 
   @@map("pages")
 }
 
-model Image {
+model Asset {
   id String @id @default(cuid())
 
-  // if we treat this as an asset that can be shared across multiple courses, then might not make sense to tie it to a page/chapter/course, same comment for the others (Video, Article)
-  page   Page?   @relation(fields: [pageId], references: [id])
-  pageId String? @unique
-  url    String
+  assetType AssetType
+  game      Game?
+  video     Video?
+  article   Article?
+  Image     Image?
+
+  pages Page[]
+
+  @@map("assets")
+}
+
+model Image {
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  url String
 
   @@map("images")
 }
 
 model Video {
-  id     String @id @default(cuid())
-  page   Page   @relation(fields: [pageId], references: [id])
-  pageId String @unique
-  url    String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  url String
 
   @@map("videos")
 }
 
 model Article {
-  id     String @id @default(cuid())
-  page   Page   @relation(fields: [pageId], references: [id])
-  pageId String @unique
-  text   String @db.Text
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  text String @db.Text
 
   @@map("articles")
 }
@@ -172,9 +184,8 @@ enum GameType {
 }
 
 model Game {
-  id     String @id @default(cuid())
-  page   Page   @relation(fields: [pageId], references: [id])
-  pageId String @unique
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   type                  GameType
   spotTheDifferenceGame SpotTheDifferenceGame?
@@ -185,19 +196,16 @@ model Game {
 }
 
 model SpotTheDifferenceGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
 model MatchingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
 model SortingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
