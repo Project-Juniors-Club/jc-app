@@ -83,13 +83,13 @@ model UserCourse {
 }
 
 model Category {
-  id               String     @id @default(cuid())
-  parentCategory   Category   @relation("categoryRelation", fields: [parentCategoryId], references: [id])
-  parentCategoryId String
-  name             String
-  description      String
-  courses          Course[]
-  Category         Category[] @relation("categoryRelation")
+  id                 String     @id @default(cuid())
+  parentCategory     Category   @relation("categoryRelation", fields: [parentCategoryId], references: [id])
+  parentCategoryId   String
+  name               String
+  description        String
+  courses            Course[]
+  childrenCategories Category[] @relation("categoryRelation")
 }
 
 enum CourseStatus {
@@ -105,8 +105,9 @@ model Course {
   stars       Int
   createdBy   Admin        @relation(fields: [adminId], references: [userId])
   adminId     String
-  categories  Category     @relation(fields: [categoryId], references: [id])
-  categoryId  String
+  // might make more sense to have it default to a uncategorised/misc. category
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  categoryId  String?
   price       Decimal      @db.Decimal(5, 2)
   status      CourseStatus @default(DRAFT)
 
