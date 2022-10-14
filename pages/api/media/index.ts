@@ -9,7 +9,7 @@ const s3 = new S3({
     signatureVersion: "v4",
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function Handler(req: NextApiRequest, res: NextApiResponse) {
     const method = req.method;
 
     const fileParams = {
@@ -22,16 +22,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (method === 'GET') {
             const url = await s3.getSignedUrlPromise("getObject", fileParams);
-            // res.status(200).json({message: messages.getFilesSuccess})
-            res.status(200).json({ url })
+            res.status(200).json({message: messages.getFilesSuccess, url: url})
         } else if (method === 'PUT') {
             const url = await s3.getSignedUrlPromise("putObject", fileParams);
-            // res.status(200).json({message: messages.uploadFileSuccess})
-            res.status(200).json({ url })
+            res.status(200).json({message: messages.uploadFileSuccess, url: url})
         } else if (method === 'DELETE') {
             const url = await s3.getSignedUrlPromise("deleteObject", fileParams);
-            // res.status(200).json({message: messages.deleteFileSuccess})
-            res.status(200).json({ url })
+            res.status(200).json({message: messages.deleteFileSuccess, url: url})
         } else {
             res.status(405).end(`Method ${method} not allowed`)
         }

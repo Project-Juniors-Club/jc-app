@@ -4,12 +4,12 @@ import { useState } from 'react';
 import Layout from '../../components/Layout';
 
 export default function Upload() {
-  const [message, setMessage] = useState<String | undefined>();
-  const [file, setFile] = useState<File | undefined>();
+  const [file, setFile] = useState<File>();
+  const [message, setMessage] = useState<String>();
 
   function storeFile(event) {
-    console.log('File stored!');
     setFile(event.target.files[0]);
+    setMessage(null);
   }
 
   const uploadFile = async () => {
@@ -18,10 +18,17 @@ export default function Upload() {
       name: file.name,
       type: file.type,
     });
-    console.log(data);
+    console.log(data.message);
 
-    setMessage('Uploaded!');
+    let { data: newData } = await axios.put(data.url, file, {
+      headers: {
+        'Content-type': file.type,
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+
     setFile(null);
+    setMessage('Uploaded!');
   };
 
   return (
@@ -32,11 +39,13 @@ export default function Upload() {
           <p>Please select a file to upload</p>
           <input type='file' onChange={e => storeFile(e)} className='p-2 rounded-sm' />
           {file && (
-            <button onClick={uploadFile} className='bg-purple-500 text-white p-2 rounded-sm shadow-md hover:bg-purple-700 transition-all'>
-              Upload a File!
-            </button>
+            <>
+              <button onClick={uploadFile} className='bg-purple-500 text-white p-2 rounded-sm shadow-md hover:bg-purple-700 transition-all'>
+                Upload a File!
+              </button>
+            </>
           )}
-          {file && <p>{message}</p>}
+          <p>{message}</p>
         </main>
       </div>
       <p>
