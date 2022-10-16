@@ -60,8 +60,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  passwordResetToken      String?   @unique
-  passwordResetExpiryDate DateTime?
+  // passwordResetToken      String?   @unique
+  // passwordResetExpiryDate DateTime?
 
   type       UserType @default(normalUser)
   admin      Admin?
@@ -70,7 +70,7 @@ model User {
 
   userCourses UserCourse[]
 
-  @@index([passwordResetToken])
+  // @@index([passwordResetToken])
   @@map("users")
 }
 
