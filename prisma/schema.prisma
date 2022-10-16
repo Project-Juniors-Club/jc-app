@@ -140,6 +140,8 @@ model PageItem {
   pageId String
   page   Page   @relation(fields: [pageId], references: [id])
 
+  pageItemNumber Int
+
   assetType AssetType
   asset     Asset     @relation(fields: [assetId], references: [id])
   assetId   String
