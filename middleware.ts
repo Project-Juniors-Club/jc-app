@@ -11,6 +11,10 @@ export default withAuth({
       return !!token;
     },
   },
+  pages: {
+    signIn: '/login',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 });
 //Paths middleware will run on
 export const config = {

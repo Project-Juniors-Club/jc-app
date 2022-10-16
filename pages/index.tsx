@@ -5,15 +5,15 @@ import { useEffect } from 'react';
 import Layout from '../components/Layout';
 
 const IndexPage = () => {
-  const { data: session } = useSession();
-  const router = useRouter();
+  // const { data: session } = useSession();
+  // const router = useRouter();
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/login');
-      return;
-    }
-  }, [session, router]);
+  // useEffect(() => {
+  //   if (!session) {
+  //     router.push('/login');
+  //     return;
+  //   }
+  // }, [session, router]);
 
   return (
     <Layout title='Home | Next.js + TypeScript Example'>

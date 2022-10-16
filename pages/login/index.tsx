@@ -10,9 +10,15 @@ import { useRouter } from 'next/router';
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
 import { URL } from '../../utils/links';
-import { getProviders, signIn } from 'next-auth/react';
+import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
+import { Provider } from 'next-auth/providers';
 
-const LoginPage = () => {
+type Props = {
+  csrfToken: string;
+  providers: Provider[];
+};
+
+const LoginPage = ({ csrfToken, providers }: Props) => {
   const {
     register,
     handleSubmit,
@@ -115,18 +121,19 @@ const LoginPage = () => {
                   >
                     SUBMIT
                   </Button>
-                  <Button
-                    type='button'
-                    onClick={() => signIn()}
-                    // Color: Pantone 368 C
-                    backgroundColor='#78be20'
-                    _dark={{ backgroundColor: '#78be20' }}
-                    color='white'
-                    mt={4}
-                    width='full'
-                  >
-                    SUBMIT
-                  </Button>
+                  {Object.values(providers).map(provider => (
+                    <div key={provider.name}>
+                      <button
+                        onClick={event => {
+                          event.preventDefault();
+                          signIn(provider.id);
+                        }}
+                      >
+                        Sign in with {provider.name}
+                      </button>
+                    </div>
+                  ))}
+                  
                 </form>
               </Box>
             </>
@@ -139,9 +146,15 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-// export async function getServerSideProps(context) {
-//   const providers = await getProviders()
-//   return {
-//     props: { providers },
-//   }
-// }
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+  if (session) {
+    return { redirect: { destination: '/' } };
+  }
+  const csrfToken = await getCsrfToken(context);
+  const providers = await getProviders();
+  return {
+    props: { csrfToken, providers },
+  };
+}
