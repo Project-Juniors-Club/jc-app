@@ -112,7 +112,8 @@ model Chapter {
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
 
-  pages Page[]
+  chapterNumber Int
+  pages         Page[]
 
   @@map("chapters")
 }
@@ -128,12 +129,22 @@ model Page {
   description String
   duration    Int
 
-  // page type is same as asset type
-  // all the assets here should be of the same type as type, doing array because image page can have multiple images
-  type  AssetType
-  asset Asset[]
+  assetType AssetType
+  pageItems PageItem[]
 
   @@map("pages")
+}
+
+model PageItem {
+  id     String @id @default(cuid())
+  pageId String
+  page   Page   @relation(fields: [pageId], references: [id])
+
+  assetType AssetType
+  asset     Asset     @relation(fields: [assetId], references: [id])
+  assetId   String
+
+  caption String? @db.Text
 }
 
 model Asset {
@@ -145,7 +156,7 @@ model Asset {
   article   Article?
   Image     Image?
 
-  pages Page[]
+  pageItems PageItem[]
 
   @@map("assets")
 }
