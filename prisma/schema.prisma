@@ -28,8 +28,8 @@ model User {
   password String
   email    String @unique
 
-  passwordResetToken String? @unique
-  passwordResetExpiryDate    DateTime?
+  passwordResetToken      String?   @unique
+  passwordResetExpiryDate DateTime?
 
   type       UserType
   admin      Admin?
@@ -43,15 +43,15 @@ model User {
 }
 
 model NormalUser {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   @@map("normalUsers")
 }
 
 model Admin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   createdCourses Course[]
 
@@ -59,8 +59,8 @@ model Admin {
 }
 
 model SuperAdmin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id
 
   @@map("superAdmins")
 }
@@ -79,17 +79,45 @@ model UserCourse {
   stars      Int
 
   @@unique([userId, courseId])
-
   @@map("userCourses")
 }
 
-model Course {
+model Category {
   id          String @id @default(cuid())
-  name        String @unique
+  name        String
   description String
-  stars       Int
-  createdBy   Admin  @relation(fields: [adminId], references: [userId])
-  adminId     String
+
+  childrenCategories Subcategory[]
+}
+
+model Subcategory {
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  parentCategory   Category @relation(fields: [parentCategoryId], references: [id])
+  parentCategoryId String
+
+  courses Course[]
+}
+
+enum CourseStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+model Course {
+  id            String       @id @default(cuid())
+  name          String       @unique
+  description   String
+  stars         Int
+  createdBy     Admin        @relation(fields: [adminId], references: [userId])
+  adminId       String
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  subcategoryId String? // null means misc.
+  price         Decimal      @db.Decimal(5, 2)
+  status        CourseStatus @default(DRAFT)
 
   userCourses UserCourse[]
 
@@ -186,4 +214,3 @@ model SortingGame {
   game   Game   @relation(fields: [gameId], references: [id])
   gameId String @unique
 }
-
