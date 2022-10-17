@@ -4,11 +4,17 @@
 //
 // import { User } from 'path/to/interfaces';
 
-export enum UserType {
-  normalUser,
-  admin,
-  superAdmin
+export const UserType: {
+  normalUser: 'normalUser';
+  admin: 'admin';
+  superAdmin: 'superAdmin';
+} = {
+  normalUser: 'normalUser',
+  admin: 'admin',
+  superAdmin: 'superAdmin',
 }
+
+export type UserType = typeof UserType[keyof typeof UserType];
 
 export type User = {
   id: string;
@@ -83,11 +89,11 @@ export type CourseItem = {
 
 export type Image = {
   id: string;
-  courseItemId: string;
+  courseItemId: string | null;
   url: string;
   courseItem: {
     name: string;
-  }
+  } | null;
 }
 
 export type Video = {
