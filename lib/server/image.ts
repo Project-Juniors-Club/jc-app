@@ -1,4 +1,4 @@
-import { Prisma, Image } from '@prisma/client';
+import { Prisma, Image, AssetType } from '@prisma/client';
 import prisma from '../prisma';
 
 export const createImage = async (url: string, assetId?: string) => {
@@ -10,7 +10,7 @@ export const createImage = async (url: string, assetId?: string) => {
             id: assetId,
           },
           create: {
-            assetType: 'image',
+            assetType: AssetType.image,
           },
         },
       },
