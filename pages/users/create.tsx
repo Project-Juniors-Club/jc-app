@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import {
@@ -22,6 +22,18 @@ import {
   VStack,
   Image,
   SimpleGrid,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  PinInput, 
+  PinInputField,
+  Center,
+  Spacer,
 } from '@chakra-ui/react';
 
 export default function CreateAccount() {
@@ -32,11 +44,41 @@ export default function CreateAccount() {
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
+  const email = useRef({});
+  email.current = watch("email", "");
+
+  //Chakra UI Modal 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const [otp, setOTP] = useState("")
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
 
+  //Timer for OTP
+  const [timer, setTimer] = useState(60);    
+  const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
+  
+  useEffect(() => {
+    timer > 0 && setTimeout(timeOutCallback, 1000);
+  }, [timer, timeOutCallback]);
+    
+  // Opens the modal and sends an OTP email
+  const openModal = () => {
+    if (!timer) {
+      setTimer(60);
+    }
+    sendOTP()
+    onOpen()
+  }
+
+  // Resends OTP and disables button for 60 s
+  const sendOTP = () => {
+    console.log(email.current)
+  }
+
   const onSubmit = (data: FormData) => {
+    onOpen
     console.log(FormData);
     if (data) {
       router.push('/login');
@@ -44,6 +86,7 @@ export default function CreateAccount() {
   };
 
   return (
+    <div>
     <Box height='100vh' display='flex' justifyContent='center' alignItems='center'>
       <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
         <SimpleGrid columns={[1, 1, 1, 2]} spacing={0}>
@@ -114,22 +157,30 @@ export default function CreateAccount() {
                         </InputGroup>
                         {errors.age && <FormErrorMessage>{String(errors.age.message)}</FormErrorMessage>}
                       </FormControl>
+                      
                       <FormControl mt={6} isInvalid={Boolean(errors.email)}>
                         <FormLabel htmlFor='email'>Email</FormLabel>
-                        <Input
-                          id='email'
-                          placeholder='test@test.com'
-                          size='md'
-                          {...register('email', {
-                            required: 'Email is required',
-                            pattern: {
-                              value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                              message: 'Invalid Email Format',
-                            },
-                          })}
-                        />
-                        {errors.email && <FormErrorMessage>{String(errors.email.message)}</FormErrorMessage>}
+                        <HStack>
+                          <VStack>
+                            <Input
+                              id='email'
+                              placeholder='test@test.com'
+                              size='md'
+                              {...register('email', {
+                                required: 'Email is required',
+                                pattern: {
+                                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                                  message: 'Invalid Email Format',
+                                },
+                              })}
+                            />
+                            {errors.email && <FormErrorMessage>{String(errors.email.message)}</FormErrorMessage>}
+                            </VStack>
+                            <Button onClick={() => openModal()}> Verify</Button>
+                          </HStack>
                       </FormControl>
+                      
+                      
                       <FormControl mt={6} isInvalid={Boolean(errors.password)}>
                         <FormLabel htmlFor='password'>Password</FormLabel>
                         <InputGroup>
@@ -186,5 +237,41 @@ export default function CreateAccount() {
         </SimpleGrid>
       </Flex>
     </Box>
-  );
+
+    <Modal isOpen={isOpen} onClose={onClose}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Verify Email</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+        <Center>
+            <VStack>
+              <Text>Please Input Your OTP that is sent to your email</Text>
+              <Center>           
+                <PinInput otp type='alphanumeric' mask size='lg' onChange={(e) => setOTP(e)}>
+                  <PinInputField mr={3}/>
+                  <PinInputField mr={3}/>
+                  <PinInputField mr={3}/>
+                  <PinInputField mr={3}/>
+                  <PinInputField mr={3}/>
+                  <PinInputField mr={3}/>
+                </PinInput>
+              </Center>        
+            </VStack> 
+          </Center>
+      </ModalBody>
+
+      <ModalFooter>
+        <Flex alignItems='left'>
+        <Button colorScheme='blue' onClick={onClose}>
+          Close
+        </Button>
+        <Spacer/>
+        <Button variant='ghost' onClick={() => sendOTP()} isDisabled={timer >0}>Resend OTP {timer} S</Button>
+        </Flex>
+      </ModalFooter>
+    </ModalContent>
+    </Modal>
+  </div>
+  );  
 }
