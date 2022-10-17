@@ -52,16 +52,12 @@ enum UserType {
 model User {
   id            String    @id @default(cuid())
   username      String    @unique @default("remus")
-  // password String
   name          String?
   email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-
-  // passwordResetToken      String?   @unique
-  // passwordResetExpiryDate DateTime?
 
   type       UserType @default(normalUser)
   admin      Admin?
@@ -70,7 +66,6 @@ model User {
 
   userCourses UserCourse[]
 
-  // @@index([passwordResetToken])
   @@map("users")
 }
 
