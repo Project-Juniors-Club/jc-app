@@ -82,13 +82,42 @@ model UserCourse {
   @@map("userCourses")
 }
 
-model Course {
+model Category {
   id          String @id @default(cuid())
-  name        String @unique
+  name        String
   description String
-  stars       Int
-  createdBy   Admin  @relation(fields: [adminId], references: [userId])
-  adminId     String
+
+  childrenCategories Subcategory[]
+}
+
+model Subcategory {
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  parentCategory   Category @relation(fields: [parentCategoryId], references: [id])
+  parentCategoryId String
+
+  courses Course[]
+}
+
+enum CourseStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+model Course {
+  id            String       @id @default(cuid())
+  name          String       @unique
+  description   String
+  stars         Int
+  createdBy     Admin        @relation(fields: [adminId], references: [userId])
+  adminId       String
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  subcategoryId String? // null means misc.
+  price         Decimal      @db.Decimal(5, 2)
+  status        CourseStatus @default(DRAFT)
 
   userCourses UserCourse[]
 
