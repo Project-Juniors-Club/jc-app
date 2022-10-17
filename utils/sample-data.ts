@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const sampleDataPwArray = process.env.SAMPLE_DATA_PW_ARRAY;
+const sampleDataPwArray = process.env.SAMPLE_DATA_PW_LIST;
 const [alicePw, bobPw, carolinePw, davePw] = Array.from(sampleDataPwArray);
 
 /** Dummy user data. */

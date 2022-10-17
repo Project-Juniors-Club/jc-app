@@ -121,7 +121,18 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                   >
                     SUBMIT
                   </Button>
-                  {Object.values(providers).map(provider => (
+                </form>
+                {Object.values(providers).map(provider =>
+                  provider.id === 'email' ? (
+                    <form key={provider.name} method='post' action='/api/auth/signin/email'>
+                      <input name='csrfToken' type='hidden' defaultValue={csrfToken} />
+                      <label>
+                        Email address
+                        <input type='email' id='email' name='email' />
+                      </label>
+                      <button type='submit'>Sign in with Email</button>
+                    </form>
+                  ) : (
                     <div key={provider.name}>
                       <button
                         onClick={event => {
@@ -132,9 +143,8 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                         Sign in with {provider.name}
                       </button>
                     </div>
-                  ))}
-                  
-                </form>
+                  ),
+                )}
               </Box>
             </>
           </Box>

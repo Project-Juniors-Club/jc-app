@@ -1,22 +1,22 @@
+import { UserType } from '@prisma/client';
 import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
 
-export default withAuth({
-  callbacks: {
-    authorized: ({ req, token }) => {
-      //TODO: change to superadmin routes
-      if (req.nextUrl.pathname === '/api/superadmin') return token?.role === 'superadmin';
-      //TODO: change to admin routes
-      if (req.nextUrl.pathname === '/api/admin') return token?.role === 'admin';
-      if (req.nextUrl.pathname === '/api/user') return token?.role === 'user';
-      return !!token;
+export default withAuth(
+  function middleware(req) {
+    // Redirect if they don't have the appropriate role
+    if (req.nextUrl.pathname.startsWith('/admin') && req.nextauth.token?.role !== UserType.admin) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  },
+  {
+    pages: {
+      signIn: '/login',
     },
+    secret: process.env.NEXTAUTH_SECRET,
   },
-  pages: {
-    signIn: '/login',
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-});
+);
 //Paths middleware will run on
 export const config = {
-  matcher: ['/api/superadmin', '/api/admin'],
+  matcher: ['/api/superadmin', '/api/admin', '/'],
 };
