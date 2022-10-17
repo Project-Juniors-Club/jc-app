@@ -83,13 +83,22 @@ model UserCourse {
 }
 
 model Category {
-  id                 String     @id @default(cuid())
-  parentCategory     Category?  @relation("categoryRelation", fields: [parentCategoryId], references: [id])
-  parentCategoryId   String?
-  name               String
-  description        String
-  courses            Course[]
-  childrenCategories Category[] @relation("categoryRelation")
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  childrenCategories Subcategory[]
+}
+
+model Subcategory {
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  parentCategory   Category @relation(fields: [parentCategoryId], references: [id])
+  parentCategoryId String
+
+  courses Course[]
 }
 
 enum CourseStatus {
@@ -99,17 +108,16 @@ enum CourseStatus {
 }
 
 model Course {
-  id          String       @id @default(cuid())
-  name        String       @unique
-  description String
-  stars       Int
-  createdBy   Admin        @relation(fields: [adminId], references: [userId])
-  adminId     String
-  // might make more sense to have it default to a uncategorised/misc. category
-  category    Category?    @relation(fields: [categoryId], references: [id])
-  categoryId  String?
-  price       Decimal      @db.Decimal(5, 2)
-  status      CourseStatus @default(DRAFT)
+  id            String       @id @default(cuid())
+  name          String       @unique
+  description   String
+  stars         Int
+  createdBy     Admin        @relation(fields: [adminId], references: [userId])
+  adminId       String
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  subcategoryId String? // null means misc.
+  price         Decimal      @db.Decimal(5, 2)
+  status        CourseStatus @default(DRAFT)
 
   userCourses UserCourse[]
 
