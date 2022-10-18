@@ -58,20 +58,20 @@ enum UserType {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  //username not required in auth process
-  username      String    @unique
+  id            String      @id @default(cuid())
+  //username not required in auth process, remove if not needed elsewhere
+  username      String      @unique @default("default")
   name          String?
-  email         String    @unique
+  email         String      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-
-  type       UserType @default(normalUser)
-  admin      Admin?
-  normalUser NormalUser?
-  superAdmin SuperAdmin?
+  //need a way to assign userType on user creation, set default to normalUser for now
+  type          UserType    @default(normalUser)
+  admin         Admin?
+  normalUser    NormalUser?
+  superAdmin    SuperAdmin?
 
   userCourses UserCourse[]
 
