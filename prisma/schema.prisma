@@ -43,6 +43,14 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 enum UserType {
   normalUser
   admin
@@ -51,7 +59,8 @@ enum UserType {
 
 model User {
   id            String    @id @default(cuid())
-  username      String    @unique @default("remus")
+  //Remove username as not required in auth process
+  username      String    @unique
   name          String?
   email         String    @unique
   emailVerified DateTime?
