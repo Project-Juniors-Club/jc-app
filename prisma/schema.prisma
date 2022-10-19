@@ -121,59 +121,100 @@ model Course {
 
   userCourses UserCourse[]
 
-  courseItems CourseItem[]
+  chapters Chapter[]
 
   @@map("courses")
 }
 
-enum CourseItemType {
+enum AssetType {
   game
   image
   video
   article
 }
 
-model CourseItem {
+model Chapter {
   id          String @id @default(cuid())
   name        String
   description String
-  pageNumber  Int
 
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
 
-  type    CourseItemType
-  game    Game?
-  image   Image?
-  video   Video?
-  article Article?
+  chapterNumber Int
+  pages         Page[]
 
-  @@map("courseItems")
+  @@map("chapters")
+}
+
+model Page {
+  Chapter   Chapter? @relation(fields: [chapterId], references: [id])
+  chapterId String?
+
+  id         String @id @default(cuid())
+  name       String
+  pageNumber Int
+
+  description String
+  duration    Int
+
+  assetType AssetType
+  pageItems PageItem[]
+
+  @@map("pages")
+}
+
+model PageItem {
+  id     String @id @default(cuid())
+  pageId String
+  page   Page   @relation(fields: [pageId], references: [id])
+
+  pageItemNumber Int
+
+  assetType AssetType
+  asset     Asset     @relation(fields: [assetId], references: [id])
+  assetId   String
+
+  caption String? @db.Text
+}
+
+model Asset {
+  id String @id @default(cuid())
+
+  assetType AssetType
+  game      Game?
+  video     Video?
+  article   Article?
+  Image     Image?
+
+  pageItems PageItem[]
+
+  @@map("assets")
 }
 
 model Image {
-  id           String      @id @default(cuid())
-  courseItem   CourseItem? @relation(fields: [courseItemId], references: [id])
-  courseItemId String?     @unique
-  url          String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  url String
 
   @@map("images")
 }
 
 model Video {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-  url          String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  url String
 
   @@map("videos")
 }
 
 model Article {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-  text         String     @db.Text
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  text String @db.Text
 
   @@map("articles")
 }
@@ -185,9 +226,8 @@ enum GameType {
 }
 
 model Game {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   type                  GameType
   spotTheDifferenceGame SpotTheDifferenceGame?
@@ -198,19 +238,16 @@ model Game {
 }
 
 model SpotTheDifferenceGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
 model MatchingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
 model SortingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
