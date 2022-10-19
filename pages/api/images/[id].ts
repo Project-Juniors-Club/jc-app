@@ -6,17 +6,17 @@ import messages from '../../../utils/api-messages';
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const httpMethod = req.method;
-    const id = req.query.id as string;
+    const assetId = req.query.assetId as string;
 
     if (httpMethod == 'GET') {
-      const image = await findUniqueImage({ id });
+      const image = await findUniqueImage({ assetId });
       res.status(200).json({ message: messages.getOneImageSuccess, data: image });
     } else if (httpMethod == 'DELETE') {
-      const deletedImage = await deleteImage({ id });
+      const deletedImage = await deleteImage({ assetId });
       res.status(200).json({ message: messages.deleteImageSuccess });
     } else if (httpMethod == 'PUT') {
       const { url } = req.body;
-      const updatedImage = await updateImage({ id }, { url });
+      const updatedImage = await updateImage({ assetId }, { url });
       res.status(200).json({ message: messages.updateImageSuccess, data: updatedImage });
     } else {
       res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);

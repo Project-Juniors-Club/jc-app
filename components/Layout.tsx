@@ -8,8 +8,8 @@ type Props = {
   title?: string;
 };
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
-  <div>
+const Layout = ({ children, title = 'This is the default title' }: Props) => {
+  return <div>
     <Head>
       <title>{title}</title>
       <meta charSet='utf-8' />
@@ -35,8 +35,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
     <footer>
       <hr />
       <span>I&apos;m here to stay (Footer)</span>
-    </footer>
+    </footer>  
   </div>
-);
+};
 
 export default Layout;
