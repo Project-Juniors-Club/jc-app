@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json({message: messages.deleteCourseSuccess, data: deleteCourse});
         } else if (httpMethod == 'PUT') {
             // UPDATE NAME, DESCRIPTION, STARS
-            const { name, description, stars } = req.body
+            const { name, description, stars, subcategoryId, price, status } = req.body
             const updatedCourse = await prisma.course.update({
                 where: {
                     id: id,
@@ -31,6 +31,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     name: name,
                     description: description,
                     stars: stars,
+                    price: price,
+                    status: status,
+                    subcategory: {
+                        connect: {
+                            id: subcategoryId
+                        }
+                    }
                 },
             })
             res.status(200).json({message: messages.updateCourseSuccess, data: updatedCourse})

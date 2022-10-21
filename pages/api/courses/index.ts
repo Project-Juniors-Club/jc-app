@@ -9,14 +9,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const courses = await prisma.course.findMany();
             res.status(200).json({message: messages.getAllCoursesSuccess, data: courses});
         } else if (httpMethod == 'POST') {
-            const { name, description, stars, adminId } = req.body
+            const { name, description, stars, adminId, price, subcategoryId, status } = req.body
             // CREATE COURSE
             const created = await prisma.course.create({
                 data: {
                     name: name,
                     description: description,
                     stars: stars,
-                    adminId: adminId,
+                    createdBy: {
+                        connect: {
+                            userId: adminId
+                        }
+                    },
+                    price: price,
+                    subcategory: {
+                        connect: {
+                            id: subcategoryId
+                        }
+                    },
+                    status
                 },
             })
             res.status(200).json({message: messages.createCourseSuccess, data: created})
