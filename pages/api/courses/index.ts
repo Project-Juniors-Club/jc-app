@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma';
+import messages from '../../../utils/api-messages';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) { 
     try {
         const httpMethod = req.method;
         if (httpMethod == 'GET') {
             const courses = await prisma.course.findMany();
-            res.status(200).json(courses);
+            res.status(200).json({message: messages.getAllCoursesSuccess, data: courses});
         } else if (httpMethod == 'POST') {
             const { name, description, stars, adminId } = req.body
             // CREATE COURSE
@@ -18,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     adminId: adminId,
                 },
             })
-            res.status(200).json(created)
+            res.status(200).json({message: messages.createCourseSuccess, data: created})
         } else {
             res.setHeader('Allow', ['GET', 'POST']);
             res.status(405).end(`Method ${httpMethod} not allowed`)
