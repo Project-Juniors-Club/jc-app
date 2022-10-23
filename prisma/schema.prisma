@@ -60,7 +60,6 @@ enum UserType {
 model User {
   id            String      @id @default(cuid())
   //username not required in auth process, remove if not needed elsewhere
-  username      String      @unique @default("default")
   name          String?
   email         String      @unique
   emailVerified DateTime?
