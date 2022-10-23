@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import { signOut } from 'next-auth/react';
 
 type Props = {
   children?: ReactNode;
@@ -27,10 +28,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
         <Link href='/users'>
           <a>Users List</a>
         </Link>{' '}
-        | <Link href='/api/users'>Users API</Link>
-        {' '}
-        |{' '}
-        <Link href='login'>Login</Link>
+        | <Link href='/api/users'>Users API</Link> | <Link href='login'>Login</Link> | <button onClick={() => signOut()}>Sign out</button>
       </nav>
     </header>
     {children}
