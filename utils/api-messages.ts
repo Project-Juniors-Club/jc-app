@@ -10,6 +10,9 @@ const messages = {
   createImageFailed: 'Error in creating image(s).',
   updateImageFailed: 'Error in updating image(s).',
   deleteImageFailed: 'Error in deleting image(s).',
+
+  loadCourseSuccess: 'Successfully loaded course.',
+  saveCourseSuccess: 'Successfully updated course.',
 };
 
 export default messages;
