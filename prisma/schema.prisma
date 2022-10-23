@@ -138,7 +138,7 @@ model Chapter {
   name        String
   description String
 
-  course   Course @relation(fields: [courseId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   chapterNumber Int
@@ -148,7 +148,7 @@ model Chapter {
 }
 
 model Page {
-  Chapter   Chapter? @relation(fields: [chapterId], references: [id])
+  Chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId String?
 
   id         String @id @default(cuid())
@@ -167,7 +167,7 @@ model Page {
 model PageItem {
   id     String @id @default(cuid())
   pageId String
-  page   Page   @relation(fields: [pageId], references: [id])
+  page   Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   pageItemNumber Int
 
