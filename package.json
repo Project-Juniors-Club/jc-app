@@ -5,7 +5,8 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",
-    "seed": "ts-node --script-mode ./prisma/seed.ts"
+    "seed": "ts-node --script-mode ./prisma/seed.ts",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.3.1",
@@ -23,12 +24,13 @@
     "next": "^12.2.5",
     "next-auth": "^4.10.3",
     "nodemailer": "^6.7.8",
+    "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.34.2",
     "recoil": "^0.7.5",
-    "yarn": "^1.22.19",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -38,9 +40,17 @@
     "@types/react-dom": "^17.0.1",
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.4",
+    "husky": ">=6",
+    "lint-staged": ">=10",
     "postcss-preset-env": "^7.7.2",
     "prisma": "^4.4.0",
     "tailwindcss": "^3.1.7",
     "typescript": "^4.8.2"
+  },
+  "lint-staged": {
+    "*.ts*": [
+      "eslint --cache --fix",
+      "prettier --check"
+    ]
   }
 }
