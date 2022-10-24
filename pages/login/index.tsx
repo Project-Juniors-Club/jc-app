@@ -5,20 +5,26 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
 import { URL } from '../../utils/links';
+import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
+import { Provider } from 'next-auth/providers';
 
+type Props = {
+  csrfToken: string;
+  providers: Provider[];
+};
 
-const LoginPage = () => {
+const LoginPage = ({ csrfToken, providers }: Props) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
-  const router = useRouter()
+  const router = useRouter();
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const login = (data: FormData) => {
@@ -116,6 +122,29 @@ const LoginPage = () => {
                     SUBMIT
                   </Button>
                 </form>
+                {Object.values(providers).map(provider =>
+                  provider.id === 'email' ? (
+                    <form key={provider.name} method='post' action='/api/auth/signin/email'>
+                      <input name='csrfToken' type='hidden' defaultValue={csrfToken} />
+                      <label>
+                        Email address
+                        <input type='email' id='email' name='email' />
+                      </label>
+                      <button type='submit'>Sign in with Email</button>
+                    </form>
+                  ) : (
+                    <div key={provider.name}>
+                      <button
+                        onClick={event => {
+                          event.preventDefault();
+                          signIn(provider.id);
+                        }}
+                      >
+                        Sign in with {provider.name}
+                      </button>
+                    </div>
+                  ),
+                )}
               </Box>
             </>
           </Box>
@@ -126,3 +155,16 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+  if (session) {
+    return { redirect: { destination: '/' } };
+  }
+  const csrfToken = await getCsrfToken(context);
+  const providers = await getProviders();
+  return {
+    props: { csrfToken, providers },
+  };
+}

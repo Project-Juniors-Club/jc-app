@@ -4,3 +4,9 @@ publish = ".next"
 
 [[plugins]]
 package = "@netlify/plugin-nextjs"
+
+[context.production]
+command = "yarn run build && echo \"NEXTAUTH_URL=$URL\" > .env.local"
+
+[context.deploy-preview]
+command = "yarn run build && echo \"NEXTAUTH_URL=$DEPLOY_PRIME_URL\" > .env.local"
