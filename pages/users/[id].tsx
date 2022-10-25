@@ -50,7 +50,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     });
     // By returning { props: item }, the StaticPropsDetail component
     // will receive `item` as a prop at build time
-    return { props: { user } };
+    return { props: { item: JSON.parse(JSON.stringify(user)) } };
   } catch (err: any) {
     return { props: { errors: err.message } };
   }
