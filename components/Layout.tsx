@@ -32,7 +32,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           <a>Users API</a>
         </Link> {' '}
         |{' '}
-          <a href='/checkout'>Checkout.com API</a>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href='/checkout'>Checkout.com API</a>
         {' '}
       </nav>
     </header>
