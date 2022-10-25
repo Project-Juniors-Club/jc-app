@@ -22,7 +22,7 @@ export type User = {
   email: string;
   type: UserType;
   emailVerified: Date | null;
-  image: String | null;
+  image: string | null;
 };
 
 export type NormalUser = {
