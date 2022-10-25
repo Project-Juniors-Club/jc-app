@@ -2,10 +2,8 @@
 import { Checkout } from 'checkout-sdk-node';
 import { NextApiRequest, NextApiResponse } from "next";
 const CheckoutPageAPI = async (req: NextApiRequest, res: NextApiResponse) => {
-	console.log(req);
   const token = req.query.token;
-
-  const cko = new Checkout('sk_sbox_4qlnxtd6xro7e4hjhpuyyq7ixa4', { pk: 'pk_sbox_5cdu3zk4ywwlclah2kcfiq7p2qt'});
+  const cko = new Checkout(process.env.CHECKOUT_SECRET_KEY, { pk: process.env.CHECKOUT_PUBLIC_KEY});
 
   try {
     const payment = await cko.payments.request({
@@ -41,7 +39,6 @@ const CheckoutPageAPI = async (req: NextApiRequest, res: NextApiResponse) => {
     );
     res.json({ "success" : payment });
   } catch (err) {
-    console.log(err.name);
     res.json({ "failure" : err });
   }
 }
