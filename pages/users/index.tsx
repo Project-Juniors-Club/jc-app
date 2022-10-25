@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 
 import { User } from '../../interfaces';
@@ -30,7 +30,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
   // Example for including static props in a Next.js function component page.
   // Don't forget to include the respective types for any props passed into
   // the component.
-  const items: User[] = await prisma.user.findMany();
+  const items = JSON.parse(JSON.stringify(await prisma.user.findMany()));
+
   return { props: { items } };
 };
 

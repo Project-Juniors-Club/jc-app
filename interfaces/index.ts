@@ -21,6 +21,8 @@ export type User = {
   name: string | null;
   email: string;
   type: UserType;
+  emailVerified: Date | null;
+  image: String | null;
 };
 
 export type NormalUser = {
