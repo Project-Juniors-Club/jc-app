@@ -2,18 +2,8 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import { Frames, CardNumber, ExpiryDate, Cvv } from 'frames-react';
-import Script from 'next/script';
 
-
-async function callAPI() {
-    let response = await fetch("/api/checkout?dog=cat")
-    const data = await response.json()
-    console.log("[callAPI]")
-    console.log(response)
-    console.log(data)
-}
-
-async function sendToken(e) {
+async function sendToken(e: { token: string; }) {
     let response = await fetch("/api/checkout?token=" + e.token)
     const data = await response.json()
     console.log("[sendToken]")
@@ -31,7 +21,6 @@ const CheckoutPage = () => (
     <p>This is the checkout.com API testing page</p>
 
     <br/>
-
     <Frames
         config={{
             debug: true,

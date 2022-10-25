@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Checkout } from 'checkout-sdk-node';
 import { NextApiRequest, NextApiResponse } from "next";
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const CheckoutPageAPI = async (req: NextApiRequest, res: NextApiResponse) => {
 	console.log(req);
   const token = req.query.token;
 
@@ -45,3 +45,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.json({ "failure" : err });
   }
 }
+
+export default CheckoutPageAPI;
