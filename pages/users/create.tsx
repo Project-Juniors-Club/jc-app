@@ -1,5 +1,5 @@
-import React, { useState , useRef} from 'react';
-import { useForm } from 'react-hook-form'
+import React, { useState , useRef, useEffect} from 'react';
+import { useForm } from 'react-hook-form';
 import {
   Flex,
   Box,
@@ -12,6 +12,10 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+
+import { userInfoState } from '../../atoms/atoms';
+
 
 async function addUser(user) {
   const response = await fetch('../api/index', {
@@ -30,12 +34,23 @@ export default function CreateAccount() {
     handleSubmit, 
     watch, 
     formState: {errors}
-  } = useForm({mode: 'onChange'});
+  } = useForm({ mode: 'onChange' });
+
+  const [_userInfo, setUserInfo] = useRecoilState(userInfoState);   
+  
+  const onSubmit = (data) => {
+    console.log(data);
+    setUserInfo({
+      name: "temp name",
+      email: data.email,
+      role: 1
+    })
+  }
+
   const password = useRef({});
   password.current = watch("password", "");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const onSubmit = data => console.log(data);
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
 

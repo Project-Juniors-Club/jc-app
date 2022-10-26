@@ -22,7 +22,7 @@ const StaticPropsDetail = ({ item, errors }: Props) => {
     );
   }
 
-  return <Layout title={`${item ? item.username : 'User Detail'} | Next.js + TypeScript Example`}>{item && <ListDetail item={item} />}</Layout>;
+  return <Layout title={`${'User Detail'} | Next.js + TypeScript Example`}>{item && <ListDetail item={item} />}</Layout>;
 };
 
 export default StaticPropsDetail;

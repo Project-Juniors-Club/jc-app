@@ -1,27 +1,20 @@
-import { Prisma, Image, CourseItemType } from '@prisma/client';
+import { Prisma, Image, AssetType } from '@prisma/client';
 import prisma from '../prisma';
 
-export const createImageInCourse = async (url: string, name: string, description: string, pageNumber: number, courseId: string) => {
+export const createImage = async (url: string, assetId?: string) => {
   return (await prisma.image.create({
     data: {
-      url,
-      courseItem: {
-        create: {
-          name,
-          description,
-          pageNumber,
-          type: CourseItemType.image,
-          courseId,
+      asset: {
+        connectOrCreate: {
+          where: {
+            id: assetId,
+          },
+          create: {
+            assetType: AssetType.image,
+          },
         },
       },
-    },
-  })) as Image;
-};
-
-export const createImage = async (url: string) => {
-  return (await prisma.image.create({
-    data: {
-      url,
+      url: url,
     },
   })) as Image;
 };
