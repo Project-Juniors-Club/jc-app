@@ -12,38 +12,39 @@ export const UserType: {
   normalUser: 'normalUser',
   admin: 'admin',
   superAdmin: 'superAdmin',
-}
+};
 
 export type UserType = typeof UserType[keyof typeof UserType];
 
 export type User = {
   id: string;
-  username: string;
-  password: string;
+  name: string | null;
   email: string;
   type: UserType;
+  emailVerified: Date | null;
+  image: string | null;
 };
 
 export type NormalUser = {
   userId: string;
   user: {
-    username: string
-  }
-}
+    username: string;
+  };
+};
 
 export type Admin = {
   userId: string;
   user: {
-    username: string
-  }
-}
+    username: string;
+  };
+};
 
 export type SuperAdmin = {
   userId: string;
   user: {
-    username: string
-  }
-}
+    username: string;
+  };
+};
 
 export type UserCourse = {
   id: string;
@@ -53,12 +54,12 @@ export type UserCourse = {
   correctQns: number;
   stars: number;
   user: {
-    username: string
-  }
+    username: string;
+  };
   course: {
-    name: string
-  }
-}
+    name: string;
+  };
+};
 
 export type Course = {
   id: string;
@@ -66,13 +67,13 @@ export type Course = {
   description: string;
   stars: number;
   adminId: string;
-}
+};
 
 export enum CourseItemType {
   game,
   image,
   video,
-  article
+  article,
 }
 
 export type CourseItem = {
@@ -84,8 +85,8 @@ export type CourseItem = {
   type: CourseItemType;
   course: {
     name: string;
-  }
-}
+  };
+};
 
 export type Image = {
   id: string;
@@ -94,7 +95,7 @@ export type Image = {
   courseItem: {
     name: string;
   } | null;
-}
+};
 
 export type Video = {
   id: string;
@@ -102,8 +103,8 @@ export type Video = {
   url: string;
   courseItem: {
     name: string;
-  }
-}
+  };
+};
 
 export type Article = {
   id: string;
@@ -111,8 +112,8 @@ export type Article = {
   text: string;
   courseItem: {
     name: string;
-  }
-}
+  };
+};
 
 export enum GameType {
   spotTheDifferenceGame,
@@ -123,23 +124,23 @@ export enum GameType {
 export type Game = {
   id: string;
   courseItemId: string;
-  type: GameType
+  type: GameType;
   courseItem: {
     name: string;
-  }
-}
+  };
+};
 
 export type SpotTheDifferenceGame = {
   id: string;
   gameId: string;
-}
+};
 
 export type MatchingGame = {
   id: string;
   gameId: string;
-}
+};
 
 export type SortingGame = {
   id: string;
   gameId: string;
-}
+};
