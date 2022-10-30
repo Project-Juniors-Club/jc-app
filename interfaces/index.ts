@@ -18,9 +18,11 @@ export type UserType = typeof UserType[keyof typeof UserType];
 
 export type User = {
   id: string;
-  password: string;
+  name: string | null;
   email: string;
   type: UserType;
+  emailVerified: Date | null;
+  image: string | null;
 };
 
 export type NormalUser = {
