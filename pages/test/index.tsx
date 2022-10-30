@@ -1,5 +1,6 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Text } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Spinner, Text } from '@chakra-ui/react';
 import useSnackbar from '../../hooks/useSnackbar';
+import { BlackOutlineButton, BlackSolidButton, GreenOutlineButton, GreenSolidButton } from '../../components/Buttons';
 
 const Test = () => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
@@ -29,6 +30,10 @@ const Test = () => {
       <Button colorScheme='red' onClick={() => openErrorNotification('Sample Title', 'Sample description')}>
         Click for Failure
       </Button>
+      <GreenSolidButton text={'button'} icon={<Spinner />} />
+      <GreenOutlineButton text={'button'} icon={<Spinner />} />
+      <BlackSolidButton text={'button'} icon={<Spinner color='#FFFFFF' />} />
+      <BlackOutlineButton text={'button'} icon={<Spinner />} />
     </div>
   );
 };
