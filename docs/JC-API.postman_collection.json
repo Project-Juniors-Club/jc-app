@@ -505,19 +505,13 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "busDTO",
-									"value": "{\n\"carPlateNumber\": \"A12345678\",\n\"iuNumber\": \"123456789\"\n}",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": []
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n        \"adminId\": \"abc12345\",\n        \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{hostname}}/courses",
@@ -543,19 +537,13 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "busDTO",
-									"value": "{\n\"carPlateNumber\": \"A12445678\",\n\"iuNumber\": \"123456789\"\n}",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": "/Users/shenyicui/Desktop/Screenshot 2021-11-12 at 3.53.57 PM.png"
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n             \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{hostname}}/courses/1",

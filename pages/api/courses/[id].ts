@@ -23,23 +23,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } else if (httpMethod == 'PUT') {
             // UPDATE NAME, DESCRIPTION, STARS
             const { name, description, stars, subcategoryId, price, status } = req.body
-            const updatedCourse = await prisma.course.update({
-                where: {
-                    id: id,
-                },
-                data: {
-                    name: name,
-                    description: description,
-                    stars: stars,
-                    price: price,
-                    status: status,
-                    subcategory: {
-                        connect: {
-                            id: subcategoryId
+            
+            let updatedCourse = {}
+            if (subcategoryId) {
+                updatedCourse = await prisma.course.update({
+                    where: {
+                        id: id,
+                    },
+                    data: {
+                        name,
+                        description,
+                        stars,
+                        price,
+                        status,
+                        subcategory: {
+                            connect: {
+                                id: subcategoryId
+                            }
                         }
-                    }
-                },
-            })
+                    },
+                })
+            } else {
+                updatedCourse = await prisma.course.update({
+                    where: {
+                        id: id,
+                    },
+                    data: {
+                        name,
+                        description,
+                        stars,
+                        price,
+                        status,
+                    },
+                })
+             }
             res.status(200).json({message: messages.updateCourseSuccess, data: updatedCourse})
         } else {
             res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);
