@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
 
-export default function Upload() {
+const Upload = () => {
   const [file, setFile] = useState<File>();
   const [message, setMessage] = useState<String>();
 
@@ -18,26 +18,22 @@ export default function Upload() {
       name: file.name,
       type: file.type,
     });
-    console.log(data.message);
-
-    let { data: newData } = await axios.put(data.url, file, {
-      headers: {
-        'Content-type': file.type,
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
 
     setFile(null);
     setMessage('Uploaded!');
+    console.log(data.message);
   };
 
   return (
     <Layout title='Upload Media'>
-      <p>Here, you can upload, view, or delete media from our very own AWS bucket.</p>
+      <p className='container flex p-4'>
+        Here, you can upload media files to our very own AWS bucket. Free limit is 5GB pls don't test with huge files!!
+      </p>
+      <p className='container flex p-4'>Console will log the response from the bucket.</p>
       <div className='container flex items-center p-4 mx-auto min-h-screen justify-center'>
         <main>
           <p>Please select a file to upload</p>
-          <input type='file' onChange={e => storeFile(e)} className='p-2 rounded-sm' />
+          <input type='file' onChange={e => storeFile(e)} className='p-1 rounded-sm' />
           {file && (
             <>
               <button onClick={uploadFile} className='bg-purple-500 text-white p-2 rounded-sm shadow-md hover:bg-purple-700 transition-all'>
@@ -55,4 +51,6 @@ export default function Upload() {
       </p>
     </Layout>
   );
-}
+};
+
+export default Upload;
