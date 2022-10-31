@@ -27,7 +27,7 @@ const Upload = () => {
   return (
     <Layout title='Upload Media'>
       <p className='container flex p-4'>
-        Here, you can upload media files to our very own AWS bucket. Free limit is 5GB pls don't test with huge files!!
+        Here, you can upload media files to our very own AWS bucket. Free limit is 5GB pls do not test with huge files!!
       </p>
       <p className='container flex p-4'>Console will log the response from the bucket.</p>
       <div className='container flex items-center p-4 mx-auto min-h-screen justify-center'>
