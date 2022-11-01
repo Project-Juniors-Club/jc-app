@@ -36,5 +36,5 @@ export const errorMessageHandler = (errorMessageParams: ErrorMessageHandlerParam
     }
   }
 
-  return messages.misc;
+  return messages.miscError;
 };
