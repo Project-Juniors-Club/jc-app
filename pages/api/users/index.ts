@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { User } from '../../../interfaces';
 import prisma from '../../../lib/prisma';
+import { entityMessageCreator } from '../../../utils/api-messages';
+import { errorMessageHandler } from '../../../utils/error-message-handler';
+
+const entityMessageObj = entityMessageCreator('user');
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -11,7 +15,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json(users);
   } catch (err: any) {
-    res.status(500).json({ statusCode: 500, message: err.message });
+    res.status(500).json({ statusCode: 500, message: errorMessageHandler({ isSingleEntity: true }, entityMessageObj) });
   }
 };
 
