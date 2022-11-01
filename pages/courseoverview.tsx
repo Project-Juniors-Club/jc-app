@@ -15,29 +15,31 @@ interface ICourseCardProps {
 }
 
 const CourseCard = ({ course }: ICourseCardProps) => {
-  const isFree = course.price == 0;
+  const isFree = course.price === 0;
   return (
-    <div className='flex items-center gap-12 py-8 w-full'>
-      {course.imageUrl ? (
-        <Image src={course.imageUrl} alt='sample image' />
-      ) : (
-        <div className='grid w-60 h-40 bg-[#C7C7C7] place-content-center rounded-2xl'>
-          <div className='h-min font-bold'>No Image Found</div>
-        </div>
-      )}
+    <div className='flex items-center py-8 w-full'>
+      <div className='mr-12'>
+        {course.imageUrl ? (
+          <Image src={course.imageUrl} alt='sample image' />
+        ) : (
+          <div className='grid w-60 h-40 bg-[#C7C7C7] place-content-center rounded-2xl'>
+            <div className='h-min font-bold'>No Image Found</div>
+          </div>
+        )}
+      </div>
       <div className='flex flex-col gap-8 w-full'>
         <div className='flex flex-col gap-3'>
           <div className='italic text-[#7B7B7B] text-[11px]'>{course.status}</div>
           <div>
             <div className='font-bold text-xl'>{course.name}</div>
-            <div className='text-sm text-sm font-bold text-[#8E8E8E]'>{course.author}</div>
+            <div className='text-sm font-bold text-[#8E8E8E]'>{course.author}</div>
           </div>
         </div>
         <div className='flex h-8 w-full justify-between'>
           <div className='px-4 py-1.5 w-max outline outline-2 outline-black rounded-full font-bold text-[#3D3D3D] text-sm'>
             {course.category}
           </div>
-          <div className={`flex flex-row px-3 py-1 w-max bg-[${isFree ? '#A9D357' : '#606060'}] rounded-md text-white`}>
+          <div className={`flex flex-row px-3 py-1 w-max ${isFree ? 'bg-[#A9D357]' : 'bg-[#606060]'} rounded-md text-white`}>
             {isFree ? 'FREE' : `S\$${course.price.toFixed(2)}`}
           </div>
         </div>
@@ -100,12 +102,12 @@ const OverviewPage = ({ courses }: IProps) => {
       return course1.price - course2.price;
     });
   return (
-    <>
-      <div className='flex items-center justify-between py-16 px-36'>
+    <div className='px-36'>
+      <div className='flex items-center justify-between py-16'>
         <h1 className='text-5xl font-bold'>Course Overview</h1>
         <button>Create Course +</button>
       </div>
-      <div className='flex py-16 px-36'>
+      <div className='flex py-16'>
         <div className='w-52'>
           <SortAndFilterMenu
             categories={courses.map(coures => coures.category)}
@@ -121,14 +123,14 @@ const OverviewPage = ({ courses }: IProps) => {
             }}
           />
           <div>
-            <div className='text-right text-sm font-bold font-[#7B7B7B]/50'>{`${coursesView.length} results`}</div>
+            <div className='text-right text-sm text-bold text-[#7B7B7B]/50'>{`${coursesView.length} results`}</div>
             {coursesView.map((course: Course, idx: number) => (
               <CourseCard key={idx} course={course} />
             ))}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -140,7 +142,7 @@ export function getServerSideProps(): { props: { courses: Course[] } } {
         {
           status: 'Draft',
           author: 'Wei Xin 1',
-          name: 'Adventures with Bala and Friends: A look into food wastage in Singapore',
+          name: 'Adventures with Bala and Friends: A look into food wastage in Singapore Part 1',
           category: 'Category 1',
           imageUrl: null,
           price: 0.0,
@@ -148,7 +150,7 @@ export function getServerSideProps(): { props: { courses: Course[] } } {
         {
           status: 'Approved',
           author: 'Wei Xin 2',
-          name: 'Adventures with Bala and Friends: A look into food wastage in Singapore',
+          name: 'Adventures with Bala and Friends: A look into food wastage in Singapore Part 2',
           category: 'Category 2',
           imageUrl: null,
           price: 100.0,
