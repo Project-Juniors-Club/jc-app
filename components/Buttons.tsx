@@ -8,7 +8,7 @@ type Props = {
   isLoading?: boolean;
   onClick?: () => any;
   icon: ReactNode;
-  variant: String;
+  variant: 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
 };
 
 export const CustomButton = ({ variant, text, isDisabled = false, isLoading = false, onClick = () => {}, icon = null }: Props) => {
@@ -26,7 +26,7 @@ export const CustomButton = ({ variant, text, isDisabled = false, isLoading = fa
 
   let component: JSX.Element;
   switch (variant) {
-    case 'GREEN_SOLID':
+    case 'green-solid':
       component = (
         <button
           className='bg-[#A9D357] font-normal w-[120px] h-[48px] rounded-lg border-[#7FB519] border-[1px] hover:bg-[#7FB519] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'
@@ -37,7 +37,7 @@ export const CustomButton = ({ variant, text, isDisabled = false, isLoading = fa
         </button>
       );
       break;
-    case 'GREEN_OUTLINE':
+    case 'green-outline':
       component = (
         <button
           className='bg-[#FFFFFF] font-normal w-[120px] h-[48px] rounded-lg border-[#7FB519] border-[1px] hover:bg-[#EBF8D3] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'
@@ -48,7 +48,7 @@ export const CustomButton = ({ variant, text, isDisabled = false, isLoading = fa
         </button>
       );
       break;
-    case 'BLACK_SOLID':
+    case 'black-solid':
       toShow = isLoading ? (
         (toShow = <Spinner color='#FFFFFF' />)
       ) : (
@@ -67,7 +67,7 @@ export const CustomButton = ({ variant, text, isDisabled = false, isLoading = fa
         </button>
       );
       break;
-    case 'BLACK_OUTLINE':
+    case 'black-outline':
       component = (
         <button
           className='bg-[#FFFFFF] font-normal w-[120px] h-[48px] rounded-lg border-[#131313] border-[1px] hover:bg-[#B5B5B5] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'

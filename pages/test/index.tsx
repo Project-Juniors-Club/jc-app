@@ -30,10 +30,10 @@ const Test = () => {
       <Button colorScheme='red' onClick={() => openErrorNotification('Sample Title', 'Sample description')}>
         Click for Failure
       </Button>
-      <CustomButton variant={'GREEN_SOLID'} text={'button'} icon={<Spinner />} />
-      <CustomButton variant={'GREEN_OUTLINE'} text={'button'} icon={<Spinner />} />
-      <CustomButton variant={'BLACK_SOLID'} text={'button'} icon={<Spinner />} />
-      <CustomButton variant={'BLACK_OUTLINE'} text={'button'} icon={<Spinner />} />
+      <CustomButton variant={'green-solid'} text={'button'} icon={<Spinner />} />
+      <CustomButton variant={'green-outline'} text={'button'} icon={<Spinner />} />
+      <CustomButton variant={'black-solid'} text={'button'} icon={<Spinner />} />
+      <CustomButton variant={'black-outline'} text={'button'} icon={<Spinner />} />
     </div>
   );
 };
