@@ -1,24 +1,21 @@
 const messages = {
-  getOneImageSuccess: 'Successfully retrieved image.',
-  getAllImagesSuccess: 'Successfully retrieved images.',
-  createImageSuccess: 'Successfully created image(s).',
-  updateImageSuccess: 'Successfully updated image(s).',
-  deleteImageSuccess: 'Successfully deleted image(s).',
+  miscError: 'Error in retrieving data.',
+};
 
-  getOneImageFailed: 'Error in retrieving image.',
-  getAllImagesFailed: 'Error in retrieving images.',
-  createImageFailed: 'Error in creating image(s).',
-  updateImageFailed: 'Error in updating image(s).',
-  deleteImageFailed: 'Error in deleting image(s).',
+export const entityMessageCreator = (entity: string) => {
+  return {
+    getOneSuccess: `Successfully retrieved ${entity}.`,
+    getAllSuccess: `Successfully retrieved ${entity}s.`,
+    createSuccess: `Successfully created ${entity}(s).`,
+    updateSuccess: `Successfully updated ${entity}(s).`,
+    deleteSuccess: `Successfully deleted ${entity}(s).`,
 
-  // s3 bucket
-  getFilesSuccess: 'Successfully retrieved files.',
-  uploadFileSuccess: 'Successfully uploaded file.',
-  deleteFileSuccess: 'Successfully deleted file.',
-
-  getFilesFailed: 'Error in retrieving files.',
-  uploadFileFailed: 'Error in uploading file.',
-  deleteFileFailed: 'Error in deleting file.',
+    getOneFailed: `Error in retrieving ${entity}.`,
+    getAllFailed: `Error in retrieving ${entity}s.`,
+    createFailed: `Error in creating ${entity}(s).`,
+    updateFailed: `Error in updating ${entity}(s).`,
+    deleteFailed: `Error in deleting ${entity}(s).`,
+  };
 };
 
 export default messages;

@@ -21,14 +21,4 @@ const Uploads = ({ url: url }) => {
   );
 };
 
-// export async function getServerSideProps(context) {
-//   const { data } = await axios.get('/api/media/');
-
-//   return {
-//     props: {
-//       url: data.url,
-//     },
-//   };
-// }
-
 export default Uploads;
