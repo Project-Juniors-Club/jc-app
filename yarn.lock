@@ -1295,7 +1295,7 @@
   dependencies:
     is-promise "^4.0.0"
 
-"@netlify/ipx@^1.3.0":
+"@netlify/ipx@^1.3.1":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@netlify/ipx/-/ipx-1.3.1.tgz#0330e1e5025ea1a12c3e6fba6a3e0f0d0df741f3"
   integrity sha512-kjw26KYM1jLe+bGRnhqxWs0ACG8eg6kN6wV7uqUu1J8dE6QC73ksyVtCA6IAHl3/5qf5RyMUzquNCp0N0+lXEw==
