@@ -6,78 +6,50 @@ type Props = {
   text?: String;
   isDisabled?: boolean;
   isLoading?: boolean;
-  onClick?: () => any;
-  icon: ReactNode;
-  variant: 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
+  onClick?: React.MouseEventHandler;
+  variant?: 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
+  children?: ReactNode;
 };
-
-export const CustomButton = ({ variant, text, isDisabled = false, isLoading = false, onClick = () => {}, icon = null }: Props) => {
+const CustomButton = ({ variant = 'green-solid', isDisabled = false, isLoading = false, onClick = () => {}, children = null }: Props) => {
   let toShow;
   if (isLoading) {
-    toShow = <Spinner />;
+    if (variant == 'black-solid') {
+      toShow = <Spinner color='#FFFFFF' />;
+    } else {
+      toShow = <Spinner />;
+    }
   } else {
-    toShow = (
-      <HStack>
-        <Text>{text}</Text>
-        {icon != null && icon}
-      </HStack>
-    );
+    toShow = children;
   }
+  const styling = getConfig(variant);
+  console.log(styling);
+  return (
+    <button className={styling} disabled={isDisabled} onClick={onClick}>
+      <Center>{toShow}</Center>
+    </button>
+  );
+};
 
-  let component: JSX.Element;
+const getConfig = (variant: string) => {
+  let colourConfig = '';
+  const config =
+    'font-normal w-[120px] h-[48px] rounded-lg border-[1px] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans';
   switch (variant) {
     case 'green-solid':
-      component = (
-        <button
-          className='bg-[#A9D357] font-normal w-[120px] h-[48px] rounded-lg border-[#7FB519] border-[1px] hover:bg-[#7FB519] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'
-          disabled={isDisabled}
-          onClick={onClick}
-        >
-          <Center>{toShow}</Center>
-        </button>
-      );
+      colourConfig = 'bg-[#A9D357] border-[#7FB519] hover:bg-[#7FB519] ';
       break;
     case 'green-outline':
-      component = (
-        <button
-          className='bg-[#FFFFFF] font-normal w-[120px] h-[48px] rounded-lg border-[#7FB519] border-[1px] hover:bg-[#EBF8D3] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'
-          disabled={isDisabled}
-          onClick={onClick}
-        >
-          <Center>{toShow}</Center>
-        </button>
-      );
+      colourConfig = 'bg-[#FFFFFF] border-[#7FB519] hover:bg-[#EBF8D3] ';
       break;
     case 'black-solid':
-      toShow = isLoading ? (
-        (toShow = <Spinner color='#FFFFFF' />)
-      ) : (
-        <HStack>
-          <Text color='#FFFFFF'>{text}</Text>
-          {icon != null && icon}
-        </HStack>
-      );
-      component = (
-        <button
-          className='bg-[#4D4D4D] font-normal w-[120px] h-[48px] rounded-lg border-[#2D2D2D] border-[1px] hover:bg-[#2D2D2D] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'
-          disabled={isDisabled}
-          onClick={onClick}
-        >
-          <Center>{toShow}</Center>
-        </button>
-      );
+      colourConfig = 'bg-[#4D4D4D] border-[#2D2D2D] hover:bg-[#2D2D2D] ';
       break;
     case 'black-outline':
-      component = (
-        <button
-          className='bg-[#FFFFFF] font-normal w-[120px] h-[48px] rounded-lg border-[#131313] border-[1px] hover:bg-[#B5B5B5] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans'
-          disabled={isDisabled}
-          onClick={onClick}
-        >
-          <Center>{toShow}</Center>
-        </button>
-      );
+      colourConfig = 'bg-[#FFFFFF] border-[#131313] hover:bg-[#B5B5B5] ';
       break;
   }
-  return component;
+
+  return colourConfig + config;
 };
+
+export default CustomButton;
