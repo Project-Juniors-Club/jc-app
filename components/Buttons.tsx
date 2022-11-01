@@ -10,6 +10,8 @@ type Props = {
   icon: ReactNode;
 };
 
+// Kevin is a big G
+
 export const GreenSolidButton = ({ text, isDisabled = false, isLoading = false, onClick = () => {}, icon = null }: Props) => {
   let toShow;
   if (isLoading) {
