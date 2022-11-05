@@ -187,6 +187,9 @@ model Image {
   assetId String @id
   asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
+  spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
+  spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
+
   @@map("images")
 }
 
@@ -220,6 +223,12 @@ model Game {
 model SpotTheDifferenceGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  leftImage    Image   @relation("LeftImage", fields: [leftImageId], references: [assetId])
+  leftImageId  String  @unique
+  rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
+  rightImageId String  @unique
+  differences  Float[]
 }
 
 model MatchingGame {

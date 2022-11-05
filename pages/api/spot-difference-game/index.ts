@@ -1,26 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { findImages, createImage } from '../../../lib/server/image';
+import { createSpotTheDiff, findSpotTheDiff } from '../../../lib/server/spotTheDifference';
+import validateDifferences from './spotTheDifferenceValidator';
 import { entityMessageCreator } from '../../../utils/api-messages';
 import { errorMessageHandler } from '../../../utils/error-message-handler';
 
-const entityMessageObj = entityMessageCreator('image');
+const entityMessageObj = entityMessageCreator('spotTheDifferenceGame');
 
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const httpMethod = req.method;
     if (httpMethod == 'GET') {
-      const images = await findImages();
-      res.status(200).json({ message: entityMessageObj.getAllSuccess, data: images });
+      const games = await findSpotTheDiff();
+      res.status(200).json({ message: entityMessageObj.getAllSuccess, data: games });
     } else if (httpMethod == 'POST') {
-      const { url } = req.body;
-      const created = await createImage(url);
+      const { leftImageId, rightImageId, differences } = req.body;
+      const result = validateDifferences(differences);
+      if (!result.valid) {
+        return res.status(400).end(`The input is not valid. ${result.message}`);
+      }
+
+      const created = await createSpotTheDiff(rightImageId, leftImageId, differences);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {
       res.setHeader('Allow', ['GET', 'POST']);
       res.status(405).end(`Method ${httpMethod} not allowed`);
     }
   } catch (error) {
-    // TODO: replace these error messages with specific ones for GET, POST, PUT, DELETE
     console.log(error);
     res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method }, entityMessageObj) });
   }

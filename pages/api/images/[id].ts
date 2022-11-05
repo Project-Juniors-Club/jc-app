@@ -16,7 +16,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: image });
     } else if (httpMethod == 'DELETE') {
       const deletedImage = await deleteImage({ assetId });
-      res.status(200).json({ message: entityMessageObj.deleteSuccess });
+      res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deletedImage });
     } else if (httpMethod == 'PUT') {
       const { url } = req.body;
       const updatedImage = await updateImage({ assetId }, { url });
