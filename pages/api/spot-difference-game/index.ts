@@ -27,7 +27,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method, isSingleEntity: true }, entityMessageObj) });
+    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method }, entityMessageObj) });
   }
 };
 

@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(405).end(`Method ${httpMethod} not allowed`);
     }
   } catch (err: any) {
-    res.status(500).json({ statusCode: 500, message: errorMessageHandler({ isSingleEntity: true }, entityMessageObj) });
+    res.status(500).json({ statusCode: 500, message: errorMessageHandler({ httpMethod: req.method }, entityMessageObj) });
   }
 };
 

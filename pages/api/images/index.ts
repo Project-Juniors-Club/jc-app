@@ -22,7 +22,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (error) {
     // TODO: replace these error messages with specific ones for GET, POST, PUT, DELETE
     console.log(error);
-    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method, isSingleEntity: true }, entityMessageObj) });
+    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method }, entityMessageObj) });
   }
 };
 
