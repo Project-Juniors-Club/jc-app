@@ -16,7 +16,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: game });
     } else if (httpMethod == 'DELETE') {
       const deletedGame = await deleteSpotTheDiff({ gameId });
-      res.status(200).json({ message: entityMessageObj.deleteSuccess });
+      res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deletedGame });
     } else if (httpMethod == 'PUT') {
       const { leftImageId, rightImageId, differences } = req.body;
       const result = validateDifferences(differences);
