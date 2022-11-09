@@ -35,6 +35,10 @@ import {
   Center,
   Spacer,
 } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+
+import { userInfoState } from '../../atoms/atoms';
+
 
 export default function CreateAccount() {
   const {
@@ -49,6 +53,12 @@ export default function CreateAccount() {
 
   //Chakra UI Modal 
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const [_userInfo, setUserInfo] = useRecoilState(userInfoState);   
+  
+
+  const password = useRef({});
+  password.current = watch("password", "");
 
   const [otp, setOTP] = useState("")
   const router = useRouter();
@@ -77,9 +87,14 @@ export default function CreateAccount() {
     console.log(email.current)
   }
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data) => {
     onOpen
     console.log(FormData);
+    setUserInfo({
+      name: "temp name",
+      email: data.email,
+      role: 1
+    })
     if (data) {
       router.push('/login');
     }

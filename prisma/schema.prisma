@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x", "rhel-openssl-1.0.x", "darwin"]
@@ -16,138 +13,251 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
-  normalUser
-  admin
-  superAdmin
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 model User {
-  id       String @id @default(cuid())
-  username String @unique
-  password String
-  email    String @unique
+  id            String       @id @default(cuid())
+  email         String       @unique
+  type          UserType     @default(normalUser)
+  emailVerified DateTime?
+  image         String?
+  name          String?
+  accounts      Account[]
+  sessions      Session[]
+  admin         Admin?
+  normalUser    NormalUser?
+  superAdmin    SuperAdmin?
+  userCourses   UserCourse[]
 
-  passwordResetToken String? @unique
-  passwordResetExpiryDate    DateTime?
-
-  type       UserType
-  admin      Admin?
-  normalUser NormalUser?
-  superAdmin SuperAdmin?
-
-  userCourses UserCourse[]
-
-  @@index([passwordResetToken])
   @@map("users")
 }
 
 model NormalUser {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id])
 
   @@map("normalUsers")
 }
 
 model Admin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
-
+  userId         String   @id
+  user           User     @relation(fields: [userId], references: [id])
   createdCourses Course[]
 
   @@map("admins")
 }
 
 model SuperAdmin {
-  user            User   @relation(fields: [userId], references: [id])
-  userId          String @id
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id])
 
   @@map("superAdmins")
 }
 
 model UserCourse {
-  id String @id @default(cuid())
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String
-
+  id         String @id @default(cuid())
+  userId     String
+  courseId   String
   progress   Int
   correctQns Int
   stars      Int
+  course     Course @relation(fields: [courseId], references: [id])
+  user       User   @relation(fields: [userId], references: [id])
 
   @@unique([userId, courseId])
-
   @@map("userCourses")
 }
 
+model Category {
+  id                 String        @id @default(cuid())
+  name               String
+  description        String
+  childrenCategories Subcategory[]
+}
+
+model Subcategory {
+  id               String   @id @default(cuid())
+  name             String
+  description      String
+  parentCategoryId String
+  parentCategory   Category @relation(fields: [parentCategoryId], references: [id])
+  courses          Course[]
+}
+
 model Course {
-  id          String @id @default(cuid())
-  name        String @unique
-  description String
-  stars       Int
-  createdBy   Admin  @relation(fields: [adminId], references: [userId])
-  adminId     String
-
-  userCourses UserCourse[]
-
-  courseItems CourseItem[]
+  id            String       @id @default(cuid())
+  name          String       @unique
+  description   String
+  stars         Int
+  adminId       String
+  price         Decimal      @db.Decimal(5, 2)
+  status        CourseStatus @default(DRAFT)
+  subcategoryId String?
+  createdBy     Admin        @relation(fields: [adminId], references: [userId])
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  chapters      Chapter[]
+  userCourses   UserCourse[]
 
   @@map("courses")
 }
 
-enum CourseItemType {
-  game
-  image
-  video
-  article
+model Chapter {
+  id            String @id @default(cuid())
+  name          String
+  description   String
+  courseId      String
+  chapterNumber Int
+  course        Course @relation(fields: [courseId], references: [id])
+  pages         Page[]
+
+  @@map("chapters")
 }
 
-model CourseItem {
-  id          String @id @default(cuid())
+model Page {
+  chapterId   String?
+  id          String     @id @default(cuid())
   name        String
-  description String
   pageNumber  Int
+  description String
+  duration    Int
+  assetType   AssetType
+  Chapter     Chapter?   @relation(fields: [chapterId], references: [id])
+  pageItems   PageItem[]
 
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String
+  @@map("pages")
+}
 
-  type    CourseItemType
-  game    Game?
-  image   Image?
-  video   Video?
-  article Article?
+model PageItem {
+  id             String    @id @default(cuid())
+  pageId         String
+  pageItemNumber Int
+  assetType      AssetType
+  assetId        String
+  caption        String?
+  asset          Asset     @relation(fields: [assetId], references: [id])
+  page           Page      @relation(fields: [pageId], references: [id])
+}
 
-  @@map("courseItems")
+model Asset {
+  id        String     @id @default(cuid())
+  assetType AssetType
+  pageItems PageItem[]
+  article   Article?
+  game      Game?
+  Image     Image?
+  video     Video?
+
+  @@map("assets")
 }
 
 model Image {
-  id           String      @id @default(cuid())
-  courseItem   CourseItem? @relation(fields: [courseItemId], references: [id])
-  courseItemId String?     @unique
-  url          String
+  url     String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
+  spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
 
   @@map("images")
 }
 
 model Video {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-  url          String
+  url     String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("videos")
 }
 
 model Article {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-  text         String     @db.Text
+  text    String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("articles")
+}
+
+model Game {
+  type                  GameType
+  assetId               String                 @id
+  asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  matchingGame          MatchingGame?
+  sortingGame           SortingGame?
+  spotTheDifferenceGame SpotTheDifferenceGame?
+
+  @@map("games")
+}
+
+model SpotTheDifferenceGame {
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  leftImage    Image   @relation("LeftImage", fields: [leftImageId], references: [assetId])
+  leftImageId  String  @unique
+  rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
+  rightImageId String  @unique
+  differences  Float[]
+}
+
+model MatchingGame {
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+}
+
+model SortingGame {
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+}
+
+enum UserType {
+  normalUser
+  admin
+  superAdmin
+}
+
+enum CourseStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+enum AssetType {
+  game
+  image
+  video
+  article
 }
 
 enum GameType {
@@ -155,35 +265,3 @@ enum GameType {
   matchingGame
   sortingGame
 }
-
-model Game {
-  id           String     @id @default(cuid())
-  courseItem   CourseItem @relation(fields: [courseItemId], references: [id])
-  courseItemId String     @unique
-
-  type                  GameType
-  spotTheDifferenceGame SpotTheDifferenceGame?
-  matchingGame          MatchingGame?
-  sortingGame           SortingGame?
-
-  @@map("games")
-}
-
-model SpotTheDifferenceGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
-}
-
-model MatchingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
-}
-
-model SortingGame {
-  id     String @id @default(cuid())
-  game   Game   @relation(fields: [gameId], references: [id])
-  gameId String @unique
-}
-
