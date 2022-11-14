@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5ff24940-ed3b-4c97-a197-b2936acf7bca",
+		"_postman_id": "43b252af-6dd0-4e01-b504-3e070b96723d",
 		"name": "JC-API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "18777731"
+		"_exporter_id": "17469210"
 	},
 	"item": [
 		{
@@ -505,19 +505,13 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "busDTO",
-									"value": "{\n\"carPlateNumber\": \"A12345678\",\n\"iuNumber\": \"123456789\"\n}",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": []
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n        \"adminId\": \"abc12345\",\n        \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{hostname}}/courses",
@@ -543,19 +537,13 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "busDTO",
-									"value": "{\n\"carPlateNumber\": \"A12445678\",\n\"iuNumber\": \"123456789\"\n}",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": "/Users/shenyicui/Desktop/Screenshot 2021-11-12 at 3.53.57 PM.png"
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n             \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{hostname}}/courses/1",
@@ -588,6 +576,149 @@
 							],
 							"path": [
 								"courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SpotTheDifference",
+			"item": [
+				{
+					"name": "Get All Games",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/spot-difference-game/",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"spot-difference-game",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get 1 Game By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/spot-difference-game/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"spot-difference-game",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create 1 Game",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"leftImageId\": \"1\",\r\n    \"rightImageId\": \"2\",\r\n    \"differences\": [\r\n        0.11,\r\n        0.12,\r\n        0.13,\r\n        0.14\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/spot-difference-game/",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"spot-difference-game",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update 1 Game",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"leftImageId\": \"1\",\r\n    \"rightImageId\":  \"2\",\r\n    \"differences\": [\r\n        0.11,\r\n        0.12,\r\n        0.13,\r\n        0.14,\r\n        0.26,\r\n        0.27,\r\n        0.28,\r\n        0.29\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/spot-difference-game/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"spot-difference-game",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete 1 Game",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/spot-difference-game/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"spot-difference-game",
 								"1"
 							]
 						}
