@@ -23,10 +23,10 @@ export async function getStaticProps() {
       description: 'This is the course title which is pretty long but should not exceed more than three lines',
       id: '2',
       name: 'Course coordinator',
-      price: 100,
+      price: 23,
       stars: 2.2,
     },
-    { adminId: '1', description: 'test', id: '3', name: 'Hello world', price: 100, stars: 2.2 },
+    { adminId: '1', description: 'test', id: '3', name: 'Hello world', price: 50, stars: 2.2 },
   ];
 
   return {
