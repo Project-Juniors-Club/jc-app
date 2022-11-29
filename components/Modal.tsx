@@ -8,7 +8,7 @@ type Props = {
   children?: ReactNode;
 };
 
-const Modal = ({ title='Modal Title', onClose, isOpen = false, children, ...rest }: Props) => {
+const Modal = ({ title = 'Modal Title', onClose, isOpen = false, children, ...rest }: Props) => {
   return (
     <ModalComponent onClose={onClose} isOpen={isOpen} {...rest}>
       <ModalOverlay />

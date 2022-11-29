@@ -30,7 +30,6 @@ const WithStaticProps = ({ users }: Props) => (
           backgroundColor: '#f0f0f0',
         }}
       >
-        <h3>Username: {user.username}</h3>
         <h3>Email: {user.email}</h3>
       </div>
     ))}
