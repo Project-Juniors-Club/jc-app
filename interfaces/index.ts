@@ -18,9 +18,11 @@ export type UserType = typeof UserType[keyof typeof UserType];
 
 export type User = {
   id: string;
-  password: string;
+  name: string | null;
   email: string;
   type: UserType;
+  emailVerified: Date | null;
+  image: string | null;
 };
 
 export type NormalUser = {
@@ -131,6 +133,15 @@ export type Game = {
 export type SpotTheDifferenceGame = {
   id: string;
   gameId: string;
+  leftImageId: string;
+  rightImageId: string;
+  differences: number[];
+  leftImage: {
+    url: string;
+  };
+  rightImage: {
+    url: string;
+  };
 };
 
 export type MatchingGame = {

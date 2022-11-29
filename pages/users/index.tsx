@@ -1,8 +1,9 @@
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 
 import { User } from '../../interfaces';
 import Layout from '../../components/Layout';
+import List from '../../components/List';
 import prisma from '../../lib/prisma';
 
 type Props = {
@@ -42,13 +43,13 @@ const WithStaticProps = ({ users }: Props) => (
 );
 
 // get all the users
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // Example for including static props in a Next.js function component page.
   // Don't forget to include the respective types for any props passed into
   // the component.
+  const items = JSON.parse(JSON.stringify(await prisma.user.findMany()));
 
-  const users = await prisma.user.findMany();
-  return { props: { users } };
+  return { props: { items } };
 };
 
 export default WithStaticProps;

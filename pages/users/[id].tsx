@@ -1,7 +1,6 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 
 import { User } from '../../interfaces';
-import { sampleUserData } from '../../utils/sample-data';
 import Layout from '../../components/Layout';
 import ListDetail from '../../components/ListDetail';
 import prisma from '../../lib/prisma';
@@ -47,9 +46,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const id = params?.id;
     const users = await prisma.user.findMany();
     const item = users.find(data => data.id === id);
+    const user = await prisma.user.findFirst({
+      where: {
+        id: params?.id.toString(),
+      },
+    });
     // By returning { props: item }, the StaticPropsDetail component
     // will receive `item` as a prop at build time
-    return { props: { item } };
+    return { props: { item: JSON.parse(JSON.stringify(user)) } };
   } catch (err: any) {
     return { props: { errors: err.message } };
   }

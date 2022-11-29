@@ -1,5 +1,5 @@
-import { sampleUserData } from '../utils/sample-data';
 import prisma from '../lib/prisma';
+import { sampleUserData } from '../utils/seedData';
 
 const load = async () => {
   try {
