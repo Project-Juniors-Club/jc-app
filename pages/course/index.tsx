@@ -7,7 +7,7 @@ import { Course } from '../../interfaces';
 const CourseHomePage = ({ courses }) => {
   return (
     <div className='px-40 py-16'>
-      <WelcomeMessage />
+      <WelcomeMessage isUnfinishedCoursesEmpty={false} />
       <UnfinishedCourseList />
       <CourseList courses={courses} />
     </div>
