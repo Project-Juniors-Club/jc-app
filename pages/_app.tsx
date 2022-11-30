@@ -10,6 +10,8 @@ import { extendTheme } from '@chakra-ui/react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Session } from 'next-auth';
+import Head from 'next/head';
+import favicon from '../public/favicon.ico';
 
 // TODO: add theme when we have the UI
 const colors = {
@@ -53,15 +55,20 @@ function MyApp({
   session: Session;
 }>) {
   return (
-    <SessionProvider session={session}>
-      <QueryClientProvider client={queryClient}>
-        <ChakraProvider theme={theme}>
-          <RecoilRoot>
-            <Component {...pageProps} />
-          </RecoilRoot>
-        </ChakraProvider>
-      </QueryClientProvider>
-    </SessionProvider>
+    <>
+      <Head>
+        <link rel='shortcut icon' href={favicon.src} type='image/x-icon' />
+      </Head>
+      <SessionProvider session={session}>
+        <QueryClientProvider client={queryClient}>
+          <ChakraProvider theme={theme}>
+            <RecoilRoot>
+              <Component {...pageProps} />
+            </RecoilRoot>
+          </ChakraProvider>
+        </QueryClientProvider>
+      </SessionProvider>
+    </>
   );
 }
 
