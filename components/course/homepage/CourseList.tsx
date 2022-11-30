@@ -84,14 +84,9 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
                   className='ml-2.5 flex h-12 items-center rounded-lg border border-solid border-[#7FB519] bg-[#A9D357] py-3 pr-[1.125rem] pl-6'
                 >
                   <p className='mr-1'>{x.title + ': ' + y}</p>
-                  <Image
-                    src={'/icons/Cross.svg'}
-                    width={24}
-                    height={24}
-                    alt='cross'
-                    className='cursor-pointer'
-                    onClick={() => handleDelete(x.title, y)}
-                  />
+                  <button className='h-6 w-6 cursor-pointer' onClick={() => handleDelete(x.title, y)}>
+                    <Image src={'/icons/Cross.svg'} width={24} height={24} alt='cross' />
+                  </button>
                 </div>
               )),
             )}
