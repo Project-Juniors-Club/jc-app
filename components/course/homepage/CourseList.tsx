@@ -5,10 +5,22 @@ import { Course } from '../../../interfaces';
 import FilterButton from '../../buttons/FilterButton';
 
 type SortTypes = 'priceAscending' | 'priceDescending' | 'durationAscending' | 'durationDescending' | '';
+export type FilterTypes = {
+  title: string;
+  options: string[];
+};
+const filterList: FilterTypes[] = [
+  { title: 'Category', options: ['Category 1', 'Category 2', 'Category 3', 'Category 4'] },
+  { title: 'Duration', options: ['0-5 hours', '5-10 hours', '10-15 hours', '>15 hours'] },
+];
 
 const CourseList = ({ courses }: { courses: Course[] }) => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortTypes>('');
+  const [filter, setFilter] = useState<FilterTypes[]>([
+    { title: 'Category', options: [] },
+    { title: 'Duration', options: [] },
+  ]);
   const sortedCourses = useMemo(() => {
     return [
       ...courses.sort((a, b) => {
@@ -35,10 +47,19 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
       course => course.name.toLowerCase().includes(search.toLowerCase()) || course.description.toLowerCase().includes(search.toLowerCase()),
     );
   }, [search, sortedCourses]);
+  const handleDelete = (title: string, option: string) => {
+    setFilter(prev => {
+      const x = prev.find(x => x.title === title);
+      if (x) {
+        x.options = x.options.filter(x => x !== option);
+      }
+      return [...prev];
+    });
+  };
   return (
     <section aria-labelledby='course-home-explore-courses'>
       <div className='py-12'>
-        <h2 id='course-home-explore-courses' className='text-3xl font-bold'>
+        <h2 id='course-home-explore-courses' className='text-[32px] font-bold'>
           Explore Courses:
         </h2>
 
@@ -53,9 +74,27 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
         </div>
 
         <div className='flex items-center justify-between'>
-          <div className='flex items-center'>
+          <div className='flex flex-wrap items-center'>
             <p className='mr-2.5'>Current filters:</p>
-            <FilterButton />
+            <FilterButton filterList={filterList} filter={filter} setFilter={setFilter} />
+            {filter.map(x =>
+              x.options.map(y => (
+                <div
+                  key={x.title + y}
+                  className='ml-2.5 flex h-12 items-center rounded-lg border border-solid border-[#7FB519] bg-[#A9D357] py-3 pr-[18px] pl-6'
+                >
+                  <p className='mr-1'>{x.title + ': ' + y}</p>
+                  <Image
+                    src={'/icons/Cross.svg'}
+                    width={24}
+                    height={24}
+                    alt='cross'
+                    className='cursor-pointer'
+                    onClick={() => handleDelete(x.title, y)}
+                  />
+                </div>
+              )),
+            )}
           </div>
           <select
             className='rounded-md border border-solid border-[#C7C7C7] py-1.5 px-3 '
@@ -63,7 +102,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
             onChange={e => setSort(e.target.value as SortTypes)}
           >
             {/*TODO: style arrow on select*/}
-            <option value={''} disabled selected hidden>
+            <option value={''} disabled hidden>
               Sort by:
             </option>
             <option value={'priceAscending'}>Price: Low to High</option>
