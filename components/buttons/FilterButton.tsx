@@ -34,7 +34,7 @@ const FilterButton = ({
         Filter
         <Image className='pl-1' src={'/icons/Filter.svg'} alt='Filter' width={28} height={28} />
       </Popover.Button>
-      <Popover.Panel className='absolute w-[402px] rounded-[10px] border border-solid border-[#C7C7C7] bg-white px-3 pt-3 pb-1.5'>
+      <Popover.Panel className='absolute w-[25.125rem] rounded-[0.625rem] border border-solid border-[#C7C7C7] bg-white px-3 pt-3 pb-1.5'>
         {({ close }) => (
           <form onSubmit={e => handleSubmit(e, close)}>
             <div className='flex gap-3'>

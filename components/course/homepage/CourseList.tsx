@@ -59,7 +59,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
   return (
     <section aria-labelledby='course-home-explore-courses'>
       <div className='py-12'>
-        <h2 id='course-home-explore-courses' className='text-[32px] font-bold'>
+        <h2 id='course-home-explore-courses' className='text-[2rem] font-bold'>
           Explore Courses:
         </h2>
 
@@ -81,7 +81,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
               x.options.map(y => (
                 <div
                   key={x.title + y}
-                  className='ml-2.5 flex h-12 items-center rounded-lg border border-solid border-[#7FB519] bg-[#A9D357] py-3 pr-[18px] pl-6'
+                  className='ml-2.5 flex h-12 items-center rounded-lg border border-solid border-[#7FB519] bg-[#A9D357] py-3 pr-[1.125rem] pl-6'
                 >
                   <p className='mr-1'>{x.title + ': ' + y}</p>
                   <Image
