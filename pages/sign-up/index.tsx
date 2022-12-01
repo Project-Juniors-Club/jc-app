@@ -5,6 +5,7 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   HStack,
@@ -13,15 +14,23 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { getCsrfToken, getProviders, getSession } from 'next-auth/react';
+import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Provider } from 'next-auth/providers';
+import { useRouter } from 'next/router';
+import { useRecoilState } from 'recoil';
+import { useForm } from 'react-hook-form';
 
 import Layout from '../../components/Layout';
 import google from '../../public/assets/google_logo.svg';
 import apple from '../../public/assets/apple_logo_black.svg';
 import facebook from '../../public/assets/facebook_logo_blue.svg';
-import { Provider } from 'next-auth/providers';
+import { signUpEmailState } from '../../atoms/atoms';
+
+type FormValues = {
+  email: string;
+};
 
 type Props = {
   csrfToken: string;
@@ -41,7 +50,7 @@ const sso = [
     name: 'apple',
     icon: (props: BoxProps) => (
       <Box w='43px' h='50px' {...props}>
-        <Image src={google} width={100} height={100} alt='google-sign-in' />
+        <Image src={apple} width={100} height={100} alt='google-sign-in' />
       </Box>
     ),
   },
@@ -49,13 +58,26 @@ const sso = [
     name: 'facebook',
     icon: (props: BoxProps) => (
       <Box w='50px' h='50px' {...props}>
-        <Image src={google} width={100} height={100} alt='google-sign-in' />
+        <Image src={facebook} width={100} height={100} alt='google-sign-in' />
       </Box>
     ),
   },
 ];
 
 const SignUp = ({ csrfToken, providers }: Props) => {
+  const [email, setEmail] = useRecoilState(signUpEmailState);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ defaultValues: { email: email ?? '' } });
+  const router = useRouter();
+
+  const onSubmit = (data: FormValues) => {
+    setEmail(data.email);
+    router.push('/sign-up/account-details');
+  };
+
   return (
     <Layout title='Sign Up | Project Juniors Club'>
       <Flex justify='center'>
@@ -63,21 +85,42 @@ const SignUp = ({ csrfToken, providers }: Props) => {
           <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
             Sign Up
           </Heading>
-          <FormControl id='email'>
-            <input name='csrfToken' type='hidden' defaultValue={csrfToken} />
-            <FormLabel textColor='gray.800'>Email</FormLabel>
-            <Input placeholder='Enter your email address' _placeholder={{ color: 'gray.500' }} focusBorderColor='#8EC12C' type='email' />
-          </FormControl>
-          <Stack spacing={6}>
-            <Button
-              bg='#8EC12C'
-              _hover={{
-                bg: 'blue.500',
-              }}
-            >
-              Sign up
-            </Button>
-          </Stack>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing='48px'>
+              <FormControl id='email'>
+                <input name='csrfToken' type='hidden' defaultValue={csrfToken} />
+                <FormLabel textColor='gray.800'>Email</FormLabel>
+                <Input
+                  id='email'
+                  type='email'
+                  placeholder='Enter your email address'
+                  _placeholder={{ color: 'gray.500' }}
+                  focusBorderColor='#8EC12C'
+                  {...register('email', {
+                    required: 'This is required.',
+                    pattern: {
+                      value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                      message: 'Please enter a valid email address.',
+                    },
+                  })}
+                />
+                {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+              </FormControl>
+              <Stack spacing={6}>
+                {/* <Link href='/sign-up/account-details'> */}
+                <Button
+                  type='submit'
+                  bg='#8EC12C'
+                  _hover={{
+                    bg: 'blue.500',
+                  }}
+                >
+                  Sign up
+                </Button>
+                {/* </Link> */}
+              </Stack>
+            </Stack>
+          </form>
           <Text>
             Already have an account?{' '}
             <Link href='/login'>
@@ -95,15 +138,23 @@ const SignUp = ({ csrfToken, providers }: Props) => {
           </Flex>
           <Text fontWeight='semibold'>Sign Up with SSO</Text>
           <HStack spacing='72px' justify='center'>
-            <Box w='50px' h='50px'>
-              <Image src={google} width={100} height={100} alt='google-sign-in' />
-            </Box>
-            <Box w='43px' h='50px'>
-              <Image src={apple} width={100} height={116} alt='apple-sign-in' />
-            </Box>
-            <Box w='50px' h='50px'>
-              <Image src={facebook} width={100} height={100} alt='facebook-sign-in' />
-            </Box>
+            {Object.values(providers).map(provider => {
+              if (provider.id !== 'email') {
+                const p = sso.find(p => p.name.toLowerCase() === provider.id.toLowerCase());
+                return (
+                  <div key={provider.name}>
+                    <button
+                      onClick={event => {
+                        event.preventDefault();
+                        signIn(provider.id);
+                      }}
+                    >
+                      {p ? <p.icon /> : `Sign in with ${provider.name}`}
+                    </button>
+                  </div>
+                );
+              }
+            })}
           </HStack>
         </Stack>
       </Flex>

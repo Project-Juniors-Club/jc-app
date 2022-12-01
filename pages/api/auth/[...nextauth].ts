@@ -21,6 +21,11 @@ export default NextAuth({
       return session;
     },
   },
+  events: {
+    async signIn(message) {
+      console.log(message.isNewUser);
+    },
+  },
   pages: {
     signIn: '/login',
   },
@@ -54,6 +59,6 @@ export default NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
 });
