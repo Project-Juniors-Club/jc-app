@@ -38,7 +38,7 @@ const CustomButton = ({
   );
 };
 
-const getConfig = (variant: string) => {
+const getConfig = (variant: Variants) => {
   let colourConfig = '';
   const config =
     'font-normal w-[120px] h-[48px] rounded-lg border-[1px] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans ';
