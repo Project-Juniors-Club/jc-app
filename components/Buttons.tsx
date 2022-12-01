@@ -1,19 +1,28 @@
-import { Center, HStack, Spinner, Text } from '@chakra-ui/react';
-import React, { Component, ReactNode } from 'react';
-import { JsxElement } from 'typescript';
+import { Center, Spinner } from '@chakra-ui/react';
+import React, { ReactNode } from 'react';
+
+type Variants = 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
 
 type Props = {
-  text?: String;
+  className?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
   onClick?: React.MouseEventHandler;
-  variant?: 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
+  variant?: Variants;
   children?: ReactNode;
 };
-const CustomButton = ({ variant = 'green-solid', isDisabled = false, isLoading = false, onClick = () => {}, children = null }: Props) => {
+
+const CustomButton = ({
+  className = '',
+  variant = 'green-solid',
+  isDisabled = false,
+  isLoading = false,
+  onClick = () => {},
+  children = null,
+}: Props) => {
   let toShow;
   if (isLoading) {
-    if (variant == 'black-solid') {
+    if (variant === 'black-solid') {
       toShow = <Spinner color='#FFFFFF' />;
     } else {
       toShow = <Spinner />;
@@ -21,8 +30,7 @@ const CustomButton = ({ variant = 'green-solid', isDisabled = false, isLoading =
   } else {
     toShow = children;
   }
-  const styling = getConfig(variant);
-  console.log(styling);
+  const styling = getConfig(variant) + className;
   return (
     <button className={styling} disabled={isDisabled} onClick={onClick}>
       <Center>{toShow}</Center>
@@ -33,7 +41,7 @@ const CustomButton = ({ variant = 'green-solid', isDisabled = false, isLoading =
 const getConfig = (variant: string) => {
   let colourConfig = '';
   const config =
-    'font-normal w-[120px] h-[48px] rounded-lg border-[1px] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans';
+    'font-normal w-[120px] h-[48px] rounded-lg border-[1px] disabled:opacity-50 disabled:pointer-events-none text-lg leading-[22px] font-sans ';
   switch (variant) {
     case 'green-solid':
       colourConfig = 'bg-[#A9D357] border-[#7FB519] hover:bg-[#7FB519] ';
