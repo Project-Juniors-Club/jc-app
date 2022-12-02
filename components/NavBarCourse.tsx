@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Button } from '@chakra-ui/react';
 import DropDown from './DropDown';
 
 const NavBarCart = () => {
-  const [isOpen, setOpen] = useState(false);
   const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];
   // TODO: ADD ASSET DROPDOWN
   const assetItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];

@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
 import Image from 'next/image';
-import { Button } from '@chakra-ui/react';
 import DropDown from './DropDown';
 
 const NavBarCart = () => {
@@ -40,7 +38,7 @@ const NavBarCart = () => {
           </div>
           <div className='top-right-elem'>
             <Image src={'/assets/user.jpg'} width={36} height={41} alt='user' />
-            {/* VERBOSE METHOD WORKS */}
+            {/* VERBOSE METHOD WHICH WORKS */}
             {/* <button className='text-black text-center inline-flex items-center' onClick={handleDropDown}>
               Username
               <svg
