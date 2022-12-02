@@ -3,6 +3,7 @@ import useSnackbar from '../../hooks/useSnackbar';
 import NavBarCart from '../../components/NavBarCart';
 import NavBarGeneral from '../../components/NavBarGeneral';
 import NavBarCourse from '../../components/NavBarCourse';
+import CustomButton from '../../components/Buttons';
 
 const Test = () => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
