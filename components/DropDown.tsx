@@ -14,7 +14,7 @@ const DropDown = ({ buttonName, dropdownItems, isOpen, setOpen }) => {
             fill='none'
             stroke='currentColor'
             viewBox='0 0 24 24'
-            xmlns='/assets/dropdown.jpg'
+            xmlns='/assets/logos/dropdown.svg'
           >
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M19 9l-7 7-7-7'></path>
           </svg>

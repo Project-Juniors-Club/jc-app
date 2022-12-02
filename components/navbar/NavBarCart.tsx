@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
-import DropDown from './DropDown';
+import DropDown from '../DropDown';
 
 const NavBarCart = () => {
   const [isOpen, setOpen] = useState(false);
@@ -23,19 +23,19 @@ const NavBarCart = () => {
 
         <div className='nav-action-menu'>
           <div className='top-right-elem'>
-            <Image src={'/assets/book.jpg'} width={24} height={24} alt='book' />
+            <Image src={'/assets/logos/course.svg'} width={24} height={24} alt='book' />
             <a href='#' className='menu-item'>
               My Learning
             </a>
           </div>
           <div className='top-right-elem'>
-            <Image src={'/assets/cart.jpg'} width={24} height={24} alt='cart' />
+            <Image src={'/assets/logos/cart.svg'} width={24} height={24} alt='cart' />
             <a href='#' className='menu-item'>
               My Cart
             </a>
           </div>
           <div className='top-right-elem'>
-            <Image src={'/assets/user.jpg'} width={36} height={41} alt='user' />
+            <Image src={'/assets/logos/user.svg'} width={36} height={41} alt='user' />
             <DropDown buttonName={'Username'} dropdownItems={loginItems} isOpen={isOpen} setOpen={setOpen}></DropDown>
           </div>
         </div>
