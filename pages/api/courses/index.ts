@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { entityMessageCreator } from '../../../utils/api-messages';
@@ -12,25 +13,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const courses = await prisma.course.findMany();
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: courses });
     } else if (httpMethod == 'POST') {
-      const { name, description, stars, adminId, price, subcategoryId, status } = req.body;
+      const { title, description, learningObjectives, coverImageUrl, creatorId, price, categoryId, status } = req.body;
       // CREATE COURSE
       const created = await prisma.course.create({
         data: {
-          name: name,
+          title: title,
           description: description,
-          stars: stars,
+          learningObjectives: learningObjectives,
+          coverImageUrl: coverImageUrl,
           createdBy: {
             connect: {
-              userId: adminId,
+              userId: creatorId,
+            },
+          },
+          lastUpdatedBy: {
+            connect: {
+              userId: creatorId,
             },
           },
           price: price,
-          subcategory: {
+          category: {
             connect: {
-              id: subcategoryId,
+              id: categoryId,
             },
           },
-          status,
+          status: status,
         },
       });
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
