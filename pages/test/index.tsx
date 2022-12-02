@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Text } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, HStack, Text, VStack } from '@chakra-ui/react';
 import useSnackbar from '../../hooks/useSnackbar';
 import NavBarCart from '../../components/NavBarCart';
 import NavBarGeneral from '../../components/NavBarGeneral';
@@ -37,6 +37,34 @@ const Test = () => {
       <Button colorScheme='red' onClick={() => openErrorNotification('Sample Title', 'Sample description')}>
         Click for Failure
       </Button>
+      <VStack>
+        <HStack>
+          <CustomButton variant={'green-solid'}>
+            <Text>Hello</Text>
+          </CustomButton>
+          <CustomButton variant={'green-outline'}>
+            <Text>Hello</Text>
+          </CustomButton>
+          <CustomButton variant={'black-solid'}>
+            <Text color='#FFFFFF'>Hello</Text>
+          </CustomButton>
+          <CustomButton variant={'black-outline'}>
+            <Text>Hello</Text>
+          </CustomButton>
+        </HStack>
+        <HStack>
+          <CustomButton variant={'green-solid'} isDisabled />
+          <CustomButton variant={'green-outline'} isDisabled />
+          <CustomButton variant={'black-solid'} isDisabled />
+          <CustomButton variant={'black-outline'} isDisabled />
+        </HStack>
+        <HStack>
+          <CustomButton variant={'green-solid'} isLoading />
+          <CustomButton variant={'green-outline'} isLoading />
+          <CustomButton variant={'black-solid'} isLoading />
+          <CustomButton variant={'black-outline'} isLoading />
+        </HStack>
+      </VStack>
     </div>
   );
 };
