@@ -1,6 +1,5 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Text } from '@chakra-ui/react';
 import useSnackbar from '../../hooks/useSnackbar';
-import NavbarGeneral from '../../components/NavBarGeneral';
 import NavBarCart from '../../components/NavBarCart';
 import NavBarGeneral from '../../components/NavBarGeneral';
 import NavBarCourse from '../../components/NavBarCourse';

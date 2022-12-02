@@ -1,13 +1,11 @@
 import Image from 'next/image';
+import { useState } from 'react';
 import DropDown from './DropDown';
 
 const NavBarCart = () => {
-  // const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];
 
-  // const handleDropDown = () => {
-  //   setOpen(!isOpen);
-  // };
   return (
     <>
       <nav className='navbar flex items-center justify-between flex-wrap'>
@@ -38,37 +36,7 @@ const NavBarCart = () => {
           </div>
           <div className='top-right-elem'>
             <Image src={'/assets/user.jpg'} width={36} height={41} alt='user' />
-            {/* VERBOSE METHOD WHICH WORKS */}
-            {/* <button className='text-black text-center inline-flex items-center' onClick={handleDropDown}>
-              Username
-              <svg
-                className='ml-2 w-4 h-4'
-                aria-hidden='true'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='/assets/dropdown.jpg'
-              >
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M19 9l-7 7-7-7'></path>
-              </svg>
-            </button>
-
-            <div id='dropdown' className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow ${isOpen ? 'block' : 'hidden'}`}>
-              <ul className=' z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow '>
-                <li>
-                  <a href='#' className='block py-2 px-4 hover:bg-gray-100'>
-                    My Profile
-                  </a>
-                </li>
-                <li>
-                  <a href='#' className='block py-2 px-4 hover:bg-gray-100'>
-                    Log Out
-                  </a>
-                </li>
-              </ul>
-            </div> */}
-
-            <DropDown header='Username' dropdownItems={loginItems}></DropDown>
+            <DropDown buttonName={'Username'} dropdownItems={loginItems} isOpen={isOpen} setOpen={setOpen}></DropDown>
           </div>
         </div>
       </nav>

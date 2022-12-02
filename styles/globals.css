@@ -109,11 +109,17 @@
   width: 120px;
   height: 48px;
 
-  /* Grey/100 */
-
   border: 1px solid #131313;
   border-radius: 8px;
   flex: none;
   order: 0;
   flex-grow: 0;
+}
+
+#dropdown {
+  margin-left: auto;
+  margin-top: 32px;
+
+  background-color: white;
+  position: absolute;
 }
