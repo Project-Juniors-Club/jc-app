@@ -10,8 +10,10 @@ const Test = () => {
   return (
     <div>
       <NavBarGeneral></NavBarGeneral>
-      {/* <NavBarCart></NavBarCart> */}
-      {/* <NavBarCourse></NavBarCourse> */}
+      <br />
+      <NavBarCart></NavBarCart>
+      <br />
+      <NavBarCourse></NavBarCourse>
       <Text fontSize={'4xl'}>UI Components are shown here.</Text>
 
       <Text fontSize={'lg'}>Buttons</Text>

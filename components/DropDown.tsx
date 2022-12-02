@@ -18,7 +18,7 @@ const DropDown = ({ header, dropdownItems }) => {
 
       <div id='dropdown' className={`z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow ${isOpen ? 'block' : 'hidden'}`}>
         <ul className=' z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow '>
-          {arr.map(function (item) {
+          {arr.map(item => {
             return (
               <li key={item}>
                 <a href='#' className='block py-2 px-4 hover:bg-gray-100'>
