@@ -1,28 +1,22 @@
+import prisma from '../../../lib/prisma';
 import Image from 'next/image';
 import { useState } from 'react';
-
-interface Course {
-  status: string;
-  author: string;
-  name: string;
-  category: string;
-  imageUrl: string;
-  price: number;
-}
+import { Course, Prisma, User } from '@prisma/client';
+import CustomButton from '../../../components/Buttons';
 
 interface ICourseCardProps {
   course: Course;
 }
 
 const CourseCard = ({ course }: ICourseCardProps) => {
-  const isFree = course.price === 0;
+  const isFree = course.price.equals(0);
   return (
-    <div className='flex items-center py-8 w-full'>
-      <div className='mr-12'>
+    <div className='flex gap-x-12 items-center py-6 w-full'>
+      <div>
         {course.imageUrl ? (
-          <Image src={course.imageUrl} alt='sample image' />
+          <Image src={course.imageUrl} alt={`Thumbnail for ${course.name}`} />
         ) : (
-          <div className='grid w-60 h-40 bg-[#C7C7C7] place-content-center rounded-2xl'>
+          <div className='grid w-[259px] h-[148px] bg-[#C7C7C7] place-content-center rounded-2xl'>
             <div className='h-min font-bold'>No Image Found</div>
           </div>
         )}
@@ -105,7 +99,7 @@ const OverviewPage = ({ courses }: IProps) => {
     <div className='px-36'>
       <div className='flex items-center justify-between py-16'>
         <h1 className='text-5xl font-bold'>Course Overview</h1>
-        <button>Create Course +</button>
+        <CustomButton>Create Course +</CustomButton>
       </div>
       <div className='flex py-16'>
         <div className='w-52'>
