@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Flex, Link, Stack, Text, StackDivider } from '@chakra-ui/react';
 import Image from 'next/image';
 
+import { socials, policies } from '../utils/links';
+
 const Footer = () => {
   return (
     <footer>
@@ -30,7 +32,7 @@ const Footer = () => {
                 <Text>Contact: volunteer@foodbank.sg</Text>
               </Link>
             </Box>
-            <Box h={['100px', '100px', '100px', '120px']} w='270px'>
+            <Box h='100px' w='270px'>
               <Text fontWeight='700' mb='20px'>
                 We are located at:
               </Text>
@@ -43,30 +45,22 @@ const Footer = () => {
                 Follow Us
               </Text>
               <Stack direction='row' spacing='4'>
-                <Link href='https://www.instagram.com/foodbanksingapore/' isExternal>
-                  <Image src='/assets/instagram.svg' alt='Instagram' width='18' height='18' />
-                </Link>
-                <Link href='https://www.facebook.com/foodbanksingapore' isExternal>
-                  <Image src='/assets/facebook.svg' alt='Facebook' width='18' height='18' />
-                </Link>
-                <Link href='https://www.linkedin.com/company/foodbank-singapore/' isExternal>
-                  <Image src='/assets/linkedin.svg' alt='linkedin' width='18' height='18' />
-                </Link>
+                {socials.map(social => (
+                  <Link href={social.url} key={social.name} isExternal>
+                    <Image src={'/assets/' + social.icon + '.svg'} alt={social.name} width='18' height='18' />
+                  </Link>
+                ))}
               </Stack>
             </Box>
           </Flex>
           <Stack direction='column' pt='30px'>
             <Text textAlign='center'>Copyright Foodbank 2022. All rights reserved.</Text>
             <Stack direction='row' justify='center' divider={<StackDivider borderColor='white' />}>
-              <Link href='https://www.foodbank.sg/terms-of-service' isExternal textDecoration='none'>
-                <Text textAlign='center'>Terms of Service</Text>
-              </Link>
-              <Link href='https://www.foodbank.sg/privacy-policy' isExternal textDecoration='none'>
-                <Text textAlign='center'>Privacy Policy</Text>
-              </Link>
-              <Link href='https://www.foodbank.sg/board-policy' isExternal textDecoration='none'>
-                <Text textAlign='center'>Board Policy</Text>
-              </Link>
+              {policies.map(policy => (
+                <Link href={policy.url} key={policy.name} isExternal>
+                  <Text>{policy.name}</Text>
+                </Link>
+              ))}
             </Stack>
           </Stack>
         </Stack>
