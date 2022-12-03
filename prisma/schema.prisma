@@ -74,7 +74,8 @@ model NormalUser {
 model Admin {
   userId         String   @id
   user           User     @relation(fields: [userId], references: [id])
-  createdCourses Course[]
+  createdCourses Course[] @relation("createdBy")
+  updatedCourses Course[] @relation("updatedBy")
 
   @@map("admins")
 }
@@ -101,34 +102,30 @@ model UserCourse {
 }
 
 model Category {
-  id                 String        @id @default(cuid())
-  name               String
-  description        String
-  childrenCategories Subcategory[]
-}
-
-model Subcategory {
-  id               String   @id @default(cuid())
-  name             String
-  description      String
-  parentCategoryId String
-  parentCategory   Category @relation(fields: [parentCategoryId], references: [id])
-  courses          Course[]
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  courses     Course[]
 }
 
 model Course {
-  id            String       @id @default(cuid())
-  name          String       @unique
-  description   String
-  stars         Int
-  adminId       String
-  price         Decimal      @db.Decimal(5, 2)
-  status        CourseStatus @default(DRAFT)
-  subcategoryId String?
-  createdBy     Admin        @relation(fields: [adminId], references: [userId])
-  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
-  chapters      Chapter[]
-  userCourses   UserCourse[]
+  id                 String       @id @default(cuid())
+  title              String       @unique
+  description        String
+  learningObjectives String
+  price              Decimal      @db.Decimal(5, 2)
+  creatorId          String
+  createDate         DateTime     @default(now())
+  lastUpdatedUserId  String
+  lastUpdatedDate    DateTime     @updatedAt
+  coverImageUrl      String?
+  status             CourseStatus @default(DRAFT)
+  categoryId         String?
+  createdBy          Admin        @relation("createdBy", fields: [creatorId], references: [userId])
+  lastUpdatedBy      Admin        @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
+  category           Category?    @relation(fields: [categoryId], references: [id])
+  chapters           Chapter[]
+  userCourses        UserCourse[]
 
   @@map("courses")
 }
