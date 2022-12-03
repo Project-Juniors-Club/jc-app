@@ -58,7 +58,7 @@ const Footer = () => {
             <Stack direction='row' justify='center' divider={<StackDivider borderColor='white' />}>
               {policies.map(policy => (
                 <Link href={policy.url} key={policy.name} isExternal>
-                  <Text>{policy.name}</Text>
+                  <Text textAlign='center'>{policy.name}</Text>
                 </Link>
               ))}
             </Stack>
