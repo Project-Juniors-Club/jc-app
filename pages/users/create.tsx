@@ -1,5 +1,5 @@
-import React, { useState , useRef} from 'react';
-import { useForm } from 'react-hook-form'
+import React, { useState, useRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   Flex,
   Box,
@@ -12,19 +12,44 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+
+import { userInfoState } from '../../atoms/atoms';
+
+async function addUser(user) {
+  const response = await fetch('../api/index', {
+    method: 'POST',
+    body: JSON.stringify(user),
+  });
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return await response.json();
+}
 
 export default function CreateAccount() {
-  const { 
-    register, 
-    handleSubmit, 
-    watch, 
-    formState: {errors}
-  } = useForm({mode: 'onChange'});
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ mode: 'onChange' });
+
+  const [_userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  const onSubmit = data => {
+    console.log(data);
+    setUserInfo({
+      name: 'temp name',
+      email: data.email,
+      role: 1,
+    });
+  };
+
   const password = useRef({});
-  password.current = watch("password", "");
+  password.current = watch('password', '');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const onSubmit = data => console.log(data);
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -47,10 +72,10 @@ export default function CreateAccount() {
                   size='md'
                   {...register('email', {
                     required: 'Email is required',
-                    pattern: { 
+                    pattern: {
                       value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                      message: 'Invalid Email Format'
-                    }
+                      message: 'Invalid Email Format',
+                    },
                   })}
                 />
                 {errors.email && <FormErrorMessage>{String(errors.email.message)}</FormErrorMessage>}
@@ -65,7 +90,7 @@ export default function CreateAccount() {
                     size='md'
                     {...register('password', {
                       required: 'Password is required',
-                      minLength: { value: 8, message: "Password should be at least 8 characters long"}
+                      minLength: { value: 8, message: 'Password should be at least 8 characters long' },
                     })}
                   />
                   <InputRightElement width='3rem' mr={'0.5rem'}>
@@ -75,10 +100,9 @@ export default function CreateAccount() {
                   </InputRightElement>
                 </InputGroup>
                 {errors.password && <FormErrorMessage>{String(errors.password.message)}</FormErrorMessage>}
-
               </FormControl>
               <FormControl mt={6} isInvalid={Boolean(errors.confirmPassword)}>
-                <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+                <FormLabel htmlFor='confirmPassword'>Confirm Password</FormLabel>
                 <InputGroup>
                   <Input
                     id='confirmPassword'
@@ -87,8 +111,7 @@ export default function CreateAccount() {
                     size='md'
                     {...register('confirmPassword', {
                       required: 'Confirm Password is required',
-                      validate: value => 
-                        value === password.current || "The password do not match"
+                      validate: value => value === password.current || 'The password do not match',
                     })}
                   />
                   <InputRightElement width='3rem' mr={'0.5rem'}>
