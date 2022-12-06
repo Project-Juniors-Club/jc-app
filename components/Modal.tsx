@@ -5,6 +5,7 @@ type Props = {
   title?: string;
   onClose: () => void;
   isOpen?: boolean;
+  size?: string;
   children?: ReactNode;
 };
 
