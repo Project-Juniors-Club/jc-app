@@ -1,15 +1,16 @@
 import React from 'react';
 import { Box, Flex, Link, Stack, Text, StackDivider } from '@chakra-ui/react';
 import Image from 'next/image';
+import styles from './Footer.module.css';
 
 import { socials, policies } from '../utils/links';
 
 const Footer = () => {
   return (
-    <footer>
+    <footer className={styles.footer}>
       <Box as='footer' role='contentinfo' mx='auto' py='4' px='24' bgColor='#262728' color='gray.200' fontSize='sm'>
         <Stack>
-          <Text fontWeight='900' fontSize='2xl' mb='30px' mt='20px'>
+          <Text fontSize='3xl' mb='30px' mt='20px' className={styles.contactUs}>
             CONTACT US
           </Text>
           <Flex direction={['column', 'column', 'column', 'row']} align='center' justify={{ base: 'center', md: 'space-between' }}>
