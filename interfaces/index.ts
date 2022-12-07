@@ -67,6 +67,7 @@ export type Course = {
   description: string;
   stars: number;
   adminId: string;
+  price: number;
 };
 
 export enum CourseItemType {
