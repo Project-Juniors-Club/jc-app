@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import Footer from './Footer';
 
 type Props = {
   children?: ReactNode;
@@ -45,10 +46,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
         </nav>
       </header>
       {children}
-      <footer>
-        <hr />
-        <span>I&apos;m here to stay (Footer)</span>
-      </footer>
+      <Footer />
     </div>
   );
 };
