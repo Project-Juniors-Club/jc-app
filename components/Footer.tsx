@@ -1,48 +1,72 @@
-import { Box, HStack, Icon, Text } from '@chakra-ui/react';
+import React from 'react';
+import { Box, Flex, Link, Stack, Text, StackDivider } from '@chakra-ui/react';
+import Image from 'next/image';
+import styles from './Footer.module.css';
 
-import favicon from '../public/favicon.ico';
+import { socials, policies } from '../utils/links';
 
 const Footer = () => {
   return (
-    <Box className='bg-[#262728] justify-center items-center'>
-      <Box className='w-11/12 mx-auto justify-center items-center flex-col' py={10}>
-        <Box className='text-inherit'>
-          <Text className='text-[#FFFFFF] font-bold text-3xl mb-10'>
-            <strong>CONTACT US</strong>
+    <footer className={styles.footer}>
+      <Box as='footer' role='contentinfo' mx='auto' py='4' px='24' bgColor='#262728' color='gray.200' fontSize='sm'>
+        <Stack>
+          <Text fontSize='3xl' mb='30px' mt='20px' className={styles.contactUs}>
+            CONTACT US
           </Text>
-        </Box>
-        <div className='grid grid-rows-3 grid-cols-4 grid-flow-col gap-4 text-[#FFFFFF] mb-10'>
-          <div className='font-bold'>Donor, Media & General Enquiries</div>
-          <div className='row-span-2'>
-            <p>Email: enquiries@foodbank.sg</p>
-            <p>Tel: +65 9855 4805</p>
-          </div>
-          <div className='font-bold'>Volunteers</div>
-          <div className='row-span-2'>
-            <p>Contact: volunteer@foodbank.sg</p>
-          </div>
-          <div className='font-bold'>We are located at:</div>
-          <div className='row-span-2'>
-            <p>The Foodbank Singapore Ltd</p>
-            <p>218 Pandan Loop, XPACE</p>
-            <p>Singapore, 128408</p>
-          </div>
-          <div className='row-start-2 row-span-2 font-bold'>
-            <p>Follow Us</p>
-            <HStack className='h-fit'>
-              <link rel='icon' type='image/png' href='favicon.src' />
-              <link rel='icon' type='image/png' href='favicon.src' />
-              <link rel='icon' type='image/png' href='favicon.src' />
-            </HStack>
-          </div>
-        </div>
-        <div className='w-fit text-[#FFFFFF] mx-auto'>
-          <p className='text-center'>Copyright Foodbank 2022. All rights reserved</p>
-          <a>Terms of Service</a> | <a>Privacy Policy</a> | <a>Board Policy</a>
-        </div>
+          <Flex direction={['column', 'column', 'column', 'row']} align='center' justify={{ base: 'center', md: 'space-between' }}>
+            <Box h='100px' w='270px'>
+              <Text fontWeight='700' mb='20px'>
+                Donor, Media &amp; General Enquiries
+              </Text>
+              <Link href='mailto:enquiries@foodbank.sg' textDecoration='none'>
+                <Text>Email: enquiries@foodbank.sg</Text>
+              </Link>
+              <Link href='tel:+656336 3363' textDecoration='none'>
+                <Text>Tel: +65 9855 4805</Text>
+              </Link>
+            </Box>
+            <Box h='100px' w='270px'>
+              <Text fontWeight='700' mb='20px'>
+                Volunteers
+              </Text>
+              <Link href='mailto:volunteer@foodbank.sg' textDecoration='none'>
+                <Text>Contact: volunteer@foodbank.sg</Text>
+              </Link>
+            </Box>
+            <Box h='100px' w='270px'>
+              <Text fontWeight='700' mb='20px'>
+                We are located at:
+              </Text>
+              <Text>The Foodbank Singapore Pte Ltd</Text>
+              <Text>218 Pandan Loop, XPACE</Text>
+              <Text>Singapore 128408</Text>
+            </Box>
+            <Box h='100px' w='270px' display='flex' flexDirection='column' alignItems='start' justifyContent='flex-end'>
+              <Text fontWeight='700' mb='10px'>
+                Follow Us
+              </Text>
+              <Stack direction='row' spacing='4'>
+                {socials.map(social => (
+                  <Link href={social.url} key={social.name} isExternal>
+                    <Image src={'/assets/' + social.icon + '.svg'} alt={social.name} width='18' height='18' />
+                  </Link>
+                ))}
+              </Stack>
+            </Box>
+          </Flex>
+          <Stack direction='column' pt='30px'>
+            <Text textAlign='center'>Copyright Foodbank 2022. All rights reserved.</Text>
+            <Stack direction='row' justify='center' divider={<StackDivider borderColor='white' />}>
+              {policies.map(policy => (
+                <Link href={policy.url} key={policy.name} isExternal>
+                  <Text textAlign='center'>{policy.name}</Text>
+                </Link>
+              ))}
+            </Stack>
+          </Stack>
+        </Stack>
       </Box>
-      <div className=' justify-end'></div>
-    </Box>
+    </footer>
   );
 };
 

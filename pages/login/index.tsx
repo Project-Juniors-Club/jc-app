@@ -62,7 +62,7 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
             width='full'
           >
             <>
-              <Image src='/logo/Juniors_Club_logo.png' alt='Food Bank' backgroundPosition='center' height='200px' marginBottom={6} />
+              <Image src='/logo/Juniors_Club_Logo.png' alt='Food Bank' backgroundPosition='center' height='200px' marginBottom={6} />
               <Heading color='black'>Welcome back!</Heading>
               <Box textAlign='left'>
                 <form onSubmit={handleSubmit(onSubmit)} color='black'>
