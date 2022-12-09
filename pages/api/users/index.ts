@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { entityMessageCreator } from '../../../utils/api-messages';
 
-const entityMessageObj = entityMessageCreator('course');
+const entityMessageObj = entityMessageCreator('user');
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const httpMethod = _req.method;
