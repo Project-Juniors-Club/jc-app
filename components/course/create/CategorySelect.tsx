@@ -8,11 +8,19 @@ type Props = {
 };
 
 export const CategorySelect = (props: Props & UseControllerProps) => {
+  const propsWithDefaultValue = {
+    ...props,
+    defaultValue: {
+      id: undefined,
+      name: undefined,
+      description: undefined,
+    },
+  };
   const {
     field: { value, onChange },
-  } = useController(props);
+  } = useController(propsWithDefaultValue);
 
-  const { categories } = props;
+  const { categories } = propsWithDefaultValue;
 
   return (
     <div className='grid gap-y-2'>
@@ -27,7 +35,7 @@ export const CategorySelect = (props: Props & UseControllerProps) => {
                 className={`h-10 w-full rounded-lg border ${open ? 'border-[#4D4D4D]' : 'border-[#9E9E9E]'} py-2 px-4 text-left`}
               >
                 <div className='flex justify-between'>
-                  <div className={`${value ? '' : 'text-[#C7C7C7]'}`}>{value ? (value as Category).name : 'Course Category'}</div>
+                  <div className={`${value?.name ? '' : 'text-[#C7C7C7]'}`}>{value?.name || 'Course Category'}</div>
                   <Image src={'/icons/Select.svg'} alt='Select' width={10.61} height={6.48} />
                 </div>
               </Listbox.Button>

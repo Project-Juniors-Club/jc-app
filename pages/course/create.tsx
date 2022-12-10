@@ -1,46 +1,107 @@
-import Image from 'next/image';
 import { Category } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import CustomButton from '../../components/Buttons';
-import Modal from '../../components/Modal';
-import { ButtonGroup, ModalBody, ModalFooter, useDisclosure, Text } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import { TextInput } from '../../components/course/create/TextInput';
 import { TextAreaInput } from '../../components/course/create/TextAreaInput';
 import { CategorySelect } from '../../components/course/create/CategorySelect';
 import { UploadButton } from '../../components/course/create/UploadButton';
 import { PriceInput } from '../../components/course/create/PriceInput';
 import { CancelModal } from '../../components/course/create/CancelModal';
-import { useRef } from 'react';
+import prisma from '../../lib/prisma';
+import { getSession, useSession } from 'next-auth/react';
+import axios from 'axios';
+import { Session } from 'next-auth';
+import { useRouter } from 'next/router';
+import useSnackbar from '../../hooks/useSnackbar';
 
 type FormValues = {
   title: string;
   learningObjectives: string;
   description: string;
+  category: Category;
+  coverImage: File[];
+  isFree: string;
+  price: number;
 };
 
 type Props = {
   categories: Category[];
+  sess: Session;
 };
 
-const CourseCreatePage = ({ categories }: Props) => {
-  const { register, handleSubmit, control, resetField } = useForm();
-  const submitRef = useRef(null);
-
+const CourseCreatePage = ({ categories, sess }: Props) => {
+  const router = useRouter();
+  const { openSuccessNotification, openErrorNotification } = useSnackbar();
+  const {
+    register,
+    handleSubmit,
+    control,
+    resetField,
+    formState: { isSubmitting },
+  } = useForm();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const onSubmit: SubmitHandler<FormValues> = data => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = async data => {
+    const { title, description, learningObjectives, coverImage, isFree, category } = data;
+    const status = 'DRAFT';
+
+    const coverImageKey = coverImage[0]
+      ? (
+          await axios.put('/api/media/', {
+            name: coverImage[0].name,
+            type: coverImage[0].type,
+          })
+        ).data.data.Key
+      : undefined;
+
+    const userId = sess.user.id;
+    const price = +isFree ? 0 : data.price;
+
+    const toSend = {
+      title: title,
+      description: description,
+      learningObjectives: learningObjectives,
+      coverImageKey: coverImageKey,
+      creatorId: userId,
+      price: price,
+      categoryId: category.id,
+      status: status,
+    };
+
+    await axios
+      .post('/api/courses', {
+        ...toSend,
+      })
+      .then(resp => {
+        openSuccessNotification('Course created successfully');
+        return resp.data.data.id;
+      })
+      .catch(error => {
+        openErrorNotification('Course creation failed', 'Please try again');
+        throw error;
+      });
   };
 
-  const onSubmitAndRedirect: SubmitHandler<FormValues> = data => {
-    console.log(data);
+  const onSubmitAndRedirectCourseOverview = async data => {
+    try {
+      const courseId = await onSubmit(data);
+      router.push(`/course/${courseId}`);
+    } catch (err) {}
+  };
+
+  const onSubmitAndRedirectCourseEditor: SubmitHandler<FormValues> = async data => {
+    try {
+      const courseId = await onSubmit(data);
+      router.push('/course/editor');
+    } catch (err) {}
   };
 
   return (
     <div className='px-[9.375rem]'>
       <header className='font-header py-16 text-5xl font-bold'>Create Course</header>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <div className='grid gap-y-6'>
           <TextInput label='title' headerText='Course Title' register={register} options={{ required: true, pattern: /^\S.*\S$/ }} />
           <TextAreaInput
@@ -55,7 +116,7 @@ const CourseCreatePage = ({ categories }: Props) => {
             register={register}
             options={{ required: true, pattern: /^\S.*\S$/ }}
           />
-          <CategorySelect categories={categories} name='categories' control={control} />
+          <CategorySelect categories={categories} name='category' control={control} />
           <UploadButton
             register={register}
             resetField={resetField}
@@ -67,7 +128,7 @@ const CourseCreatePage = ({ categories }: Props) => {
         </div>
         <div className='flex w-full justify-between py-8'>
           <div className='flex gap-x-3'>
-            <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmit)}>
+            <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isLoading={isSubmitting}>
               <div className='text-[#FFFFFF]'>Save & Exit</div>
             </CustomButton>
             <CustomButton
@@ -80,7 +141,7 @@ const CourseCreatePage = ({ categories }: Props) => {
               <div>Cancel</div>
             </CustomButton>
           </div>
-          <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirect)}>
+          <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isLoading={isSubmitting}>
             Next: Edit Course
           </CustomButton>
         </div>
@@ -90,21 +151,10 @@ const CourseCreatePage = ({ categories }: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  // const categories = await prisma.category.findMany();
-  const categories: Category[] = [
-    {
-      id: '123',
-      name: 'Category 1',
-      description: 'desc',
-    },
-    {
-      id: '1234',
-      name: 'Category 2',
-      description: 'desc',
-    },
-  ];
-  return { props: { categories } };
+export const getServerSideProps: GetServerSideProps = async req => {
+  const sess = await getSession(req);
+  const categories = await prisma.category.findMany();
+  return { props: { categories, sess } };
 };
 
 export default CourseCreatePage;
