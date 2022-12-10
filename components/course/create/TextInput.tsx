@@ -13,10 +13,14 @@ type Props = {
 export const TextInput = ({ label, register, options, headerText, placeholderText = headerText, isDisabled, errors }: Props) => {
   return (
     <div className='grid gap-y-2'>
-      <label htmlFor={label}>
-        <div className='inline font-bold text-[#3D3D3D]'>{headerText}</div>
-        <div className='inline font-normal text-[#606060]'>{options?.required ? ' *' : ''}</div>
-      </label>
+      {headerText ? (
+        <label htmlFor={label}>
+          <div className='inline font-bold text-[#3D3D3D]'>{headerText}</div>
+          <div className='inline font-normal text-[#606060]'>{options?.required ? ' *' : ''}</div>
+        </label>
+      ) : (
+        <></>
+      )}
       <input
         type='text'
         name={label}
@@ -27,7 +31,7 @@ export const TextInput = ({ label, register, options, headerText, placeholderTex
         {...register(label, options)}
         disabled={isDisabled}
       />
-      {errors[label] ? <div className='text-[#E53E3E]'>{errors[label].message}</div> : <></>}
+      {errors[label] && <div className='text-[#E53E3E]'>{errors[label].message}</div>}
     </div>
   );
 };

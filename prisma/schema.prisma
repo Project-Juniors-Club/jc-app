@@ -110,7 +110,7 @@ model Category {
 
 model Course {
   id                 String       @id @default(cuid())
-  title              String       @unique
+  title              String
   description        String
   learningObjectives String
   price              Decimal      @db.Decimal(5, 2)

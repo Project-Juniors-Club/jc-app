@@ -26,7 +26,7 @@ export const TextAreaInput = ({ label, register, options, headerText, placeholde
         {...register(label, options)}
         disabled={isDisabled}
       />
-      {errors[label] ? <div className='text-[#E53E3E]'>{errors[label].message}</div> : <></>}
+      {errors[label] && <div className='text-[#E53E3E]'>{errors[label].message}</div>}
     </div>
   );
 };
