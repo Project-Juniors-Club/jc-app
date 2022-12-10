@@ -5,6 +5,7 @@ import { useController, UseControllerProps } from 'react-hook-form';
 
 type Props = {
   categories: Category[];
+  disabled: boolean;
 };
 
 export const CategorySelect = (props: Props & UseControllerProps) => {
@@ -20,19 +21,21 @@ export const CategorySelect = (props: Props & UseControllerProps) => {
     field: { value, onChange },
   } = useController(propsWithDefaultValue);
 
-  const { categories } = propsWithDefaultValue;
+  const { categories, disabled } = propsWithDefaultValue;
 
   return (
     <div className='grid gap-y-2'>
       <label htmlFor='category'>
         <div className='inline font-bold text-[#3D3D3D]'>{'Course Category'}</div>
       </label>
-      <Listbox value={value} onChange={onChange}>
-        {({ open }) => {
+      <Listbox value={value} onChange={onChange} disabled={disabled}>
+        {({ open, disabled }) => {
           return (
             <>
               <Listbox.Button
-                className={`h-10 w-full rounded-lg border ${open ? 'border-[#4D4D4D]' : 'border-[#9E9E9E]'} py-2 px-4 text-left`}
+                className={`h-10 w-full rounded-lg border ${open ? 'border-[#4D4D4D]' : 'border-[#9E9E9E]'} py-2 px-4 text-left ${
+                  disabled ? 'bg-slate-50' : ''
+                }`}
               >
                 <div className='flex justify-between'>
                   <div className={`${value?.name ? '' : 'text-[#C7C7C7]'}`}>{value?.name || 'Course Category'}</div>

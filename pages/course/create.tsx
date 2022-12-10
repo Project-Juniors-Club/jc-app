@@ -10,7 +10,7 @@ import { UploadButton } from '../../components/course/create/UploadButton';
 import { PriceInput } from '../../components/course/create/PriceInput';
 import { CancelModal } from '../../components/course/create/CancelModal';
 import prisma from '../../lib/prisma';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import axios from 'axios';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
@@ -39,7 +39,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     handleSubmit,
     control,
     resetField,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -70,21 +70,23 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
       status: status,
     };
 
-    await axios
+    const result = await axios
       .post('/api/courses', {
         ...toSend,
       })
       .then(resp => {
         openSuccessNotification('Course created successfully');
+        console.log(resp.data.data.id);
         return resp.data.data.id;
       })
       .catch(error => {
         openErrorNotification('Course creation failed', 'Please try again');
         throw error;
       });
+    return result;
   };
 
-  const onSubmitAndRedirectCourseOverview = async data => {
+  const onSubmitAndRedirectCourseOverview: SubmitHandler<FormValues> = async data => {
     try {
       const courseId = await onSubmit(data);
       router.push(`/course/${courseId}`);
@@ -103,32 +105,62 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
       <header className='font-header py-16 text-5xl font-bold'>Create Course</header>
       <form>
         <div className='grid gap-y-6'>
-          <TextInput label='title' headerText='Course Title' register={register} options={{ required: true, pattern: /^\S.*\S$/ }} />
+          <TextInput
+            label='title'
+            headerText='Course Title'
+            register={register}
+            options={{
+              required: 'This is required',
+              pattern: {
+                value: /(.|\s)*\S(.|\s)*/,
+                message: 'This is required',
+              },
+            }}
+            isDisabled={isSubmitting}
+            errors={errors}
+          />
           <TextAreaInput
             label='description'
             headerText='Course Description'
             register={register}
-            options={{ required: true, pattern: /^\S.*\S$/ }}
+            options={{
+              required: 'This is required',
+              pattern: {
+                value: /(.|\s)*\S(.|\s)*/,
+                message: 'This is required',
+              },
+            }}
+            isDisabled={isSubmitting}
+            errors={errors}
           />
           <TextAreaInput
             label='learningObjectives'
             headerText='Course Learning Objectives'
             register={register}
-            options={{ required: true, pattern: /^\S.*\S$/ }}
+            options={{
+              required: 'This is required',
+              pattern: {
+                value: /(.|\s)*\S(.|\s)*/,
+                message: 'This is required',
+              },
+            }}
+            isDisabled={isSubmitting}
+            errors={errors}
           />
-          <CategorySelect categories={categories} name='category' control={control} />
+          <CategorySelect categories={categories} name='category' control={control} disabled={isSubmitting} />
           <UploadButton
             register={register}
             resetField={resetField}
             label={'coverImage'}
             headerText={'Course Cover Image Upload'}
             buttonText={'Upload Image'}
+            isDisabled={isSubmitting}
           />
-          <PriceInput register={register} />
+          <PriceInput register={register} errors={errors} isDisabled={isSubmitting} />
         </div>
         <div className='flex w-full justify-between py-8'>
           <div className='flex gap-x-3'>
-            <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isLoading={isSubmitting}>
+            <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isSubmitting}>
               <div className='text-[#FFFFFF]'>Save & Exit</div>
             </CustomButton>
             <CustomButton
@@ -137,11 +169,12 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                 e.preventDefault();
                 onOpen();
               }}
+              isDisabled={isSubmitting}
             >
               <div>Cancel</div>
             </CustomButton>
           </div>
-          <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isLoading={isSubmitting}>
+          <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isSubmitting}>
             Next: Edit Course
           </CustomButton>
         </div>

@@ -9,10 +9,11 @@ type Props = {
   buttonText: string;
   register: UseFormRegister<FieldValues>;
   resetField: UseFormResetField<FieldValues>;
+  isDisabled: boolean;
 };
 
 // TODO: support multiple files, with different file types
-export const UploadButton = ({ label, register, resetField, headerText, buttonText }: Props) => {
+export const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled }: Props) => {
   const [file, setFile] = useState<File>();
   const { ref, ...rest } = register(label, {
     onChange: (e: ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +46,7 @@ export const UploadButton = ({ label, register, resetField, headerText, buttonTe
           event.preventDefault();
           inputRef.current.click();
         }}
+        isDisabled={isDisabled}
       >
         <div className='text-[#385600]'>{buttonText}</div>
       </CustomButton>
