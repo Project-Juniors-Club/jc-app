@@ -101,8 +101,8 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
   };
 
   return (
-    <div className='px-[9.375rem]'>
-      <header className='font-header py-16 text-5xl font-bold'>Create Course</header>
+    <div className='px-[9.375rem] font-open-sans'>
+      <header className='py-16 text-5xl font-bold'>Create Course</header>
       <form>
         <div className='grid gap-y-6'>
           <TextInput
