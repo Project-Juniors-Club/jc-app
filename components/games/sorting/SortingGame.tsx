@@ -38,23 +38,31 @@ const SortingGame = () => {
       setInitialItems(prev => prev.filter(item => item !== itemId));
     }
   }
+  const handleSubmit = () => {};
 
   return (
-    <DndContext onDragEnd={handleDragEnd} onDragStart={e => setActiveItemId(e.active.id)}>
-      <div className='mx-auto mb-3 h-[100px] w-2/3'>{itemMarkup}</div>
-      <div className='flex justify-around'>
-        {buckets.map(id => (
-          <Bucket id={id} key={id}>
-            {itemsToBucket[id]?.map(item => (
-              <Item key={item} id={item}>
-                {item}
-              </Item>
-            ))}
-          </Bucket>
-        ))}
+    <div>
+      <DndContext onDragEnd={handleDragEnd} onDragStart={e => setActiveItemId(e.active.id)}>
+        <div className='mx-auto mb-3 h-[100px] w-2/3'>{itemMarkup}</div>
+        <div className='flex justify-around'>
+          {buckets.map(id => (
+            <Bucket id={id} key={id}>
+              {itemsToBucket[id]?.map(item => (
+                <Item key={item} id={item}>
+                  {item}
+                </Item>
+              ))}
+            </Bucket>
+          ))}
+        </div>
+        <DragOverlay>{activeItemId ? <Item id={activeItemId}>{activeItemId}</Item> : null}</DragOverlay>
+      </DndContext>
+      <div className='mt-6 flex justify-center'>
+        <button className='border border-solid border-black' type='submit' onClick={handleSubmit}>
+          Done
+        </button>
       </div>
-      <DragOverlay>{activeItemId ? <Item id={activeItemId}>{activeItemId}</Item> : null}</DragOverlay>
-    </DndContext>
+    </div>
   );
 };
 
