@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, HStack, Text, VStack } from '@chakra-ui/react';
 import useSnackbar from '../../hooks/useSnackbar';
-import CustomButton from '../../components/Buttons';
+import CustomButton from '../../components/Button';
 
 const Test = () => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
