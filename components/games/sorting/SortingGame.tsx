@@ -1,4 +1,4 @@
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 import React, { useMemo, useState } from 'react';
 import Bucket from './Bucket';
 import Item from './Item';
@@ -8,6 +8,7 @@ const buckets = ['A', 'B', 'C'];
 const SortingGame = () => {
   const [initialItems, setInitialItems] = useState(items);
   const [itemsToBucket, setItemsToBucket] = useState(buckets.reduce((acc, curr) => ((acc[curr] = []), acc), {}));
+  const [activeItemId, setActiveItemId] = useState('');
   const itemMarkup = useMemo(
     () =>
       initialItems.map(item => (
@@ -39,7 +40,7 @@ const SortingGame = () => {
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} onDragStart={e => setActiveItemId(e.active.id)}>
       <div className='mx-auto mb-3 h-[100px] w-2/3'>{itemMarkup}</div>
       <div className='flex justify-around'>
         {buckets.map(id => (
@@ -52,6 +53,7 @@ const SortingGame = () => {
           </Bucket>
         ))}
       </div>
+      <DragOverlay>{activeItemId ? <Item id={activeItemId}>{activeItemId}</Item> : null}</DragOverlay>
     </DndContext>
   );
 };
