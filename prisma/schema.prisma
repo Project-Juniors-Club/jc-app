@@ -110,20 +110,20 @@ model Category {
 
 model Course {
   id                 String       @id @default(cuid())
+  title              String       @unique
   description        String
+  learningObjectives String
   price              Decimal      @db.Decimal(5, 2)
+  creatorId          String
+  createDate         DateTime     @default(now())
+  lastUpdatedUserId  String
+  lastUpdatedDate    DateTime     @updatedAt
+  coverImageUrl      String?
   status             CourseStatus @default(DRAFT)
   categoryId         String?
-  coverImageUrl      String?
-  createDate         DateTime     @default(now())
-  creatorId          String
-  lastUpdatedDate    DateTime     @updatedAt
-  lastUpdatedUserId  String
-  learningObjectives String
-  title              String       @unique
-  category           Category?    @relation(fields: [categoryId], references: [id])
   createdBy          Admin        @relation("createdBy", fields: [creatorId], references: [userId])
   lastUpdatedBy      Admin        @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
+  category           Category?    @relation(fields: [categoryId], references: [id])
   chapters           Chapter[]
   userCourses        UserCourse[]
 
@@ -180,9 +180,10 @@ model Asset {
 }
 
 model Image {
-  url                        String
-  assetId                    String                 @id
-  asset                      Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  url     String
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
 
@@ -217,13 +218,14 @@ model Game {
 }
 
 model SpotTheDifferenceGame {
-  gameId       String  @id
-  differences  Float[]
-  leftImageId  String  @unique
-  rightImageId String  @unique
-  game         Game    @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
   leftImage    Image   @relation("LeftImage", fields: [leftImageId], references: [assetId])
+  leftImageId  String  @unique
   rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
+  rightImageId String  @unique
+  differences  Float[]
 }
 
 model MatchingGame {
