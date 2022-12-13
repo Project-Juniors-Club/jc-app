@@ -122,7 +122,8 @@
 
   background-color: white;
   position: absolute;
-  
+}
+
 .search-outline:has(> input:focus) {
   outline: 1px solid black;
 }
