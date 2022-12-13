@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import Footer from './Footer';
 
 type Props = {
   children?: ReactNode;
@@ -40,14 +41,12 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
             </Link>,
           ]}{' '}
           | <Link href='/uploads'>View Uploads</Link> | <Link href='/uploads/upload'>Upload</Link> |{' '}
-          <button onClick={() => signOut()}>Sign out</button>
+          <button onClick={() => signOut()}>Sign out</button>|{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href='/checkout'>Checkout.com API</a>{' '}
         </nav>
       </header>
       {children}
-      <footer>
-        <hr />
-        <span>I&apos;m here to stay (Footer)</span>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -24,42 +24,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteCourse });
     } else if (httpMethod == 'PUT') {
-      // UPDATE NAME, DESCRIPTION, STARS
-      const { name, description, stars, subcategoryId, price, status } = req.body;
+      // UPDATE TITLE, DESCRIPTION
+      const { title, description, learningObjectives, coverImageUrl, updaterId, price, categoryId, status } = req.body;
 
-      let updatedCourse = {};
-      if (subcategoryId) {
-        updatedCourse = await prisma.course.update({
-          where: {
-            id: id,
-          },
-          data: {
-            name,
-            description,
-            stars,
-            price,
-            status,
-            subcategory: {
-              connect: {
-                id: subcategoryId,
-              },
+      const updatedCourse = await prisma.course.update({
+        where: {
+          id: id,
+        },
+        data: {
+          title: title,
+          description: description,
+          learningObjectives: learningObjectives,
+          coverImageUrl: coverImageUrl,
+          lastUpdatedBy: {
+            connect: {
+              userId: updaterId,
             },
           },
-        });
-      } else {
-        updatedCourse = await prisma.course.update({
-          where: {
-            id: id,
+          price: price,
+          category: {
+            connect: {
+              id: categoryId,
+            },
           },
-          data: {
-            name,
-            description,
-            stars,
-            price,
-            status,
-          },
-        });
-      }
+          status: status,
+        },
+      });
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
     } else {
       res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);
