@@ -4,7 +4,7 @@ import Image from 'next/image';
 const NavbarGeneral = () => {
   return (
     <>
-      <nav className='navbar flex items-center justify-between flex-wrap'>
+      <nav className='navbar flex flex-row flex-wrap items-center justify-between'>
         <div className='top-left'>
           <div className='logo'>
             <Image src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
@@ -39,7 +39,7 @@ const NavbarGeneral = () => {
         <div className='nav-action-menu'>
           {/* TODO: INSERT BUTTONS HERE */}
           <div className='button'>
-            <a href='#' className='inline-block text-sm px-4 py-2 leading-none border rounded text-black border-white mt-4 lg:mt-0'>
+            <a href='#' className='mt-4 inline-block rounded border border-white px-4 py-2 text-sm leading-none text-black lg:mt-0'>
               Log In
             </a>
           </div>

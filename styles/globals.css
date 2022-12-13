@@ -116,14 +116,6 @@
   flex-grow: 0;
 }
 
-#dropdown {
-  margin-left: auto;
-  margin-top: 32px;
-
-  background-color: white;
-  position: absolute;
-}
-
 .search-outline:has(> input:focus) {
   outline: 1px solid black;
 }

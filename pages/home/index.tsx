@@ -6,9 +6,9 @@ const LandingPage = () => {
   return (
     <Box>
       <Flex direction={'column'}>
-        <Box className='min-h-[50%] min-w-screen bg-white px-40 py-20'>
+        <Box className='min-w-screen min-h-[50%] bg-white px-40 py-20'>
           <Center className='h-full w-full'>
-            <HStack className='w-full h-full' spacing={'20'}>
+            <HStack className='h-full w-full' spacing={'20'}>
               <VStack className='w-7/12' align={'start'} spacing={'5'}>
                 <Box>
                   <Box>
@@ -37,13 +37,13 @@ const LandingPage = () => {
                   <Text color={'#FFFFFF'}>Sign Up</Text>
                 </CustomButton>
               </VStack>
-              <Box className='rounded-lg w-5/12 h-full'>
-                <Image src='/assets/login_left.jpg' className='w-full h-full rounded-xl w-auto max-h-max' />
+              <Box className='h-full w-5/12 rounded-lg'>
+                <Image src='/assets/login_left.jpg' className='h-full max-h-max w-full w-auto rounded-xl' />
               </Box>
             </HStack>
           </Center>
         </Box>
-        <Box className='min-h-[50%] min-w-screen bg-[#F4FFE0] px-40 py-20'>
+        <Box className='min-w-screen min-h-[50%] bg-[#F4FFE0] px-40 py-20'>
           <Center className='px-40'>
             <VStack className='w-1/2'>
               <Box alignItems={'center'}>
@@ -63,7 +63,7 @@ const LandingPage = () => {
             </VStack>
           </Center>
         </Box>
-        <Box className='min-h-[50%] min-w-screen bg-white px-40 py-20'>
+        <Box className='min-w-screen min-h-[50%] bg-white px-40 py-20'>
           <Center>
             <VStack className='w-full'>
               <Box alignItems={'center'}>

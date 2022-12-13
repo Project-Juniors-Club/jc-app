@@ -1,14 +1,12 @@
 import Image from 'next/image';
-import { useState } from 'react';
 import DropDown from '../DropDown';
 
 const NavBarCart = () => {
-  const [isOpen, setOpen] = useState(false);
   const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];
 
   return (
     <>
-      <nav className='navbar flex items-center justify-between flex-wrap'>
+      <nav className='navbar flex flex-wrap items-center justify-between'>
         <div className='top-left'>
           <div className='logo'>
             <Image src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
@@ -36,7 +34,7 @@ const NavBarCart = () => {
           </div>
           <div className='top-right-elem'>
             <Image src={'/assets/logos/user.svg'} width={36} height={41} alt='user' />
-            <DropDown buttonName={'Username'} dropdownItems={loginItems} isOpen={isOpen} setOpen={setOpen}></DropDown>
+            <DropDown buttonName={'Username'} dropdownItems={loginItems}></DropDown>
           </div>
         </div>
       </nav>
