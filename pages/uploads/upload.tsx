@@ -30,13 +30,13 @@ const Upload = () => {
         Here, you can upload media files to our very own AWS bucket. Free limit is 5GB pls do not test with huge files!!
       </p>
       <p className='container flex p-4'>Console will log the response from the bucket.</p>
-      <div className='container flex items-center p-4 mx-auto min-h-screen justify-center'>
+      <div className='container mx-auto flex min-h-screen items-center justify-center p-4'>
         <main>
           <p>Please select a file to upload</p>
-          <input type='file' onChange={e => storeFile(e)} className='p-1 rounded-sm' />
+          <input type='file' onChange={e => storeFile(e)} className='rounded-sm p-1' />
           {file && (
             <>
-              <button onClick={uploadFile} className='bg-purple-500 text-white p-2 rounded-sm shadow-md hover:bg-purple-700 transition-all'>
+              <button onClick={uploadFile} className='rounded-sm bg-purple-500 p-2 text-white shadow-md transition-all hover:bg-purple-700'>
                 Upload a File!
               </button>
             </>

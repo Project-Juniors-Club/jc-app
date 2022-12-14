@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+.top-left {
+  width: 775px;
+  height: 88px;
+}
+
+.logo {
+  width: 113px;
+  height: 88px;
+}
+
+.button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+
+  width: 120px;
+  height: 48px;
+
+  border: 1px solid #131313;
+  border-radius: 8px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
 .search-outline:has(> input:focus) {
   outline: 1px solid black;
 }
