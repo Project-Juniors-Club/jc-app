@@ -1,7 +1,7 @@
 const Input = ({ isDisabled = false, id, label }) => {
   return (
-    <div className='w-2/6 text-left'>
-      <label htmlFor={id} className='mb-2 block text-sm text-gray-900	'>
+    <div className='w-5/12 text-left'>
+      <label htmlFor={id} className='mb-2 block text-sm text-gray-900'>
         {label}
       </label>
       <input
