@@ -11,21 +11,23 @@ const Manage = () => {
       <NavBarCart />
       <h1 className='my-10 text-center text-3xl font-bold'> Account Details </h1>
       <div className='align grid place-items-center'>
-        <Input isDisabled={isDisabled} id='email' label='Email' />
-        <Input isDisabled={isDisabled} id='full-name' label='Full Name' />
-        <Input isDisabled={isDisabled} id='date-of-birth' label='Date of Birth' />
-        <div>
+        <div className='mb-5 flex w-full flex-col items-center justify-center'>
+          <Input isDisabled={isDisabled} id='email' label='Email' />
+          <Input isDisabled={isDisabled} id='full-name' label='Full Name' />
+          <Input isDisabled={isDisabled} id='date-of-birth' label='Date of Birth' />
+        </div>
+        <div className='flex flex-row space-x-7'>
           {isDisabled ? (
-            <CustomButton className='w-full' variant='green-solid' onClick={() => setIsDisabled(!isDisabled)}>
-              <h1>Edit Details</h1>
+            <CustomButton variant='green-solid' onClick={() => setIsDisabled(!isDisabled)}>
+              <h3 className='min-w-full text-base'>Edit Details</h3>
             </CustomButton>
           ) : (
-            <CustomButton className='w-full' variant='green-solid' onClick={() => setIsDisabled(!isDisabled)}>
-              <h1>Confirm Changes</h1>
+            <CustomButton variant='green-solid' onClick={() => setIsDisabled(!isDisabled)}>
+              <h3 className='text-base'>Confirm Changes</h3>
             </CustomButton>
           )}
-          <CustomButton className='' variant='black-solid'>
-            <h1 className='text-white'>Delete Account</h1>
+          <CustomButton variant='black-solid'>
+            <h3 className='text-base text-white'>Delete Account</h3>
           </CustomButton>
         </div>
       </div>
