@@ -118,7 +118,7 @@ model Course {
   createDate         DateTime     @default(now())
   lastUpdatedUserId  String
   lastUpdatedDate    DateTime     @updatedAt
-  coverImage         Image?       @relation(fields: [imageAssetId], references: [assetId])
+  coverImage         Image?       @relation(fields: [coverImageAssetId], references: [assetId])
   status             CourseStatus @default(DRAFT)
   categoryId         String?
   createdBy          Admin        @relation("createdBy", fields: [creatorId], references: [userId])
@@ -126,7 +126,7 @@ model Course {
   category           Category?    @relation(fields: [categoryId], references: [id])
   chapters           Chapter[]
   userCourses        UserCourse[]
-  imageAssetId       String?
+  coverImageAssetId  String?
 
   @@map("courses")
 }
