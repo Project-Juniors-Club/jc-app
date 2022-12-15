@@ -1,11 +1,19 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, HStack, Text, VStack } from '@chakra-ui/react';
 import useSnackbar from '../../hooks/useSnackbar';
+import NavBarCart from '../../components/navbar/NavBarCart';
+import NavBarGeneral from '../../components/navbar/NavBarGeneral';
+import NavBarCourse from '../../components/navbar/NavBarCourse';
 import CustomButton from '../../components/Buttons';
 
 const Test = () => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   return (
     <div>
+      <NavBarGeneral></NavBarGeneral>
+      <br />
+      <NavBarCart></NavBarCart>
+      <br />
+      <NavBarCourse></NavBarCourse>
       <Text fontSize={'4xl'}>UI Components are shown here.</Text>
 
       <Text fontSize={'lg'}>Buttons</Text>

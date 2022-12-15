@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { Checkout } from 'checkout-sdk-node';
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 const CheckoutPageAPI = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.query.token;
-  const cko = new Checkout(process.env.CHECKOUT_SECRET_KEY, { pk: process.env.CHECKOUT_PUBLIC_KEY});
+  const cko = new Checkout(process.env.CHECKOUT_SECRET_KEY, { pk: process.env.CHECKOUT_PUBLIC_KEY });
 
   try {
     const payment = await cko.payments.request({
@@ -35,12 +35,11 @@ const CheckoutPageAPI = async (req: NextApiRequest, res: NextApiResponse) => {
       metadata: {
         value: 'My value',
       },
-    }
-    );
-    res.json({ "success" : payment });
+    });
+    res.json({ success: payment });
   } catch (err) {
-    res.json({ "failure" : err });
+    res.json({ failure: err });
   }
-}
+};
 
 export default CheckoutPageAPI;

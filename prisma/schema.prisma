@@ -118,7 +118,7 @@ model Course {
   createDate         DateTime     @default(now())
   lastUpdatedUserId  String
   lastUpdatedDate    DateTime     @updatedAt
-  coverImageKey      String?
+  coverImage         Image?       @relation(fields: [coverImageAssetId], references: [assetId])
   status             CourseStatus @default(DRAFT)
   categoryId         String?
   createdBy          Admin        @relation("createdBy", fields: [creatorId], references: [userId])
@@ -126,6 +126,7 @@ model Course {
   category           Category?    @relation(fields: [categoryId], references: [id])
   chapters           Chapter[]
   userCourses        UserCourse[]
+  coverImageAssetId  String?
 
   @@map("courses")
 }
@@ -180,20 +181,23 @@ model Asset {
 }
 
 model Image {
-  url     String
-  assetId String @id
-  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  filename String?
+  url      String
+  assetId  String  @id
+  asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
+  Course                     Course[]
 
   @@map("images")
 }
 
 model Video {
-  url     String
-  assetId String @id
-  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  filename String?
+  url      String
+  assetId  String  @id
+  asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("videos")
 }

@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteCourse });
     } else if (httpMethod == 'PUT') {
       // UPDATE TITLE, DESCRIPTION
-      const { title, description, learningObjectives, coverImageKey, updaterId, price, categoryId, status } = req.body;
+      const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status } = req.body;
 
       const updatedCourse = await prisma.course.update({
         where: {
@@ -61,7 +61,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title: title,
           description: description,
           learningObjectives: learningObjectives,
-          coverImageKey: coverImageKey,
+          coverImage: {
+            connect: {
+              assetId: coverImageAssetId,
+            },
+          },
           lastUpdatedBy: {
             connect: {
               userId: updaterId,

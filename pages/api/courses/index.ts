@@ -14,13 +14,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const courses = await prisma.course.findMany();
       res.status(200).json({ message: entityMessageObj.getAllSuccess, data: courses });
     } else if (httpMethod == 'POST') {
-      const { title, description, learningObjectives, coverImageKey, creatorId, price, categoryId, status } = req.body;
+      const { title, description, learningObjectives, coverImageAssetId, creatorId, price, categoryId, status } = req.body;
       // CREATE COURSE
       const dataToCreate = {
         data: {
           title: title,
           description: description,
           learningObjectives: learningObjectives,
+          coverImage: {
+            connect: {
+              assetId: coverImageAssetId,
+            },
+          },
           createdBy: {
             connect: {
               userId: creatorId,
