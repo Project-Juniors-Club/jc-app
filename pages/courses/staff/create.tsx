@@ -61,7 +61,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
         learningObjectives: learningObjectives,
         coverImageAssetId: undefined,
         creatorId: sess.user.id,
-        price: +isFree ? 0 : data.price,
+        price: +isFree ? 0 : data?.price,
         categoryId: category?.id,
         status: CourseStatus.DRAFT,
       })
@@ -72,9 +72,10 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     try {
       const courseId = await onSubmit(data);
       openSuccessNotification('Course Creation Successful', 'Redirecting to the course details page');
-      router.push(`/course/staff/${courseId}`);
+      router.push(`/courses/staff/${courseId}`);
     } catch (err) {
-      openErrorNotification('Course Creation Failed', err);
+      console.log(err);
+      openErrorNotification('Course Creation Failed', 'Please try again');
     }
   };
 
@@ -82,9 +83,10 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     try {
       const courseId = await onSubmit(data);
       openSuccessNotification('Course Creation Successful', 'Redirecting to the course editor page');
-      router.push(`/course/staff/editor/content/${courseId}`);
+      router.push(`/courses/staff/editor/content/${courseId}`);
     } catch (err) {
-      openErrorNotification('Course Creation Failed', err);
+      console.log(err);
+      openErrorNotification('Course Creation Failed', 'Please try again');
     }
   };
 
