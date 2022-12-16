@@ -8,9 +8,19 @@ type Props = {
   options: RegisterOptions;
   isDisabled: boolean;
   errors: DeepMap<FieldValues, FieldError>;
+  defaultValue?: string;
 };
 
-export const TextInput = ({ label, register, options, headerText, placeholderText = headerText, isDisabled, errors }: Props) => {
+export const TextInput = ({
+  label,
+  register,
+  options,
+  headerText,
+  placeholderText = headerText,
+  isDisabled,
+  errors,
+  defaultValue = '',
+}: Props) => {
   return (
     <div className='grid gap-y-2'>
       {headerText ? (
@@ -30,6 +40,7 @@ export const TextInput = ({ label, register, options, headerText, placeholderTex
         placeholder={placeholderText}
         {...register(label, options)}
         disabled={isDisabled}
+        defaultValue={defaultValue}
       />
       {errors[label] && <div className='text-[#E53E3E]'>{errors[label].message}</div>}
     </div>

@@ -1,4 +1,5 @@
 import { DeepMap, FieldError, FieldValues, RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { DefaultValue } from 'recoil';
 
 type Props = {
   label: string;
@@ -8,9 +9,19 @@ type Props = {
   options: RegisterOptions;
   isDisabled: boolean;
   errors: DeepMap<FieldValues, FieldError>;
+  defaultValue?: string;
 };
 
-export const TextAreaInput = ({ label, register, options, headerText, placeholderText = headerText, errors, isDisabled }: Props) => {
+export const TextAreaInput = ({
+  label,
+  register,
+  options,
+  headerText,
+  placeholderText = headerText,
+  errors,
+  isDisabled,
+  defaultValue,
+}: Props) => {
   return (
     <div className='grid gap-y-2'>
       <label htmlFor={label}>
@@ -25,6 +36,7 @@ export const TextAreaInput = ({ label, register, options, headerText, placeholde
         placeholder={placeholderText}
         {...register(label, options)}
         disabled={isDisabled}
+        defaultValue={defaultValue}
       />
       {errors[label] && <div className='text-[#E53E3E]'>{errors[label].message}</div>}
     </div>

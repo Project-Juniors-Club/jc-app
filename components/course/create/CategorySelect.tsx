@@ -6,22 +6,20 @@ import { useController, UseControllerProps } from 'react-hook-form';
 type Props = {
   categories: Category[];
   disabled: boolean;
+  defaultCategory?: Category;
 };
 
 export const CategorySelect = (props: Props & UseControllerProps) => {
-  const propsWithDefaultValue = {
-    ...props,
-    defaultValue: {
-      id: undefined,
-      name: undefined,
-      description: undefined,
-    },
+  props.defaultCategory = props?.defaultCategory || {
+    id: undefined,
+    name: undefined,
+    description: undefined,
   };
   const {
     field: { value, onChange },
-  } = useController(propsWithDefaultValue);
+  } = useController(props);
 
-  const { categories, disabled } = propsWithDefaultValue;
+  const { categories, disabled } = props;
 
   return (
     <div className='grid gap-y-2'>

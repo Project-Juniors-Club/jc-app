@@ -1,7 +1,7 @@
 import CustomButton from '../../Buttons';
 import Image from 'next/image';
-import { ChangeEvent, useRef, useState } from 'react';
-import { FieldValues, RegisterOptions, useForm, UseFormRegister, UseFormResetField } from 'react-hook-form';
+import { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
+import { FieldValues, UseFormRegister, UseFormResetField } from 'react-hook-form';
 
 type Props = {
   label: string;
@@ -10,11 +10,12 @@ type Props = {
   register: UseFormRegister<FieldValues>;
   resetField: UseFormResetField<FieldValues>;
   isDisabled: boolean;
+  file: File;
+  setFile: Dispatch<SetStateAction<File>>;
 };
 
 // TODO: support multiple files, with different file types
-export const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled }: Props) => {
-  const [file, setFile] = useState<File>();
+export const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled, file, setFile }: Props) => {
   const { ref, ...rest } = register(label, {
     onChange: (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) {
