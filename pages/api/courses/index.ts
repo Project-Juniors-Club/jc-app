@@ -7,7 +7,6 @@ import { errorMessageHandler } from '../../../utils/error-message-handler';
 const entityMessageObj = entityMessageCreator('course');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req);
   try {
     const httpMethod = req.method;
     if (httpMethod == 'GET') {
@@ -40,9 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           status: status,
         },
       };
-      if (coverImageKey) {
-        dataToCreate.data['coverImageKey'] = coverImageKey;
-      }
       if (categoryId) {
         dataToCreate.data['category'] = {
           connect: {
