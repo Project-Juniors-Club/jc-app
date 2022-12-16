@@ -56,9 +56,9 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     // returns id of course created
     return await axios
       .post('/api/courses', {
-        title: title,
-        description: description,
-        learningObjectives: learningObjectives,
+        title: title.trim(),
+        description: description.trim(),
+        learningObjectives: learningObjectives.trim(),
         coverImageAssetId: undefined,
         creatorId: sess.user.id,
         price: +isFree ? 0 : data?.price,
