@@ -84,7 +84,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     try {
       const courseId = await onSubmit(data);
       openSuccessNotification('Course Creation Successful', 'Redirecting to the course details page');
-      router.push(`/course/${courseId}`);
+      router.push(`/course/staff/${courseId}`);
     } catch (err) {
       openErrorNotification('Course Creation Failed', err);
     }
@@ -94,7 +94,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     try {
       const courseId = await onSubmit(data);
       openSuccessNotification('Course Creation Successful', 'Redirecting to the course editor page');
-      router.push('/course/edit');
+      router.push(`/course/staff/editor/${courseId}`);
     } catch (err) {
       openErrorNotification('Course Creation Failed', err);
     }
