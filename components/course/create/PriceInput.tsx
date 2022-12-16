@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) => {
-  const [isFree, setIsFree] = useState(defaultPrice > 0);
+  const [isFree, setIsFree] = useState(defaultPrice === 0);
 
   return (
     <div>
@@ -27,9 +27,8 @@ export const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: P
               type='radio'
               className='h-4 w-4 border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
               value={1}
-              {...register('isFree', {
-                onChange: () => setIsFree(true),
-              })}
+              {...register('isFree')}
+              onChange={() => setIsFree(true)}
               disabled={isDisabled}
               defaultChecked={defaultPrice === 0}
             />
@@ -44,9 +43,8 @@ export const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: P
               type='radio'
               className='h-4 w-4 border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
               value={0}
-              {...register('isFree', {
-                onChange: () => setIsFree(false),
-              })}
+              {...register('isFree')}
+              onChange={() => setIsFree(false)}
               disabled={isDisabled}
               defaultChecked={defaultPrice > 0}
             />

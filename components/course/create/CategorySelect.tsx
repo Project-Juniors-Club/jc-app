@@ -9,17 +9,19 @@ type Props = {
   defaultCategory?: Category;
 };
 
-export const CategorySelect = (props: Props & UseControllerProps) => {
-  props.defaultCategory = props?.defaultCategory || {
+export const CategorySelect = ({
+  categories,
+  disabled,
+  defaultCategory = {
     id: undefined,
     name: undefined,
     description: undefined,
-  };
+  },
+  ...rest
+}: Props & UseControllerProps) => {
   const {
     field: { value, onChange },
-  } = useController(props);
-
-  const { categories, disabled } = props;
+  } = useController({ defaultValue: defaultCategory, ...rest });
 
   return (
     <div className='grid gap-y-2'>

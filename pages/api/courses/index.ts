@@ -20,11 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title: title,
           description: description,
           learningObjectives: learningObjectives,
-          coverImage: {
-            connect: {
-              assetId: coverImageAssetId,
-            },
-          },
           createdBy: {
             connect: {
               userId: creatorId,
@@ -39,6 +34,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           status: status,
         },
       };
+      if (coverImageAssetId) {
+        dataToCreate.data['coverImage'] = {
+          connect: {
+            assetId: coverImageAssetId,
+          },
+        };
+      }
       if (categoryId) {
         dataToCreate.data['category'] = {
           connect: {
@@ -46,7 +48,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         };
       }
-      console.log(dataToCreate);
       const created = await prisma.course.create(dataToCreate);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {

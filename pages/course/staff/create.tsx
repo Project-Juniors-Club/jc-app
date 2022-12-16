@@ -1,4 +1,4 @@
-import { Asset, AssetType, Category } from '@prisma/client';
+import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import CustomButton from '../../../components/Buttons';
@@ -49,33 +49,21 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
   // returns course id created
   const onSubmit: SubmitHandler<FormValues> = async data => {
     const { title, description, learningObjectives, isFree, category } = data;
-    const status = 'DRAFT';
 
-    // TODO: update when we have image upload mechanism
-    const coverImageAssetId = undefined;
-    // const coverImageAssetId = file ? await uploadImage(file) : undefined;
-    // if (file && !coverImageAssetId) {
-    //   throw 'Image upload failed, please try again.';
-    // }
-
-    const userId = sess.user.id;
-    const price = +isFree ? 0 : data.price;
-
-    const toSend = {
-      title: title,
-      description: description,
-      learningObjectives: learningObjectives,
-      coverImageAssetId: coverImageAssetId,
-      creatorId: userId,
-      price: price,
-      categoryId: category.id,
-      status: status,
-    };
+    // TODO: when we have image upload mechanism
+    // const coverImageAssetId = await axios.post('some endpoint')
 
     // returns id of course created
     return await axios
       .post('/api/courses', {
-        ...toSend,
+        title: title,
+        description: description,
+        learningObjectives: learningObjectives,
+        coverImageAssetId: undefined,
+        creatorId: sess.user.id,
+        price: +isFree ? 0 : data.price,
+        categoryId: category?.id,
+        status: CourseStatus.DRAFT,
       })
       .then(resp => resp.data.data.id);
   };
@@ -94,7 +82,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     try {
       const courseId = await onSubmit(data);
       openSuccessNotification('Course Creation Successful', 'Redirecting to the course editor page');
-      router.push(`/course/staff/editor/${courseId}`);
+      router.push(`/course/staff/editor/content/${courseId}`);
     } catch (err) {
       openErrorNotification('Course Creation Failed', err);
     }
