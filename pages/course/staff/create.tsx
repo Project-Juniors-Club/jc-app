@@ -1,20 +1,21 @@
-import { Category } from '@prisma/client';
+import { Asset, AssetType, Category } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import CustomButton from '../../components/Buttons';
+import CustomButton from '../../../components/Buttons';
 import { useDisclosure } from '@chakra-ui/react';
-import { TextInput } from '../../components/course/create/TextInput';
-import { TextAreaInput } from '../../components/course/create/TextAreaInput';
-import { CategorySelect } from '../../components/course/create/CategorySelect';
-import { UploadButton } from '../../components/course/create/UploadButton';
-import { PriceInput } from '../../components/course/create/PriceInput';
-import { CancelModal } from '../../components/course/create/CancelModal';
-import prisma from '../../lib/prisma';
+import { TextInput } from '../../../components/course/create/TextInput';
+import { TextAreaInput } from '../../../components/course/create/TextAreaInput';
+import { CategorySelect } from '../../../components/course/create/CategorySelect';
+import { UploadButton } from '../../../components/course/create/UploadButton';
+import { PriceInput } from '../../../components/course/create/PriceInput';
+import { CancelModal } from '../../../components/course/create/CancelModal';
 import { getSession } from 'next-auth/react';
 import axios from 'axios';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
-import useSnackbar from '../../hooks/useSnackbar';
+import useSnackbar from '../../../hooks/useSnackbar';
+import { useState } from 'react';
+import prisma from '../../../lib/prisma';
 
 type FormValues = {
   title: string;
@@ -34,6 +35,9 @@ type Props = {
 const CourseCreatePage = ({ categories, sess }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const [file, setFile] = useState<File>();
   const {
     register,
     handleSubmit,
@@ -41,20 +45,18 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     resetField,
     formState: { isSubmitting, errors },
   } = useForm();
-  const { isOpen, onClose, onOpen } = useDisclosure();
 
+  // returns course id created
   const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { title, description, learningObjectives, coverImage, isFree, category } = data;
+    const { title, description, learningObjectives, isFree, category } = data;
     const status = 'DRAFT';
 
-    const coverImageKey = coverImage[0]
-      ? (
-          await axios.put('/api/media/', {
-            name: coverImage[0].name,
-            type: coverImage[0].type,
-          })
-        ).data.data.Key
-      : undefined;
+    // TODO: update when we have image upload mechanism
+    const coverImageAssetId = undefined;
+    // const coverImageAssetId = file ? await uploadImage(file) : undefined;
+    // if (file && !coverImageAssetId) {
+    //   throw 'Image upload failed, please try again.';
+    // }
 
     const userId = sess.user.id;
     const price = +isFree ? 0 : data.price;
@@ -63,41 +65,39 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
       title: title,
       description: description,
       learningObjectives: learningObjectives,
-      coverImageKey: coverImageKey,
+      coverImageAssetId: coverImageAssetId,
       creatorId: userId,
       price: price,
       categoryId: category.id,
       status: status,
     };
 
-    const result = await axios
+    // returns id of course created
+    return await axios
       .post('/api/courses', {
         ...toSend,
       })
-      .then(resp => {
-        openSuccessNotification('Course created successfully');
-        console.log(resp.data.data.id);
-        return resp.data.data.id;
-      })
-      .catch(error => {
-        openErrorNotification('Course creation failed', 'Please try again');
-        throw error;
-      });
-    return result;
+      .then(resp => resp.data.data.id);
   };
 
   const onSubmitAndRedirectCourseOverview: SubmitHandler<FormValues> = async data => {
     try {
       const courseId = await onSubmit(data);
+      openSuccessNotification('Course Creation Successful', 'Redirecting to the course details page');
       router.push(`/course/${courseId}`);
-    } catch (err) {}
+    } catch (err) {
+      openErrorNotification('Course Creation Failed', err);
+    }
   };
 
   const onSubmitAndRedirectCourseEditor: SubmitHandler<FormValues> = async data => {
     try {
       const courseId = await onSubmit(data);
-      router.push('/course/editor');
-    } catch (err) {}
+      openSuccessNotification('Course Creation Successful', 'Redirecting to the course editor page');
+      router.push('/course/edit');
+    } catch (err) {
+      openErrorNotification('Course Creation Failed', err);
+    }
   };
 
   return (
@@ -155,6 +155,8 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
             headerText={'Course Cover Image Upload'}
             buttonText={'Upload Image'}
             isDisabled={isSubmitting}
+            file={file}
+            setFile={setFile}
           />
           <PriceInput register={register} errors={errors} isDisabled={isSubmitting} />
         </div>
@@ -171,7 +173,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
               }}
               isDisabled={isSubmitting}
             >
-              <div>Cancel</div>
+              Cancel
             </CustomButton>
           </div>
           <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isSubmitting}>

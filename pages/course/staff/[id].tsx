@@ -1,9 +1,9 @@
 import { Course } from '@prisma/client';
 import { GetStaticProps, GetStaticPaths } from 'next';
 
-import Layout from '../../components/Layout';
-import prisma from '../../lib/prisma';
-import { getCourseWithAuthorAndDate } from '../../lib/server/course';
+import Layout from '../../../components/Layout';
+import prisma from '../../../lib/prisma';
+import { getCourseWithAuthorAndDate } from '../../../lib/server/course';
 
 type Props = {
   course?: Course;
@@ -23,7 +23,7 @@ const StaticPropsDetail = ({ course, errors }: Props) => {
 
   return (
     <Layout title={`${'Course Detail'} | Next.js + TypeScript Example`}>
-      {course && <>{`${course.title} ${course.description} ${course.categoryId} ${course.coverImageKey} ${course.creatorId}`}</>}
+      {course && <>{`${course.title} ${course.description} ${course.categoryId} ${course.creatorId}`}</>}
     </Layout>
   );
 };
