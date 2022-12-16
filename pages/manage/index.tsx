@@ -10,6 +10,13 @@ const editAction = {
 };
 
 const EditPopUp = ({ isOpen, setIsOpen }) => {
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const handleClose = () => {
+    setIsCompleted(false);
+    setIsOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onClose={() => setIsOpen(false)} className='relative z-50'>
       <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
@@ -18,25 +25,43 @@ const EditPopUp = ({ isOpen, setIsOpen }) => {
           <Dialog.Title as='h1' className='mb-8 text-center text-2xl font-bold text-gray-900'>
             Update Account Details
           </Dialog.Title>
-          <div className='mt-2 mb-5'>
-            <p className='text-sm text-gray-500'>
-              You have updated your account details. To confirm the update, please enter the OTP sent to your email.
-            </p>
-          </div>
-          <input
-            type='number'
-            id='otp'
-            aria-label='otp'
-            className='mb-10 block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-[#7FB519] focus:ring-[#7FB519]'
-            placeholder='Enter your OTP'
-          />
+          {!isCompleted ? (
+            <>
+              <div className='mt-2 mb-5'>
+                <p className='text-sm'>
+                  You have updated your account details. To confirm the update, please enter the OTP sent to your email.
+                </p>
+              </div>
+              <input
+                type='number'
+                id='otp'
+                aria-label='otp'
+                className='mb-10 block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-[#7FB519] focus:ring-[#7FB519]'
+                placeholder='Enter your OTP'
+              />
+            </>
+          ) : (
+            <div className='mt-2 mb-5'>
+              <p className='text-center text-sm'>Your account details have been successfully updated!</p>
+            </div>
+          )}
           <div className='flex flex-row justify-center space-x-7'>
-            <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
-              <h3 className='text-base'>Cancel</h3>
-            </CustomButton>{' '}
-            <CustomButton variant='black-solid' onClick={() => setIsOpen(false)}>
-              <h3 className='text-base text-white'>Submit</h3>
-            </CustomButton>
+            {!isCompleted ? (
+              <>
+                <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
+                  <h3 className='text-base'>Cancel</h3>
+                </CustomButton>
+                <CustomButton variant='black-solid' onClick={() => setIsCompleted(true)}>
+                  <h3 className='text-base text-white'>Submit</h3>
+                </CustomButton>
+              </>
+            ) : (
+              <div className='mt-5'>
+                <CustomButton variant='green-outline' onClick={handleClose}>
+                  <h3 className='text-base'>Done</h3>
+                </CustomButton>
+              </div>
+            )}
           </div>
         </Dialog.Panel>
       </div>
@@ -45,35 +70,94 @@ const EditPopUp = ({ isOpen, setIsOpen }) => {
 };
 
 const DeletePopUp = ({ isOpen, setIsOpen }) => {
+  const deleteProgress = {
+    INITIAL: 'INITIAL',
+    CONFIRMATION: 'CONFIRMATION',
+    COMPLETE: 'COMPLETE',
+  };
+
+  const [progress, setProgress] = useState(deleteProgress.INITIAL);
+
+  const handleClose = () => {
+    setProgress(deleteProgress.INITIAL);
+    setIsOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onClose={() => setIsOpen(false)} className='relative z-50'>
       <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
       <div className='fixed inset-0 flex items-center justify-center p-4'>
         <Dialog.Panel className='w-5/12 transform overflow-hidden rounded-xl bg-white p-14 text-left align-middle shadow-xl transition-all'>
           <Dialog.Title as='h1' className='mb-8 text-center text-2xl font-bold text-gray-900'>
-            Delete Account
+            {progress !== deleteProgress.COMPLETE ? 'Delete Account' : 'Your account has been deleted'}
           </Dialog.Title>
           <div className='mt-2 mb-5'>
-            <p className='text-sm text-gray-500'>
-              Deleting the account will delete all records. This action <b>cannot be undone</b>. To confirm, please enter the OTP sent to
-              your email.
-            </p>
+            {progress === deleteProgress.INITIAL && (
+              <p className='text-sm'>
+                Deleting the account will delete all records. This action <b>cannot be undone</b>. To confirm, please enter the OTP sent to
+                your email.
+              </p>
+            )}
+            {progress === deleteProgress.CONFIRMATION && (
+              <p className='text-sm'>
+                Your account will be <b>permanently deleted</b>. Are you sure to proceed?
+              </p>
+            )}
+            {progress === deleteProgress.COMPLETE && (
+              <p className='text-sm'>
+                We have received a request to permanently delete your account. Your account has been deactivated from the site and will be
+                permanently deleted within 14 days.
+                <br />
+                <br />
+                If you did not request to delete your account, please cancel the request here:
+                <a href='https://foodbacksg.sg/retrieve-your-account'>
+                  {' '}
+                  <u>
+                    <b className='text-[#385600]'>https://foodbacksg.sg/retrieve-your-account</b>
+                  </u>
+                </a>
+                <br />
+                <br />
+                You will now be redirected to the public landing page.
+              </p>
+            )}
           </div>
-          <input
-            type='number'
-            id='otp'
-            aria-label='otp'
-            className='mb-10 block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-[#7FB519] focus:ring-[#7FB519]'
-            placeholder='Enter your OTP'
-          />
-          <div className='flex flex-row justify-center space-x-7'>
-            <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
-              <h3 className='text-base'>Cancel</h3>
-            </CustomButton>{' '}
-            <CustomButton variant='black-solid' onClick={() => setIsOpen(false)}>
-              <h3 className='text-base text-white'>Submit</h3>
-            </CustomButton>
-          </div>
+          {progress === deleteProgress.INITIAL && (
+            <input
+              type='number'
+              id='otp'
+              aria-label='otp'
+              className='mb-10 block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-[#7FB519] focus:ring-[#7FB519]'
+              placeholder='Enter your OTP'
+            />
+          )}
+          {progress === deleteProgress.INITIAL && (
+            <div className='flex flex-row justify-center space-x-7'>
+              <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
+                <h3 className='text-base'>Cancel</h3>
+              </CustomButton>
+              <CustomButton variant='black-solid' onClick={() => setProgress(deleteProgress.CONFIRMATION)}>
+                <h3 className='text-base text-white'>Submit</h3>
+              </CustomButton>
+            </div>
+          )}
+          {progress === deleteProgress.CONFIRMATION && (
+            <div className='mt-9 flex flex-row justify-center space-x-7'>
+              <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
+                <h3 className='text-base'>Cancel</h3>
+              </CustomButton>
+              <CustomButton variant='black-solid' onClick={() => setProgress(deleteProgress.COMPLETE)}>
+                <h3 className='text-base text-white'>Confirm</h3>
+              </CustomButton>
+            </div>
+          )}
+          {progress === deleteProgress.COMPLETE && (
+            <div className='mt-9 flex flex-row justify-center space-x-7'>
+              <CustomButton variant='green-outline' onClick={handleClose}>
+                <h3 className='text-base'>Done</h3>
+              </CustomButton>
+            </div>
+          )}
         </Dialog.Panel>
       </div>
     </Dialog>
