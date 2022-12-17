@@ -18,7 +18,7 @@ const SortingGame = () => {
       )),
     [initialItems],
   );
-  function handleDragEnd({ active, over }) {
+  const handleDragEnd = ({ active, over }) => {
     const itemId = active.id;
     const bucketId = over?.id;
     const previousBucketId = Object.keys(itemsToBucket).find(bucket => itemsToBucket[bucket]?.includes(itemId));
@@ -37,7 +37,7 @@ const SortingGame = () => {
       }));
       setInitialItems(prev => prev.filter(item => item !== itemId));
     }
-  }
+  };
   const handleSubmit = () => {};
 
   return (

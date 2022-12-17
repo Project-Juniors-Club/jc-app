@@ -3,7 +3,7 @@ import { Listbox } from '@headlessui/react';
 import { Category } from '@prisma/client';
 import Image from 'next/image';
 import { useController, UseControllerProps } from 'react-hook-form';
-import CustomButton from '../../Buttons';
+import CustomButton from '../../Button';
 import Modal from '../../Modal';
 
 const CancelModal = ({ isOpen, onClose, isCentered }) => {

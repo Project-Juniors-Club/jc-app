@@ -6,7 +6,7 @@ const Item = ({ children, id }: { children: React.ReactNode; id: string }) => {
     id: id,
   });
   const style = {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 1)` : null,
+    transform: transform && `translate3d(${transform.x}px, ${transform.y}px, 1)`,
     width: '100px',
     height: '100px',
     backgroundColor: 'red',
