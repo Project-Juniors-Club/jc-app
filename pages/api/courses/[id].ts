@@ -13,8 +13,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (httpMethod == 'GET') {
       const course = await prisma.course.findFirst({
         where: { id: id },
+        include: {
+          createdBy: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          lastUpdatedBy: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
-      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: course });
+      const result = {
+        ...course,
+        price: course.price.toString(),
+        createDate: course.createDate.toLocaleDateString(),
+        lastUpdatedDate: course.createDate.toLocaleDateString(),
+      };
+      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: result });
     } else if (httpMethod == 'DELETE') {
       // DELETE COURSE
       const deleteCourse = await prisma.course.delete({
@@ -25,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteCourse });
     } else if (httpMethod == 'PUT') {
       // UPDATE TITLE, DESCRIPTION
-      const { title, description, learningObjectives, coverImageUrl, updaterId, price, categoryId, status } = req.body;
+      const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status } = req.body;
 
       const updatedCourse = await prisma.course.update({
         where: {
@@ -35,7 +61,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title: title,
           description: description,
           learningObjectives: learningObjectives,
-          coverImageUrl: coverImageUrl,
+          coverImage: {
+            connect: {
+              assetId: coverImageAssetId,
+            },
+          },
           lastUpdatedBy: {
             connect: {
               userId: updaterId,
