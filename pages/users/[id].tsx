@@ -28,8 +28,8 @@ export default StaticPropsDetail;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get the paths we want to pre-render based on users
-  const sampleUserData = await prisma.user.findMany();
-  const paths = sampleUserData.map(user => ({
+  const users = await prisma.user.findMany();
+  const paths = users.map(user => ({
     params: { id: user.id.toString() },
   }));
 
@@ -43,6 +43,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 // direct database queries.
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
+    const id = params?.id;
+    const users = await prisma.user.findMany();
+    const item = users.find(data => data.id === id);
     const user = await prisma.user.findFirst({
       where: {
         id: params?.id.toString(),

@@ -1,756 +1,751 @@
 {
-	"info": {
-		"_postman_id": "5ff24940-ed3b-4c97-a197-b2936acf7bca",
-		"name": "JC-API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "18777731"
-	},
-	"item": [
-		{
-			"name": "Authentication",
-			"item": [
-				{
-					"name": "Login User Admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var data = pm.response.json();\r",
-									"console.log(data.data.accessToken);\r",
-									"pm.environment.set(\"token\", data.data.accessToken);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\":\"admin@gmail.com\",\n    \"password\":\"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/login",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Login User Super Admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var data = pm.response.json();\r",
-									"console.log(data.data.accessToken);\r",
-									"pm.environment.set(\"token\", data.data.accessToken);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\":\"superadmin@gmail.com\",\n    \"password\":\"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/login",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\":\"test1@email.com\",\n    \"name\":\"testName\",\n    \"tier\":\"nurse\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/register",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Set Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{Input From URL}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"newPassword\":\"root\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/setPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"setPassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Reset Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"oldPassword\":\"root\",\n    \"newPassword\":\"root2\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/resetPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"resetPassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Forgot Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{Input from URL}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"newPassword\":\"root\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/resetForgotPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"resetForgotPassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Set PW URL",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\":\"user1@gmail.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/createSetPasswordURL",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"createSetPasswordURL"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Forgot PW URL",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\":\"test@email.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/auth/createForgotPasswordURL",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"auth",
-								"createForgotPasswordURL"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Get All Users",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/users/",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get 1 User By Id",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/users/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create 1 User",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n        \"email\": \"newUser@gmail.com\",\n        \"name\": \"newUser\",\n        \"tier\": \"nurse\",\n        \"defaultBusId\": null,\n        \"occupation\": null,\n        \"contactNo\": null,\n        \"address\": null,\n        \"nonWorkingDays\": null,\n        \"password\": \"abcsde\"\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update 1 User",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n        \"email\": \"newUser@gmail.com\",\n        \"name\": \"newUser\",\n        \"tier\": \"nurse\",\n        \"defaultBusId\": null,\n        \"occupation\": null,\n        \"contactNo\": null,\n        \"address\": null,\n        \"nonWorkingDays\": null,\n        \"password\": \"abcsde\"\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/3",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete 1 User",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"attrs\": {\n        \"email\": \"Test@gm1.com\"\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Course",
-			"item": [
-				{
-					"name": "Get All Courses",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/courses",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"courses"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get 1 Course By Id",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/courses/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"courses",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create 1 Course",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n        \"adminId\": \"abc12345\",\n        \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/courses",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"courses"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update 1 Course",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n             \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/courses/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"courses",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete 1 Course",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/courses/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"courses",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Image",
-			"item": [
-				{
-					"name": "Get All Images",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/images",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"images"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get 1 Image By Id",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/images/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"images",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create 1 Image",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"url\": \"google.com\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/images",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"images"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update 1 Image",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"url\": \"yahoo.com\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/images/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"images",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete 1 Image",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/images/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"images",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "hostname",
-			"value": "http://localhost:3000/api",
-			"type": "default"
-		}
-	]
+  "info": {
+    "_postman_id": "43b252af-6dd0-4e01-b504-3e070b96723d",
+    "name": "JC-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17469210"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login User Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();\r",
+                  "console.log(data.data.accessToken);\r",
+                  "pm.environment.set(\"token\", data.data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"admin@gmail.com\",\n    \"password\":\"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/login",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User Super Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();\r",
+                  "console.log(data.data.accessToken);\r",
+                  "pm.environment.set(\"token\", data.data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"superadmin@gmail.com\",\n    \"password\":\"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/login",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"test1@email.com\",\n    \"name\":\"testName\",\n    \"tier\":\"nurse\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/register",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{Input From URL}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"newPassword\":\"root\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/setPassword",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "setPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"oldPassword\":\"root\",\n    \"newPassword\":\"root2\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/resetPassword",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "resetPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{Input from URL}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"newPassword\":\"root\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/resetForgotPassword",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "resetForgotPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Set PW URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"user1@gmail.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/createSetPasswordURL",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "createSetPasswordURL"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Forgot PW URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"test@email.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/auth/createForgotPasswordURL",
+              "host": ["{{hostname}}"],
+              "path": ["users", "auth", "createForgotPasswordURL"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/users/",
+              "host": ["{{hostname}}"],
+              "path": ["users", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get 1 User By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/users/1",
+              "host": ["{{hostname}}"],
+              "path": ["users", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create 1 User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n        \"email\": \"newUser@gmail.com\",\n        \"name\": \"newUser\",\n        \"tier\": \"nurse\",\n        \"defaultBusId\": null,\n        \"occupation\": null,\n        \"contactNo\": null,\n        \"address\": null,\n        \"nonWorkingDays\": null,\n        \"password\": \"abcsde\"\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/",
+              "host": ["{{hostname}}"],
+              "path": ["users", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update 1 User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n        \"email\": \"newUser@gmail.com\",\n        \"name\": \"newUser\",\n        \"tier\": \"nurse\",\n        \"defaultBusId\": null,\n        \"occupation\": null,\n        \"contactNo\": null,\n        \"address\": null,\n        \"nonWorkingDays\": null,\n        \"password\": \"abcsde\"\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/3",
+              "host": ["{{hostname}}"],
+              "path": ["users", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete 1 User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"attrs\": {\n        \"email\": \"Test@gm1.com\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/1",
+              "host": ["{{hostname}}"],
+              "path": ["users", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Course",
+      "item": [
+        {
+          "name": "Get All Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/courses",
+              "host": ["{{hostname}}"],
+              "path": ["courses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get 1 Course By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/courses/1",
+              "host": ["{{hostname}}"],
+              "path": ["courses", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create 1 Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n        \"adminId\": \"abc12345\",\n        \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/courses",
+              "host": ["{{hostname}}"],
+              "path": ["courses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update 1 Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n        \"name\": \"kevin\",\n        \"description\": \"newUser\",\n        \"stars\": 1,\n             \"price\": 100.00,\n        \"subcategoryId\": \"ijowruibfrhbfwe\",\n        \"status\": \"DRAFT\"\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/courses/1",
+              "host": ["{{hostname}}"],
+              "path": ["courses", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete 1 Course",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/courses/1",
+              "host": ["{{hostname}}"],
+              "path": ["courses", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SpotTheDifference",
+      "item": [
+        {
+          "name": "Get All Games",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/spot-difference-game/",
+              "host": ["{{hostname}}"],
+              "path": ["spot-difference-game", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get 1 Game By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/spot-difference-game/1",
+              "host": ["{{hostname}}"],
+              "path": ["spot-difference-game", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create 1 Game",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"leftImageId\": \"1\",\r\n    \"rightImageId\": \"2\",\r\n    \"differences\": [\r\n        0.11,\r\n        0.12,\r\n        0.13,\r\n        0.14\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/spot-difference-game/",
+              "host": ["{{hostname}}"],
+              "path": ["spot-difference-game", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update 1 Game",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"leftImageId\": \"1\",\r\n    \"rightImageId\":  \"2\",\r\n    \"differences\": [\r\n        0.11,\r\n        0.12,\r\n        0.13,\r\n        0.14,\r\n        0.26,\r\n        0.27,\r\n        0.28,\r\n        0.29\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/spot-difference-game/1",
+              "host": ["{{hostname}}"],
+              "path": ["spot-difference-game", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete 1 Game",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/spot-difference-game/1",
+              "host": ["{{hostname}}"],
+              "path": ["spot-difference-game", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "item": [
+        {
+          "name": "Get All Images",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/images",
+              "host": ["{{hostname}}"],
+              "path": ["images"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get 1 Image By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/images/1",
+              "host": ["{{hostname}}"],
+              "path": ["images", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create 1 Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"url\": \"google.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/images",
+              "host": ["{{hostname}}"],
+              "path": ["images"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update 1 Image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"url\": \"yahoo.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/images/1",
+              "host": ["{{hostname}}"],
+              "path": ["images", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete 1 Image",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/images/1",
+              "host": ["{{hostname}}"],
+              "path": ["images", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "hostname",
+      "value": "http://localhost:3000/api",
+      "type": "default"
+    }
+  ]
 }

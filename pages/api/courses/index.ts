@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { entityMessageCreator } from '../../../utils/api-messages';
@@ -10,29 +11,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const httpMethod = req.method;
     if (httpMethod == 'GET') {
       const courses = await prisma.course.findMany();
-      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: courses });
+      res.status(200).json({ message: entityMessageObj.getAllSuccess, data: courses });
     } else if (httpMethod == 'POST') {
-      const { name, description, stars, adminId, price, subcategoryId, status } = req.body;
+      const { title, description, learningObjectives, coverImageAssetId, creatorId, price, categoryId, status } = req.body;
       // CREATE COURSE
-      const created = await prisma.course.create({
+      const dataToCreate = {
         data: {
-          name: name,
+          title: title,
           description: description,
-          stars: stars,
+          learningObjectives: learningObjectives,
           createdBy: {
             connect: {
-              userId: adminId,
+              userId: creatorId,
+            },
+          },
+          lastUpdatedBy: {
+            connect: {
+              userId: creatorId,
             },
           },
           price: price,
-          subcategory: {
-            connect: {
-              id: subcategoryId,
-            },
-          },
-          status,
+          status: status,
         },
-      });
+      };
+      if (coverImageAssetId) {
+        dataToCreate.data['coverImage'] = {
+          connect: {
+            assetId: coverImageAssetId,
+          },
+        };
+      }
+      if (categoryId) {
+        dataToCreate.data['category'] = {
+          connect: {
+            id: categoryId,
+          },
+        };
+      }
+      const created = await prisma.course.create(dataToCreate);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {
       res.setHeader('Allow', ['GET', 'POST']);

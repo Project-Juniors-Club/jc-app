@@ -13,8 +13,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (httpMethod == 'GET') {
       const course = await prisma.course.findFirst({
         where: { id: id },
+        include: {
+          createdBy: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          lastUpdatedBy: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
-      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: course });
+      const result = {
+        ...course,
+        price: course.price.toString(),
+        createDate: course.createDate.toLocaleDateString(),
+        lastUpdatedDate: course.createDate.toLocaleDateString(),
+      };
+      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: result });
     } else if (httpMethod == 'DELETE') {
       // DELETE COURSE
       const deleteCourse = await prisma.course.delete({
@@ -24,42 +50,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteCourse });
     } else if (httpMethod == 'PUT') {
-      // UPDATE NAME, DESCRIPTION, STARS
-      const { name, description, stars, subcategoryId, price, status } = req.body;
+      // UPDATE TITLE, DESCRIPTION
+      const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status } = req.body;
 
-      let updatedCourse = {};
-      if (subcategoryId) {
-        updatedCourse = await prisma.course.update({
-          where: {
-            id: id,
-          },
-          data: {
-            name,
-            description,
-            stars,
-            price,
-            status,
-            subcategory: {
-              connect: {
-                id: subcategoryId,
-              },
+      const updatedCourse = await prisma.course.update({
+        where: {
+          id: id,
+        },
+        data: {
+          title: title,
+          description: description,
+          learningObjectives: learningObjectives,
+          coverImage: {
+            connect: {
+              assetId: coverImageAssetId,
             },
           },
-        });
-      } else {
-        updatedCourse = await prisma.course.update({
-          where: {
-            id: id,
+          lastUpdatedBy: {
+            connect: {
+              userId: updaterId,
+            },
           },
-          data: {
-            name,
-            description,
-            stars,
-            price,
-            status,
+          price: price,
+          category: {
+            connect: {
+              id: categoryId,
+            },
           },
-        });
-      }
+          status: status,
+        },
+      });
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
     } else {
       res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);

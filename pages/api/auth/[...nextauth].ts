@@ -11,12 +11,14 @@ export default NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.role = user.role;
+        token.id = user.id;
       }
       return token;
     },
     session({ session, token, user }) {
       if (session.user) {
         session.user.role = token.role;
+        session.user.id = token.id;
       }
       return session;
     },
@@ -54,6 +56,6 @@ export default NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
 });

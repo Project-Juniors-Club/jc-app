@@ -12,8 +12,8 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const images = await findImages();
       res.status(200).json({ message: entityMessageObj.getAllSuccess, data: images });
     } else if (httpMethod == 'POST') {
-      const { url } = req.body;
-      const created = await createImage(url);
+      const { url, assetId, filename } = req.body;
+      const created = await createImage(url, assetId, filename);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {
       res.setHeader('Allow', ['GET', 'POST']);
@@ -22,8 +22,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (error) {
     // TODO: replace these error messages with specific ones for GET, POST, PUT, DELETE
     console.log(error);
-    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method, isSingleEntity: true }, entityMessageObj) });
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method }, entityMessageObj) });
   }
 };
 
