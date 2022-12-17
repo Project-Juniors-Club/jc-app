@@ -11,7 +11,7 @@ type Props = {
   defaultValue?: string;
 };
 
-export const TextInput = ({
+const TextInput = ({
   label,
   register,
   options,
@@ -32,6 +32,7 @@ export const TextInput = ({
         <></>
       )}
       <input
+        id={label}
         type='text'
         name={label}
         className={`w-full rounded-lg ${
@@ -46,3 +47,5 @@ export const TextInput = ({
     </div>
   );
 };
+
+export default TextInput;

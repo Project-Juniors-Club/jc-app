@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import { DeepMap, FieldError, FieldValues, UseFormRegister, UseFormResetField } from 'react-hook-form';
-import { TextInput } from './TextInput';
+import TextInput from './TextInput';
 
 type Props = {
   register: UseFormRegister<FieldValues>;
@@ -9,7 +9,7 @@ type Props = {
   defaultPrice?: number;
 };
 
-export const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) => {
+const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) => {
   const [isFree, setIsFree] = useState(defaultPrice === 0);
 
   return (
@@ -71,3 +71,5 @@ export const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: P
     </div>
   );
 };
+
+export default PriceInput;

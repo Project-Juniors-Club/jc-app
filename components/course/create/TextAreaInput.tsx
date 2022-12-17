@@ -12,16 +12,7 @@ type Props = {
   defaultValue?: string;
 };
 
-export const TextAreaInput = ({
-  label,
-  register,
-  options,
-  headerText,
-  placeholderText = headerText,
-  errors,
-  isDisabled,
-  defaultValue,
-}: Props) => {
+const TextAreaInput = ({ label, register, options, headerText, placeholderText = headerText, errors, isDisabled, defaultValue }: Props) => {
   return (
     <div className='grid gap-y-2'>
       <label htmlFor={label}>
@@ -42,3 +33,5 @@ export const TextAreaInput = ({
     </div>
   );
 };
+
+export default TextAreaInput;

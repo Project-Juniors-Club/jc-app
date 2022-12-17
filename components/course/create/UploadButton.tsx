@@ -15,7 +15,7 @@ type Props = {
 };
 
 // TODO: support multiple files, with different file types
-export const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled, file, setFile }: Props) => {
+const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled, file, setFile }: Props) => {
   const { ref, ...rest } = register(label, {
     onChange: (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) {
@@ -69,3 +69,5 @@ export const UploadButton = ({ label, register, resetField, headerText, buttonTe
     </div>
   );
 };
+
+export default UploadButton;

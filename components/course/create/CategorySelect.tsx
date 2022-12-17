@@ -9,7 +9,7 @@ type Props = {
   defaultCategory?: Category;
 };
 
-export const CategorySelect = ({
+const CategorySelect = ({
   categories,
   disabled,
   defaultCategory = {
@@ -56,3 +56,5 @@ export const CategorySelect = ({
     </div>
   );
 };
+
+export default CategorySelect;
