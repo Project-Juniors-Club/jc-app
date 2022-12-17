@@ -1,5 +1,6 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Text } from '@chakra-ui/react';
 import useSnackbar from '../../hooks/useSnackbar';
+import SearchBar from '../../components/SearchBar';
 
 const Test = () => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
@@ -29,6 +30,7 @@ const Test = () => {
       <Button colorScheme='red' onClick={() => openErrorNotification('Sample Title', 'Sample description')}>
         Click for Failure
       </Button>
+      <SearchBar />
     </div>
   );
 };
