@@ -6,9 +6,9 @@ import { useController, UseControllerProps } from 'react-hook-form';
 import CustomButton from '../../Buttons';
 import Modal from '../../Modal';
 
-const CancelModal = ({ isOpen, onClose }) => {
+const CancelModal = ({ isOpen, onClose, isCentered }) => {
   return (
-    <Modal title='' onClose={onClose} isOpen={isOpen} size='xl'>
+    <Modal title='' onClose={onClose} isOpen={isOpen} isCentered={isCentered} size='xl'>
       <ModalBody>
         <div className='flex gap-x-4'>
           <Image src={'/icons/Alert.svg'} height={40} width={40} alt='Alert' />

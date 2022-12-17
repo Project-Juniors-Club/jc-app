@@ -16,6 +16,8 @@ import { useRouter } from 'next/router';
 import useSnackbar from '../../../hooks/useSnackbar';
 import { useState } from 'react';
 import prisma from '../../../lib/prisma';
+import NavBarCart from '../../../components/navbar/NavBarCourse';
+import Footer from '../../../components/Footer';
 
 type FormValues = {
   title: string;
@@ -91,87 +93,91 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
   };
 
   return (
-    <div className='px-[9.375rem] font-open-sans'>
-      <header className='py-16 text-5xl font-bold'>Create Course</header>
-      <form>
-        <div className='grid gap-y-6'>
-          <TextInput
-            label='title'
-            headerText='Course Title'
-            register={register}
-            options={{
-              required: 'This is required',
-              pattern: {
-                value: /(.|\s)*\S(.|\s)*/,
-                message: 'This is required',
-              },
-            }}
-            isDisabled={isSubmitting}
-            errors={errors}
-          />
-          <TextAreaInput
-            label='description'
-            headerText='Course Description'
-            register={register}
-            options={{
-              required: 'This is required',
-              pattern: {
-                value: /(.|\s)*\S(.|\s)*/,
-                message: 'This is required',
-              },
-            }}
-            isDisabled={isSubmitting}
-            errors={errors}
-          />
-          <TextAreaInput
-            label='learningObjectives'
-            headerText='Course Learning Objectives'
-            register={register}
-            options={{
-              required: 'This is required',
-              pattern: {
-                value: /(.|\s)*\S(.|\s)*/,
-                message: 'This is required',
-              },
-            }}
-            isDisabled={isSubmitting}
-            errors={errors}
-          />
-          <CategorySelect categories={categories} name='category' control={control} disabled={isSubmitting} />
-          <UploadButton
-            register={register}
-            resetField={resetField}
-            label={'coverImage'}
-            headerText={'Course Cover Image Upload'}
-            buttonText={'Upload Image'}
-            isDisabled={isSubmitting}
-            file={file}
-            setFile={setFile}
-          />
-          <PriceInput register={register} errors={errors} isDisabled={isSubmitting} />
-        </div>
-        <div className='flex w-full justify-between py-8'>
-          <div className='flex gap-x-3'>
-            <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isSubmitting}>
-              <div className='text-[#FFFFFF]'>Save & Exit</div>
-            </CustomButton>
-            <CustomButton
-              variant={'black-outline'}
-              onClick={e => {
-                e.preventDefault();
-                onOpen();
+    <div>
+      <NavBarCart />
+      <div className='px-[9.375rem] font-open-sans'>
+        <header className='py-16 text-5xl font-bold'>Create Course</header>
+        <form>
+          <div className='grid gap-y-6'>
+            <TextInput
+              label='title'
+              headerText='Course Title'
+              register={register}
+              options={{
+                required: 'This is required',
+                pattern: {
+                  value: /(.|\s)*\S(.|\s)*/,
+                  message: 'This is required',
+                },
               }}
               isDisabled={isSubmitting}
-            >
-              Cancel
+              errors={errors}
+            />
+            <TextAreaInput
+              label='description'
+              headerText='Course Description'
+              register={register}
+              options={{
+                required: 'This is required',
+                pattern: {
+                  value: /(.|\s)*\S(.|\s)*/,
+                  message: 'This is required',
+                },
+              }}
+              isDisabled={isSubmitting}
+              errors={errors}
+            />
+            <TextAreaInput
+              label='learningObjectives'
+              headerText='Course Learning Objectives'
+              register={register}
+              options={{
+                required: 'This is required',
+                pattern: {
+                  value: /(.|\s)*\S(.|\s)*/,
+                  message: 'This is required',
+                },
+              }}
+              isDisabled={isSubmitting}
+              errors={errors}
+            />
+            <CategorySelect categories={categories} name='category' control={control} disabled={isSubmitting} />
+            <UploadButton
+              register={register}
+              resetField={resetField}
+              label={'coverImage'}
+              headerText={'Course Cover Image Upload'}
+              buttonText={'Upload Image'}
+              isDisabled={isSubmitting}
+              file={file}
+              setFile={setFile}
+            />
+            <PriceInput register={register} errors={errors} isDisabled={isSubmitting} />
+          </div>
+          <div className='flex w-full justify-between py-8'>
+            <div className='flex gap-x-3'>
+              <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isSubmitting}>
+                <div className='text-[#FFFFFF]'>Save & Exit</div>
+              </CustomButton>
+              <CustomButton
+                variant={'black-outline'}
+                onClick={e => {
+                  e.preventDefault();
+                  onOpen();
+                }}
+                isDisabled={isSubmitting}
+              >
+                Cancel
+              </CustomButton>
+            </div>
+            <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isSubmitting}>
+              Next: Edit Course
             </CustomButton>
           </div>
-          <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isSubmitting}>
-            Next: Edit Course
-          </CustomButton>
-        </div>
-      </form>
-      <CancelModal isOpen={isOpen} onClose={onClose} />
+        </form>
+        <CancelModal isOpen={isOpen} onClose={onClose} isCentered={true} />
+      </div>
+      <Footer />
     </div>
   );
 };
