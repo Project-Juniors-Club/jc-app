@@ -1,12 +1,9 @@
-import { Modal as ModalComponent, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
+import { Modal as ModalComponent, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, ModalProps } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
-type Props = {
+interface Props extends ModalProps {
   title?: string;
-  onClose: () => void;
-  isOpen?: boolean;
-  children?: ReactNode;
-};
+}
 
 const Modal = ({ title = 'Modal Title', onClose, isOpen = false, children, ...rest }: Props) => {
   return (
