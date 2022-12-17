@@ -1,7 +1,17 @@
 import React from 'react';
 import { QuizType } from './QuizGame';
 import QuizOption from './QuizOption';
-const Quiz = ({ quiz: { title, choices, answer }, handleNextQuiz }: { quiz: QuizType; handleNextQuiz: (correct: boolean) => void }) => {
+const Quiz = ({
+  quiz: { title, choices, answer },
+  handleSubmitQuiz,
+  buttons,
+  triggerNext,
+}: {
+  quiz: QuizType;
+  handleSubmitQuiz: (correct: boolean) => void;
+  buttons: JSX.Element;
+  triggerNext: boolean;
+}) => {
   const handleForm = e => {
     e.preventDefault();
     const correct = choices.reduce((acc, choice) => {
@@ -13,7 +23,7 @@ const Quiz = ({ quiz: { title, choices, answer }, handleNextQuiz }: { quiz: Quiz
         return !answer.includes(choice);
       }
     }, true);
-    handleNextQuiz(correct);
+    handleSubmitQuiz(correct);
   };
   return (
     <div>
@@ -21,18 +31,15 @@ const Quiz = ({ quiz: { title, choices, answer }, handleNextQuiz }: { quiz: Quiz
       <form onSubmit={handleForm}>
         <div className='flex h-96 flex-col items-center justify-around'>
           {choices.map(choice => {
+            const correct = triggerNext && answer.includes(choice);
             return (
-              <QuizOption key={choice} choice={choice}>
+              <QuizOption key={choice} choice={choice} correct={correct}>
                 {choice}
               </QuizOption>
             );
           })}
         </div>
-        <div className='flex justify-center'>
-          <button className='w-1/3 border border-solid border-black bg-blue-500 py-4' type='submit'>
-            Submit
-          </button>
-        </div>
+        {buttons}
       </form>
     </div>
   );
