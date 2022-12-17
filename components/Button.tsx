@@ -1,25 +1,17 @@
-import { Center, Spinner } from '@chakra-ui/react';
+import { Spinner } from '@chakra-ui/react';
 import React, { ReactNode } from 'react';
 
 type Variants = 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
 
-type Props = {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
-  onClick?: React.MouseEventHandler;
   variant?: Variants;
   children?: ReactNode;
-};
+}
 
-const CustomButton = ({
-  className = '',
-  variant = 'green-solid',
-  isDisabled = false,
-  isLoading = false,
-  onClick = () => {},
-  children = null,
-}: Props) => {
+const Button = ({ className = '', variant = 'green-solid', isDisabled = false, isLoading = false, children = null, ...rest }: Props) => {
   let toShow;
   if (isLoading) {
     if (variant === 'black-solid') {
@@ -32,8 +24,8 @@ const CustomButton = ({
   }
   const styling = getConfig(variant) + className;
   return (
-    <button className={styling} disabled={isDisabled} onClick={onClick}>
-      <Center>{toShow}</Center>
+    <button className={styling} disabled={isDisabled} {...rest}>
+      {toShow}
     </button>
   );
 };
@@ -60,4 +52,4 @@ const getConfig = (variant: Variants) => {
   return colourConfig + config;
 };
 
-export default CustomButton;
+export default Button;
