@@ -20,7 +20,7 @@ const NavBarCart = () => {
         </div>
 
         <div className='nav-action-menu order-1 flex flex-row items-center gap-6 p-0'>
-          <div className='top-right-elem'>
+          <div className='top-right-elem flex flex-row items-center gap-2 p-0'>
             <Image src={'/assets/logos/course.svg'} width={24} height={24} alt='book' />
             <a href='#' className='menu-item text-base'>
               My Learning
@@ -32,7 +32,7 @@ const NavBarCart = () => {
               My Cart
             </a>
           </div>
-          <div className='top-right-elem'>
+          <div className='top-right-elem flex flex-row items-center gap-2 p-0'>
             <Image src={'/assets/logos/user.svg'} width={36} height={41} alt='user' />
             <DropDown buttonName={'Username'} dropdownItems={loginItems}></DropDown>
           </div>
