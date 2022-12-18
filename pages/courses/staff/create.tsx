@@ -1,7 +1,7 @@
 import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import CustomButton from '../../../components/Buttons';
+import CustomButton from '../../../components/Button';
 import { useDisclosure } from '@chakra-ui/react';
 import TextInput from '../../../components/course/create/TextInput';
 import TextAreaInput from '../../../components/course/create/TextAreaInput';

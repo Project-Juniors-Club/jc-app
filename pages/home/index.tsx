@@ -1,5 +1,5 @@
 import { Box, Center, Flex, HStack, VStack, Image, Text, Button, Stack } from '@chakra-ui/react';
-import CustomButton from '../../components/Buttons';
+import CustomButton from '../../components/Button';
 import Footer from '../../components/Footer';
 
 const LandingPage = () => {
