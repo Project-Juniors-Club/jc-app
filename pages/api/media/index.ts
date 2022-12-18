@@ -12,6 +12,14 @@ const s3 = new S3({
   signatureVersion: 'v4',
 });
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '5gb',
+    },
+  },
+};
+
 export default async function Handler(req: NextApiRequest, res: NextApiResponse) {
   const method = req.method;
 
@@ -32,23 +40,15 @@ export default async function Handler(req: NextApiRequest, res: NextApiResponse)
     if (method === 'GET') {
       // for postman usage only
       const url = await s3.getSignedUrlPromise('getObject', getFileParams);
-      const result = await axios.get(url);
-      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: result });
+      res.status(200).json({ message: entityMessageObj.getOneSuccess, url: url });
     } else if (method === 'PUT') {
       // for "uploads/upload" use
       const url = await s3.getSignedUrlPromise('putObject', fileParams);
-      const data = await axios.put(url, {
-        headers: {
-          'Content-type': req.body.type,
-          'Access-Control-Allow-Origin': '*',
-        },
-      });
-      res.status(200).json({ message: entityMessageObj.createSuccess, data: fileParams });
+      res.status(200).json({ message: entityMessageObj.createSuccess, url: url });
     } else if (method === 'DELETE') {
       // for postman usage only
       const url = await s3.getSignedUrlPromise('deleteObject', getFileParams);
-      const result = await axios.delete(url);
-      res.status(200).json({ message: entityMessageObj.deleteSuccess, data: fileParams });
+      res.status(200).json({ message: entityMessageObj.deleteSuccess, url: url });
     } else {
       res.status(405).end(`Method ${method} not allowed`);
     }
