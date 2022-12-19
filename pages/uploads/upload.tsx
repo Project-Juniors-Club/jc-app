@@ -2,6 +2,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
+import uploadFileMain from '../../lib/upload';
 
 export default function Upload() {
   const [file, setFile] = useState<File>();
@@ -15,23 +16,11 @@ export default function Upload() {
 
   const uploadFile = async () => {
     setMessage('Uploading...');
-    const BUCKET_URL = 'https://juniors-club.s3.ap-southeast-1.amazonaws.com/';
-    const { data } = await axios.put('/api/media/', {
-      name: file.name,
-      type: file.type,
-    });
 
-    let { data: newData } = await axios.put(data.url, file, {
-      headers: {
-        'Content-type': file.type,
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    const assetId = await uploadFileMain(file);
 
     setFile(null);
-    setUploadedFile(BUCKET_URL + file.name);
     setMessage('Uploaded!');
-    console.log(uploadedFile);
   };
 
   return (
