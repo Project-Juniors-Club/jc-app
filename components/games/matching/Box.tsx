@@ -9,9 +9,11 @@ const Box = ({ name }) => {
   };
 
   return (
-    <button className='my-10 mx-20' style={style}>
-      {name}
-    </button>
+    <>
+      <button className='my-10 mx-20' style={style}>
+        {name}
+      </button>
+    </>
   );
 };
 

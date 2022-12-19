@@ -1,13 +1,16 @@
 import { Pair } from './Pair';
 import Box from './Box';
+import { useRef } from 'react';
+import Draggable from 'react-draggable';
+import { StraightLine } from 'react-drawline';
 
 const MatchingGame = () => {
   const senses: Pair[] = [
-    { id: 1, leftpart: 'hand', rightpart: 'taste' },
-    { id: 2, leftpart: 'nose', rightpart: 'touch' },
-    { id: 3, leftpart: 'tongue', rightpart: 'see' },
-    { id: 4, leftpart: 'ear', rightpart: 'smell' },
-    { id: 5, leftpart: 'eyes', rightpart: 'hear' },
+    { id: 1, leftpart: 'hand', rightpart: 'touch' },
+    { id: 2, leftpart: 'nose', rightpart: 'smell' },
+    { id: 3, leftpart: 'tongue', rightpart: 'taste' },
+    { id: 4, leftpart: 'ear', rightpart: 'hear' },
+    { id: 5, leftpart: 'eyes', rightpart: 'see' },
   ];
   let solvedPairs: Pair[] = [];
   let unsolvedPairs: Pair[] = [];
@@ -17,10 +20,31 @@ const MatchingGame = () => {
     unsolvedPairs.push(senses[i]);
   }
 
+  const box1Ref = useRef(null);
+  const box2Ref = useRef(null);
+
   const items = unsolvedPairs.map(pair => (
     <li key={pair.id}>
-      <Box name={pair.leftpart}> </Box>
-      <Box name={pair.rightpart}> </Box>
+      <Box ref={box1Ref} name={pair.leftpart}>
+        {' '}
+      </Box>
+      <Box ref={box2Ref} name={pair.rightpart}>
+        {' '}
+      </Box>
+      <StraightLine
+        startingElement={{
+          ref: box1Ref,
+          x: 'left',
+          y: 'mid',
+        }}
+        endingElement={{
+          ref: box2Ref,
+          x: 'center',
+          y: 'top',
+        }}
+        style={{ backgroundColor: 'red' }}
+        className='beautiful-class-name'
+      />
     </li>
   ));
 

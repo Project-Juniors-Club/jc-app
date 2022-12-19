@@ -38,6 +38,8 @@
     "react": "^18.2.0",
     "react-bucket": "^0.0.11",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.5",
+    "react-drawline": "^1.1.0",
     "react-hook-form": "^7.34.2",
     "recoil": "^0.7.5",
     "ts-node": "^10.9.1",
