@@ -1,4 +1,5 @@
 import { Pair } from './Pair';
+import Box from './Box';
 
 const MatchingGame = () => {
   const senses: Pair[] = [
@@ -16,22 +17,19 @@ const MatchingGame = () => {
     unsolvedPairs.push(senses[i]);
   }
 
+  const items = unsolvedPairs.map(pair => (
+    <li key={pair.id}>
+      <Box name={pair.leftpart}> </Box>
+      <Box name={pair.rightpart}> </Box>
+    </li>
+  ));
+
   return (
     <div>
       <p className='mt-4 text-center'> Draw lines between the pictures and the words that best go together.</p>
-      {/* <div id="game">
-                <div className="items-left">
-                <button> 
-                    {{pair.leftpart}}
-                </button>
-                </div>
-
-                <div className="items-right">
-                <button> 
-                    {{pair.rightpart}}
-                </button>
-                </div>
-            </div> */}
+      <div className='flex flex-row justify-center'>
+        <ul>{items} </ul>
+      </div>
     </div>
   );
 };
