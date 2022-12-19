@@ -5,18 +5,25 @@ import readline from 'readline';
 import { google } from 'googleapis';
 import { authenticate } from '@google-cloud/local-auth';
 import { v4 as uuidv4 } from 'uuid';
+import { entityMessageCreator } from '../../../utils/api-messages';
+import { errorMessageHandler } from '../../../utils/error-message-handler';
+
+const entityMessageObj = entityMessageCreator('videoUpload');
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST') {
-    res.status(405).send({ message: 'Only POST requests allowed' });
-    return;
-  }
-  const videoTitle = req.body.videoTitle;
   try {
-    const videoId = await youtubeUpload(videoTitle);
-    res.status(200).json({ videoId: videoId });
-  } catch (err: any) {
-    res.status(500).json({ statusCode: 500, videoId: 'O-yi0LBDi3s' });
+    const httpMethod = req.method;
+    if (httpMethod == 'POST') {
+      const videoTitle = req.body.videoTitle;
+      const videoId = await youtubeUpload(videoTitle);
+      res.status(200).json({ message: entityMessageObj.createSuccess, data: videoId });
+    } else {
+      res.setHeader('Allow', ['POST']);
+      res.status(405).end(`Method ${httpMethod} not allowed`);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method }, entityMessageObj) });
   }
 };
 
