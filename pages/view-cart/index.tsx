@@ -18,12 +18,14 @@ const ViewCart = () => {
     },
   ];
 
+  const [cartCourses, setCartCourses] = useState(courses);
+
   const [checkedItems, setCheckedItems] = useState(courses.map(() => false));
   const allChecked = checkedItems.every(Boolean);
 
   const handleRemove = course => {
-    const index = courses.indexOf(course);
-    courses.splice(index, 1);
+    const index = cartCourses.indexOf(course);
+    setCartCourses([...cartCourses.slice(0, index), ...cartCourses.slice(index + 1)]);
     setCheckedItems([...checkedItems.slice(0, index), ...checkedItems.slice(index + 1)]);
   };
 
@@ -34,13 +36,13 @@ const ViewCart = () => {
           My Cart
         </Text>
       </Box>
-      <CartTable courses={courses} checkedItems={checkedItems} setCheckedItems={setCheckedItems} handleRemove={handleRemove} />
-      <TotalSummaryBox courses={courses} checkedItems={checkedItems} setCheckedItems={setCheckedItems} allChecked={allChecked} />
+      <CartTable cartCourses={cartCourses} checkedItems={checkedItems} setCheckedItems={setCheckedItems} handleRemove={handleRemove} />
+      <TotalSummaryBox cartCourses={cartCourses} checkedItems={checkedItems} setCheckedItems={setCheckedItems} allChecked={allChecked} />
     </Layout>
   );
 };
 
-const CartTable = ({ courses, checkedItems, setCheckedItems, handleRemove }) => {
+const CartTable = ({ cartCourses, checkedItems, setCheckedItems, handleRemove }) => {
   return (
     <TableContainer display='flex' maxW='60%' marginInline='20%' border='1px solid #B8DD72' borderRadius='lg'>
       <Table variant='simple'>
@@ -53,7 +55,7 @@ const CartTable = ({ courses, checkedItems, setCheckedItems, handleRemove }) => 
           </Tr>
         </Thead>
         <Tbody>
-          {courses.map((course, index) => (
+          {cartCourses.map((course, index) => (
             <Tr key={course.title} className={styles.tablebody}>
               <Td width='10%'>
                 <Checkbox
@@ -82,7 +84,7 @@ const CartTable = ({ courses, checkedItems, setCheckedItems, handleRemove }) => 
   );
 };
 
-const TotalSummaryBox = ({ courses, checkedItems, setCheckedItems, allChecked }) => {
+const TotalSummaryBox = ({ cartCourses, checkedItems, setCheckedItems, allChecked }) => {
   return (
     <Box
       maxW='62%'
@@ -98,7 +100,7 @@ const TotalSummaryBox = ({ courses, checkedItems, setCheckedItems, allChecked })
       alignItems='center'
       className={styles.tablebody}
     >
-      <Checkbox isChecked={allChecked} onChange={e => setCheckedItems(courses.map(() => e.target.checked))} colorScheme='green'>
+      <Checkbox isChecked={allChecked} onChange={e => setCheckedItems(cartCourses.map(() => e.target.checked))} colorScheme='green'>
         Select All ({checkedItems.length})
       </Checkbox>
       <Box>
@@ -107,7 +109,7 @@ const TotalSummaryBox = ({ courses, checkedItems, setCheckedItems, allChecked })
         </Text>
         <Text fontWeight='700' fontSize='28px'>
           $
-          {courses
+          {cartCourses
             .map((course, index) => (checkedItems[index] ? course.price : 0))
             .reduce((a, b) => a + b, 0)
             .toFixed(2)}
