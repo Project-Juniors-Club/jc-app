@@ -54,7 +54,7 @@ const CartTable = ({ courses, checkedItems, setCheckedItems, handleRemove }) => 
         </Thead>
         <Tbody>
           {courses.map((course, index) => (
-            <Tr key={course.title}>
+            <Tr key={course.title} className={styles.tablebody}>
               <Td width='10%'>
                 <Checkbox
                   colorScheme='green'
@@ -96,6 +96,7 @@ const TotalSummaryBox = ({ courses, checkedItems, setCheckedItems, allChecked })
       flexDir={['column', 'column', 'row']}
       justifyContent='space-between'
       alignItems='center'
+      className={styles.tablebody}
     >
       <Checkbox isChecked={allChecked} onChange={e => setCheckedItems(courses.map(() => e.target.checked))} colorScheme='green'>
         Select All ({checkedItems.length})
