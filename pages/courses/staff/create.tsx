@@ -72,20 +72,27 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
   };
 
   const onSubmitAndRedirectCourseOverview: SubmitHandler<FormValues> = async data => {
-    const courseId = await onSubmit(data);
-    openSuccessNotification('Course Creation Successful', 'Redirecting to the course details page');
-    router.push(`/courses/staff/${courseId}`);
+    try {
+      const courseId = await onSubmit(data);
+      openSuccessNotification('Course Creation Successful', 'Redirecting to the course details page');
+      router.push(`/courses/staff/${courseId}`);
+    } catch (err) {
+      console.log(err);
+      openErrorNotification('Course Creation Failed', 'Please try again');
+      throw err;
+    }
   };
 
   const onSubmitAndRedirectCourseEditor: SubmitHandler<FormValues> = async data => {
-    const courseId = await onSubmit(data);
-    openSuccessNotification('Course Creation Successful', 'Redirecting to the course editor page');
-    router.push(`/courses/staff/editor/content/${courseId}`);
-  };
-
-  const errorHandler: SubmitErrorHandler<FieldValues> = err => {
-    console.log(err);
-    openErrorNotification('Course Creation Failed', 'Please try again');
+    try {
+      const courseId = await onSubmit(data);
+      openSuccessNotification('Course Creation Successful', 'Redirecting to the course editor page');
+      router.push(`/courses/staff/editor/content/${courseId}`);
+    } catch (err) {
+      console.log(err);
+      openErrorNotification('Course Creation Failed', 'Please try again');
+      throw err;
+    }
   };
 
   return (
@@ -151,11 +158,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
           </div>
           <div className='flex w-full justify-between py-8'>
             <div className='flex gap-x-3'>
-              <CustomButton
-                variant={'black-solid'}
-                onClick={handleSubmit(onSubmitAndRedirectCourseOverview, errorHandler)}
-                isDisabled={isDisabled}
-              >
+              <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isDisabled}>
                 <div className='text-[#FFFFFF]'>Save & Exit</div>
               </CustomButton>
               <CustomButton
@@ -169,11 +172,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                 Cancel
               </CustomButton>
             </div>
-            <CustomButton
-              variant={'green-solid'}
-              onClick={handleSubmit(onSubmitAndRedirectCourseEditor, errorHandler)}
-              isDisabled={isDisabled}
-            >
+            <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isDisabled}>
               Next: Edit Course
             </CustomButton>
           </div>
