@@ -42,7 +42,7 @@ const SortingGame = () => {
 
   return (
     <div>
-      <DndContext onDragEnd={handleDragEnd} onDragStart={e => setActiveItemId(e.active.id)}>
+      <DndContext onDragEnd={handleDragEnd} onDragStart={e => setActiveItemId(String(e.active.id))}>
         <div className='mx-auto mb-3 h-[100px] w-2/3'>{itemMarkup}</div>
         <div className='flex justify-around'>
           {buckets.map(id => (
