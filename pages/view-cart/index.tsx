@@ -13,7 +13,7 @@ const ViewCart = () => {
       price: 4.95,
     },
     {
-      title: 'Food Sourcing But Longer and Pricier',
+      title: 'Food Sourcing but Longer and Pricier',
       price: 10.0,
     },
   ];
@@ -98,7 +98,7 @@ const TotalSummaryBox = ({ courses, checkedItems, setCheckedItems, allChecked })
       alignItems='center'
     >
       <Checkbox isChecked={allChecked} onChange={e => setCheckedItems(courses.map(() => e.target.checked))} colorScheme='green'>
-        Select All ({checkedItems.filter(Boolean).length})
+        Select All ({checkedItems.length})
       </Checkbox>
       <Box>
         <Text fontSize='sm'>
