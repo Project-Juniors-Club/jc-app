@@ -22,6 +22,11 @@ export const getCourseWithAuthorAndDate = async (id: string) => {
           },
         },
       },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
     },
   });
   const result = {

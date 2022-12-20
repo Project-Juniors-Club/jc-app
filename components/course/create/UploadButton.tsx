@@ -1,7 +1,7 @@
 import CustomButton from '../../Button';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
-import { FieldValues, UseFormRegister, UseFormResetField } from 'react-hook-form';
+import { FieldValues, UseFormRegister, UseFormResetField, UseFormWatch } from 'react-hook-form';
 
 type Props = {
   label: string;
@@ -10,21 +10,14 @@ type Props = {
   register: UseFormRegister<FieldValues>;
   resetField: UseFormResetField<FieldValues>;
   isDisabled: boolean;
-  file: File;
-  setFile: Dispatch<SetStateAction<File>>;
+  watch: UseFormWatch<FieldValues>;
 };
 
 // TODO: support multiple files, with different file types
-const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled, file, setFile }: Props) => {
-  const { ref, ...rest } = register(label, {
-    onChange: (e: ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files) {
-        return;
-      }
-      setFile(e.target.files[0]);
-    },
-  });
+const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled, watch }: Props) => {
+  const { ref, ...rest } = register(label);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const fileWatch = watch(label, []) as FileList;
 
   return (
     <div className='grid gap-y-2'>
@@ -51,16 +44,15 @@ const UploadButton = ({ label, register, resetField, headerText, buttonText, isD
       >
         <div className='text-[#385600]'>{buttonText}</div>
       </CustomButton>
-      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${file ? '' : 'hidden'}`}>
+      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${fileWatch.length ? '' : 'hidden'}`}>
         <div className={`flex`}>
           <Image src={'/icons/Image.svg'} alt='Image' width={24} height={24} />
-          <div className='ml-3.5'>{file ? file.name : ''}</div>
+          <div className='ml-3.5'>{fileWatch.length ? fileWatch[0].name : ''}</div>
         </div>
         <div
           className='ml-9 hover:cursor-pointer'
           onClick={() => {
-            setFile(null);
-            resetField(label);
+            resetField(label, { defaultValue: [] });
           }}
         >
           <Image src={'/icons/Cross.svg'} alt='Cross' width={14} height={14} />
