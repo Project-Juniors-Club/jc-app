@@ -46,7 +46,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
           <a href='/checkout'>Checkout.com API</a>{' '}
         </nav>
       </header>
-      {/* 323px is the height of the footer on web devices */}
+      {/* 323px is the height of the footer on PC/Laptop devices */}
       <div style={{ minHeight: 'calc(100vh - 323px)' }}>{children}</div>
       <Footer />
     </div>
