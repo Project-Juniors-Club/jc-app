@@ -53,8 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // UPDATE TITLE, DESCRIPTION
       const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status, coverImageRemoved } =
         req.body;
-
-      const dataToUpdate = {
+      const updatedCourse = await prisma.course.update({
         where: {
           id: id,
         },
@@ -67,29 +66,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               userId: updaterId,
             },
           },
+          coverImage: coverImageAssetId
+            ? {
+                connect: { assetId: coverImageAssetId },
+              }
+            : coverImageRemoved
+            ? {
+                disconnect: true,
+              }
+            : undefined,
+          category: categoryId
+            ? {
+                connect: categoryId,
+              }
+            : undefined,
           price: price,
           status: status,
         },
-      };
-      if (coverImageAssetId) {
-        dataToUpdate.data['coverImage'] = {
-          connect: {
-            assetId: coverImageAssetId,
-          },
-        };
-      } else if (coverImageRemoved) {
-        dataToUpdate.data['coverImage'] = {
-          disconnect: true,
-        };
-      }
-      if (categoryId) {
-        dataToUpdate.data['category'] = {
-          connect: {
-            id: categoryId,
-          },
-        };
-      }
-      const updatedCourse = await prisma.course.update(dataToUpdate);
+      });
 
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
     } else {
