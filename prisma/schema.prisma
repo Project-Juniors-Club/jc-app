@@ -183,6 +183,7 @@ model Asset {
 model Image {
   filename String?
   url      String
+  key      String?
   assetId  String  @id
   asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
@@ -196,6 +197,7 @@ model Image {
 model Video {
   filename String?
   url      String
+  key      String?
   assetId  String  @id
   asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
 

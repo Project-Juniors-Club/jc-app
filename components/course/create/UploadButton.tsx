@@ -1,4 +1,4 @@
-import CustomButton from '../../Buttons';
+import CustomButton from '../../Button';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
 import { FieldValues, UseFormRegister, UseFormResetField } from 'react-hook-form';
