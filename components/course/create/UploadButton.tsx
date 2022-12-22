@@ -24,7 +24,7 @@ const UploadButton = ({
   buttonText,
   isDisabled,
   watch,
-  removeCoverImageOnClick,
+  removeCoverImageOnClick = () => {},
   coverImageFilename,
 }: Props) => {
   const { ref, onChange, ...rest } = register(label);
