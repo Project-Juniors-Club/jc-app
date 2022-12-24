@@ -170,7 +170,7 @@ const EmptyCart = () => {
   const router = useRouter();
   return (
     <Box display='flex' flexDirection='column' alignItems='center'>
-      <Image src={'/icons/Cart.png'} alt='Empty Cart Icon' width={206} height={205} />
+      <Image src={'/icons/Cart.svg'} alt='Empty Cart Icon' width={206} height={205} />
       <Text marginBlock='40px' fontSize='xl'>
         Your cart is currently empty.
       </Text>
