@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Box, Text, Checkbox } from '@chakra-ui/react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 import Layout from '../../components/Layout';
 import styles from './ViewCart.module.css';
@@ -166,7 +167,18 @@ const TotalSummaryBox = ({ cartCourses, checkedItems, setCheckedItems, allChecke
 };
 
 const EmptyCart = () => {
-  return <>Your cart is empty.</>;
+  const router = useRouter();
+  return (
+    <Box display='flex' flexDirection='column' alignItems='center'>
+      <Image src={'/icons/Cart.png'} alt='Empty Cart Icon' width={206} height={205} />
+      <Text marginBlock='40px' fontSize='xl'>
+        Your cart is currently empty.
+      </Text>
+      <Button variant='green-solid' style={{ marginBottom: '40px' }} onClick={() => router.push('/')}>
+        Browse Courses
+      </Button>
+    </Box>
+  );
 };
 
 export default ViewCart;
