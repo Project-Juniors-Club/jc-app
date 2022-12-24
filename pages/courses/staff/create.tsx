@@ -1,24 +1,24 @@
 import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { FieldValues, SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import CustomButton from 'components/Button';
+import CustomButton from '../../../components/Button';
 import { useDisclosure } from '@chakra-ui/react';
-import TextInput from 'components/course/create/TextInput';
-import TextAreaInput from 'components/course/create/TextAreaInput';
-import CategorySelect from 'components/course/create/CategorySelect';
-import UploadButton from 'components/course/create/UploadButton';
-import PriceInput from 'components/course/create/PriceInput';
-import CancelModal from 'components/course/create/CancelModal';
+import TextInput from '../../../components/course/create/TextInput';
+import TextAreaInput from '../../../components/course/create/TextAreaInput';
+import CategorySelect from '../../../components/course/create/CategorySelect';
+import UploadButton from '../../../components/course/create/UploadButton';
+import PriceInput from '../../../components/course/create/PriceInput';
+import CancelModal from '../../../components/course/create/CancelModal';
 import { getSession } from 'next-auth/react';
 import axios from 'axios';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
-import useSnackbar from 'hooks/useSnackbar';
+import useSnackbar from '../../../hooks/useSnackbar';
 import { useState } from 'react';
-import prisma from 'lib/prisma';
-import NavBarCart from 'components/navbar/NavBarCourse';
-import Footer from 'components/Footer';
-import uploadFile from 'lib/upload';
+import prisma from '../../../lib/prisma';
+import NavBarCart from '../../../components/navbar/NavBarCourse';
+import Footer from '../../../components/Footer';
+import uploadFile from '../../../lib/upload';
 
 type FormValues = {
   title: string;
