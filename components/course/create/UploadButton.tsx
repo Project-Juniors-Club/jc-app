@@ -1,7 +1,7 @@
 import CustomButton from '../../Button';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
-import { FieldValues, UseFormRegister, UseFormResetField, UseFormWatch } from 'react-hook-form';
+import { FieldValues, UseFormRegister, UseFormRegisterReturn, UseFormResetField, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 
 type Props = {
   label: string;
@@ -11,13 +11,25 @@ type Props = {
   resetField: UseFormResetField<FieldValues>;
   isDisabled: boolean;
   watch: UseFormWatch<FieldValues>;
+  removeCoverImageOnClick?: () => void;
+  coverImageFilename?: string;
 };
 
 // TODO: support multiple files, with different file types
-const UploadButton = ({ label, register, resetField, headerText, buttonText, isDisabled, watch }: Props) => {
-  const { ref, ...rest } = register(label);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+const UploadButton = ({
+  label,
+  register,
+  resetField,
+  headerText,
+  buttonText,
+  isDisabled,
+  watch,
+  removeCoverImageOnClick = () => {},
+  coverImageFilename,
+}: Props) => {
+  const { ref, onChange, ...rest } = register(label);
   const fileWatch = watch(label, []) as FileList;
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className='grid gap-y-2'>
@@ -32,6 +44,10 @@ const UploadButton = ({ label, register, resetField, headerText, buttonText, isD
         ref={e => {
           ref(e);
           inputRef.current = e;
+        }}
+        onChange={e => {
+          onChange(e);
+          removeCoverImageOnClick();
         }}
       />
       <CustomButton
@@ -55,6 +71,15 @@ const UploadButton = ({ label, register, resetField, headerText, buttonText, isD
             resetField(label, { defaultValue: [] });
           }}
         >
+          <Image src={'/icons/Cross.svg'} alt='Cross' width={14} height={14} />
+        </div>
+      </div>
+      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${coverImageFilename ? '' : 'hidden'}`}>
+        <div className={`flex`}>
+          <Image src={'/icons/Image.svg'} alt='Image' width={24} height={24} />
+          <div className='ml-3.5'>{coverImageFilename}</div>
+        </div>
+        <div className='ml-9 hover:cursor-pointer' onClick={removeCoverImageOnClick}>
           <Image src={'/icons/Cross.svg'} alt='Cross' width={14} height={14} />
         </div>
       </div>

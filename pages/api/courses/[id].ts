@@ -51,8 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteCourse });
     } else if (httpMethod == 'PUT') {
       // UPDATE TITLE, DESCRIPTION
-      const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status } = req.body;
-
+      const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status, coverImageRemoved } =
+        req.body;
       const updatedCourse = await prisma.course.update({
         where: {
           id: id,
@@ -61,25 +61,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title: title,
           description: description,
           learningObjectives: learningObjectives,
-          coverImage: {
-            connect: {
-              assetId: coverImageAssetId,
-            },
-          },
           lastUpdatedBy: {
             connect: {
               userId: updaterId,
             },
           },
+          coverImage: coverImageAssetId
+            ? {
+                connect: { assetId: coverImageAssetId },
+              }
+            : coverImageRemoved
+            ? {
+                disconnect: true,
+              }
+            : undefined,
+          category: categoryId
+            ? {
+                connect: categoryId,
+              }
+            : undefined,
           price: price,
-          category: {
-            connect: {
-              id: categoryId,
-            },
-          },
           status: status,
         },
       });
+
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
     } else {
       res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);

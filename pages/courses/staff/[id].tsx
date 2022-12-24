@@ -23,7 +23,7 @@ const StaticPropsDetail = ({ course, errors }) => {
       <div>{`Description: ${course.description}`}</div>
       <div>{`Learning Objectives: ${course.learningObjectives}`}</div>
       <div>{`Price: ${course.price}`}</div>
-      {course.coverImage.url ? <Image src={course.coverImage.url} alt='testing' /> : <></>}
+      {course.coverImage?.url ? <Image src={course.coverImage.url} alt='testing' /> : <></>}
     </Layout>
   );
 };
