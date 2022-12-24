@@ -42,7 +42,7 @@ const getConfig = (variant: Variants) => {
       colourConfig = 'bg-[#FFFFFF] border-[#7FB519] hover:bg-[#EBF8D3] ';
       break;
     case 'black-solid':
-      colourConfig = 'bg-[#4D4D4D] border-[#2D2D2D] hover:bg-[#2D2D2D] ';
+      colourConfig = 'bg-[#4D4D4D] border-[#2D2D2D] hover:bg-[#2D2D2D] text-white ';
       break;
     case 'black-outline':
       colourConfig = 'bg-[#FFFFFF] border-[#131313] hover:bg-[#B5B5B5] ';
