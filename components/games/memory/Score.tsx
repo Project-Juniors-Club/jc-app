@@ -6,9 +6,7 @@ type PlayerInfoProps = {
 const Score = ({ turns, score }: PlayerInfoProps) => {
   return (
     <div>
-      <p>
-        {`Turns: `} {`${turns}`}
-      </p>
+      <p>{`Turns: ${turns}`}</p>
       <p>
         {`Pairs found: `} {`${score}`}
       </p>

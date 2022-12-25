@@ -5,7 +5,8 @@ interface Card {
   found: boolean;
 }
 
-const Cards: Card[] = [
+// BE shouldn't need to pass flipped and found properties as they will always be false
+const cards: Card[] = [
   {
     id: 1,
     name: 'A',
@@ -56,4 +57,4 @@ const Cards: Card[] = [
   },
 ];
 
-export default Cards;
+export default cards;

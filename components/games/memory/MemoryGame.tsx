@@ -17,7 +17,7 @@ const MemoryGame = () => {
   const [selectedCards, setSelectedCards] = useState<CardObj[]>([]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const randomiseCards = () => {
+  const randomiseCards = ({ cards }) => {
     let randomOrderArr = [];
     let cardsArr = cards;
     for (let i = cardsArr.length; i > 0; i--) {
@@ -62,12 +62,9 @@ const MemoryGame = () => {
   }, [selectedCards]);
 
   const handleClick = (cardIndex: number, card: CardObj) => {
-    if (isPlaying) {
-      if (selectedCards.length < 2) {
-        setFlippedStatus(cardIndex);
-        updateSelectedCards(card);
-      } else {
-      }
+    if (isPlaying && selectedCards.length < 2) {
+      setFlippedStatus(cardIndex);
+      updateSelectedCards(card);
     }
   };
 
@@ -98,7 +95,7 @@ const MemoryGame = () => {
   };
 
   const startGame = () => {
-    const newState = randomiseCards();
+    const newState = randomiseCards({ cards });
     setRandomCards(newState);
     setIsPlaying(true);
   };
