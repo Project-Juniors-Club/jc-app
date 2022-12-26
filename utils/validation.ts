@@ -10,7 +10,6 @@ export const validateEmail = (email: string) =>
 // Verify a user is an internal staff of Food Bank
 export const isInternal = (req: NextRequestWithAuth) => {
   let role = req.nextauth.token?.type;
-  console.log('IsInternal: ' + JSON.stringify(req.nextauth.token));
   if (role === UserType.staff || role === UserType.courseEditor || role === UserType.admin) {
     return true;
   }
