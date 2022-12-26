@@ -1,12 +1,15 @@
-import { UserType } from '@prisma/client';
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import { isInternal } from './utils/validation';
 
 export default withAuth(
   function middleware(req) {
     // Redirect if they don't have the appropriate role
-    if (req.nextUrl.pathname.startsWith('/admin') && req.nextauth.token?.role !== UserType.admin) {
+    if (req.nextUrl.pathname.startsWith('/internal') && !isInternal(req)) {
       return NextResponse.redirect(new URL('/', req.url));
+    }
+    if (req.nextUrl.pathname.startsWith('/api/internal') && !isInternal(req)) {
+      return NextResponse.redirect(new URL('/api/error', req.url));
     }
   },
   {
@@ -18,5 +21,5 @@ export default withAuth(
 );
 //Paths middleware will run on
 export const config = {
-  matcher: ['/api/superadmin', '/api/admin', '/'],
+  matcher: ['/api/internal/:path*', '/internal/:path*', '/'],
 };
