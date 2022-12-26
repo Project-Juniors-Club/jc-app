@@ -58,7 +58,6 @@ model User {
   sessions      Session[]
   admin         Admin?
   normalUser    NormalUser?
-  superAdmin    SuperAdmin?
   userCourses   UserCourse[]
 
   @@map("users")
@@ -72,19 +71,26 @@ model NormalUser {
 }
 
 model Admin {
-  userId         String   @id
-  user           User     @relation(fields: [userId], references: [id])
-  createdCourses Course[] @relation("createdBy")
-  updatedCourses Course[] @relation("updatedBy")
+  userId         String         @id
+  user           User           @relation(fields: [userId], references: [id])
+  createdCourses Course[]       @relation("createdBy")
+  updatedCourses Course[]       @relation("updatedBy")
+  courseEditor   CourseEditor[]
+  disabled       Boolean        @default(true)
+  role           String
 
   @@map("admins")
 }
 
-model SuperAdmin {
-  userId String @id
-  user   User   @relation(fields: [userId], references: [id])
+model CourseEditor {
+  id         String @id @default(cuid())
+  courseId   String
+  adminId    String
+  course     Course @relation(fields: [courseId], references: [id])
+  admin      Admin  @relation(fields: [adminId], references: [userId])
 
-  @@map("superAdmins")
+  @@unique([adminId, courseId])
+  @@map("courseEditors")
 }
 
 model UserCourse {
@@ -126,6 +132,7 @@ model Course {
   category           Category?    @relation(fields: [categoryId], references: [id])
   chapters           Chapter[]
   userCourses        UserCourse[]
+  courseEditor       CourseEditor[]
   coverImageAssetId  String?
 
   @@map("courses")
@@ -247,7 +254,8 @@ model SortingGame {
 enum UserType {
   normalUser
   admin
-  superAdmin
+  courseEditor
+  staff
 }
 
 enum CourseStatus {
