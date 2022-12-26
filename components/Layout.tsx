@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import Footer from './Footer';
+import { calc } from '@chakra-ui/react';
 
 type Props = {
   children?: ReactNode;
@@ -44,11 +46,9 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
           <a href='/checkout'>Checkout.com API</a>{' '}
         </nav>
       </header>
-      {children}
-      <footer>
-        <hr />
-        <span>I&apos;m here to stay (Footer)</span>
-      </footer>
+      {/* 323px is the height of the footer on PC/Laptop devices */}
+      <div style={{ minHeight: 'calc(100vh - 323px)' }}>{children}</div>
+      <Footer />
     </div>
   );
 };

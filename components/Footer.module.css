@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@500&family=Oswald:wght@600&display=swap');
+
+.footer {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  position: relative;
+  bottom: 0;
+}
+
+.contactUs {
+  font-family: 'Oswald', sans-serif;
+}
