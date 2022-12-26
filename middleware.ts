@@ -21,5 +21,5 @@ export default withAuth(
 );
 //Paths middleware will run on
 export const config = {
-  matcher: ['/api/internal/:path*', '/internal/:path*', '/'],
+  matcher: ['/api/internal/:path*', '/internal/:path*'],
 };
