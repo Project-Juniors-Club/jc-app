@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import Footer from './Footer';
+import { calc } from '@chakra-ui/react';
 
 type Props = {
   children?: ReactNode;
@@ -48,7 +49,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
           </Link>
         </nav>
       </header>
-      {children}
+      {/* 323px is the height of the footer on PC/Laptop devices */}
+      <div style={{ minHeight: 'calc(100vh - 323px)' }}>{children}</div>
       <Footer />
     </div>
   );

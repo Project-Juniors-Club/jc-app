@@ -25,7 +25,7 @@ const NavBarCart = () => {
 
           <DropDown buttonName={'Course Management'} dropdownItems={courseItems}></DropDown>
 
-          <div className='top-right-elem'>
+          <div className='top-right-elem flex items-center gap-x-2'>
             <Image src={'/assets/logos/user.svg'} width={36} height={41} alt='user' />
             <DropDown buttonName={'Username'} dropdownItems={loginItems}></DropDown>
           </div>

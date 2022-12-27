@@ -12,8 +12,8 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const images = await findImages();
       res.status(200).json({ message: entityMessageObj.getAllSuccess, data: images });
     } else if (httpMethod == 'POST') {
-      const { url } = req.body;
-      const created = await createImage(url);
+      const { url, assetId, filename } = req.body;
+      const created = await createImage(url, assetId, filename);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {
       res.setHeader('Allow', ['GET', 'POST']);
