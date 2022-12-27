@@ -1,16 +1,12 @@
 import { Course } from '@prisma/client';
 import { GetStaticProps, GetStaticPaths } from 'next';
+import { Image } from '@chakra-ui/react';
 
 import Layout from '../../../components/Layout';
 import prisma from '../../../lib/prisma';
 import { getCourseWithAuthorAndDate } from '../../../lib/server/course';
 
-type Props = {
-  course?: Course;
-  errors?: string;
-};
-
-const StaticPropsDetail = ({ course, errors }: Props) => {
+const StaticPropsDetail = ({ course, errors }) => {
   if (errors) {
     return (
       <Layout title='Error | Next.js + TypeScript Example'>
@@ -23,7 +19,11 @@ const StaticPropsDetail = ({ course, errors }: Props) => {
 
   return (
     <Layout title={`${'Course Detail'} | Next.js + TypeScript Example`}>
-      {course && <>{`${course.title} ${course.description} ${course.categoryId} ${course.creatorId}`}</>}
+      <div>{`Title: ${course.title}`}</div>
+      <div>{`Description: ${course.description}`}</div>
+      <div>{`Learning Objectives: ${course.learningObjectives}`}</div>
+      <div>{`Price: ${course.price}`}</div>
+      {course.coverImage?.url ? <Image src={course.coverImage.url} alt='testing' /> : <></>}
     </Layout>
   );
 };
