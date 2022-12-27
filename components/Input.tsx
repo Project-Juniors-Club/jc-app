@@ -1,4 +1,4 @@
-const Input = ({ isDisabled = false, id, label }) => {
+const Input = ({ isDisabled = false, id, label, value, onChange }) => {
   return (
     <div className='w-5/12 text-left'>
       <label htmlFor={id} className='mb-2 block text-sm text-gray-900'>
@@ -13,6 +13,12 @@ const Input = ({ isDisabled = false, id, label }) => {
           ' mb-6 block w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
         }
         disabled={isDisabled}
+        value={value}
+        onChange={val => {
+          console.log('value');
+          console.log(val);
+          onChange(val);
+        }}
       />
     </div>
   );

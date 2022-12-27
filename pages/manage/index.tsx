@@ -1,8 +1,10 @@
 import NavBarCart from '../../components/navbar/NavBarCart';
 import CustomButton from '../../components/Buttons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import Input from '../../components/Input';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 const editAction = {
   EDIT: 'EDIT',
@@ -165,9 +167,20 @@ const DeletePopUp = ({ isOpen, setIsOpen }) => {
 };
 
 const Manage = () => {
+  const { data: session, status } = useSession();
   const [isDisabled, setIsDisabled] = useState(true);
   const [action, setAction] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  // const [userDetails, setUserDetails] = useState({
+  //   email: session?.user?.email,
+  //   fullName: session?.user?.name,
+  //   //todo
+  //   dateOfBirth: '',
+  // });
+  const [fullName, setFullName] = useState(session?.user?.name);
+  const [email, setEmail] = useState(session?.user?.email);
+  //TODO
+  const [dateOfBirth, setDateOfBirth] = useState('');
 
   const handleEdit = () => {
     setIsDisabled(false);
@@ -185,15 +198,27 @@ const Manage = () => {
     setIsOpen(true);
   };
 
+  const isSessionLoading = status === 'loading';
+
+  if (isSessionLoading) {
+    return null;
+  }
+
+  if (session == null) {
+    return <p>You are not signed in</p>;
+  }
+
+  console.log(session);
+
   return (
     <>
       <NavBarCart />
       <h1 className='my-10 text-center text-3xl font-bold'> Account Details </h1>
       <div className='align grid place-items-center'>
         <div className='mb-5 flex w-full flex-col items-center justify-center'>
-          <Input isDisabled={isDisabled} id='email' label='Email' />
-          <Input isDisabled={isDisabled} id='full-name' label='Full Name' />
-          <Input isDisabled={isDisabled} id='date-of-birth' label='Date of Birth' />
+          <Input isDisabled={isDisabled} id='email' label='Email' value={email} onChange={setEmail} />
+          <Input isDisabled={isDisabled} id='full-name' label='Full Name' value={fullName} onChange={setFullName} />
+          <Input isDisabled={isDisabled} id='date-of-birth' label='Date of Birth' value={dateOfBirth} onChange={setDateOfBirth} />
         </div>
         <div className='flex flex-row space-x-7'>
           {isDisabled ? (

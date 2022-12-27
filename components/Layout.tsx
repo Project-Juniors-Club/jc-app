@@ -42,7 +42,10 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
           ]}{' '}
           | <Link href='/uploads'>View Uploads</Link> | <Link href='/uploads/upload'>Upload</Link> |{' '}
           <button onClick={() => signOut()}>Sign out</button>|{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href='/checkout'>Checkout.com API</a>{' '}
+          <a href='/checkout'>Checkout.com API</a> |{' '}
+          <Link href='/manage'>
+            <a>Manage</a>
+          </Link>
         </nav>
       </header>
       {children}
