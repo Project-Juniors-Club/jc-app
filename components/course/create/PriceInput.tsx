@@ -65,6 +65,7 @@ const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) =
             }}
             isDisabled={isDisabled}
             errors={errors}
+            defaultValue={defaultPrice.toFixed(2)}
           />
         )}
       </div>
