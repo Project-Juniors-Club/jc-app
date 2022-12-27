@@ -2,13 +2,15 @@ import { useMemo, useState } from 'react';
 import { Category, Course, CourseStatus, User } from '@prisma/client';
 import CustomButton from '../../components/Button';
 import prisma from '../../lib/prisma';
+import NavBarCart from '../../components/navbar/NavBarCart';
+import { useRouter } from 'next/router';
 
 interface ICourseCardProps {
   course: Course;
 }
 
 const CourseCard = ({ course }: ICourseCardProps) => {
-  const isFree = false;
+  const isFree = course.price.toNumber() === Number(0);
   return (
     <div className='flex w-full items-center gap-x-12 py-6'>
       <div>
@@ -103,6 +105,7 @@ const OverviewPage = ({ courses, categories }: IProps) => {
   const [sortCriteria, setSortCriteria] = useState<string>('');
   const [searchField, setSearchField] = useState<string>('');
   const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const router = useRouter();
 
   const filteredData = useMemo(
     () =>
@@ -126,45 +129,48 @@ const OverviewPage = ({ courses, categories }: IProps) => {
   );
 
   return (
-    <div className='px-36'>
-      <div className='flex items-center justify-between py-16'>
-        <h1 className='text-5xl font-bold'>Course Overview</h1>
-        <button className='rounded bg-indigo-500 px-4 py-2 font-medium text-white shadow-lg shadow-indigo-200 outline-none transition-colors duration-200 hover:bg-indigo-600 focus:bg-indigo-600 focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 active:scale-95 active:shadow-none disabled:cursor-not-allowed disabled:bg-gray-400/80 disabled:shadow-none'>
-          Create Course +
-        </button>
-      </div>
-      <div className='flex gap-2 py-16'>
-        <div className='w-52 '>
-          <SortAndFilterMenu categories={categories} setCategory={setCategory} setSortCriteria={setSortCriteria} />
+    <>
+      <NavBarCart />
+      <div className='px-36'>
+        <div className='flex items-center justify-between py-16'>
+          <h1 className='text-5xl font-bold'>Course Overview</h1>
+          <CustomButton variant={'green-solid'} onClick={() => router.push(`/courses/staff/create`)}>
+            Create Course +
+          </CustomButton>
         </div>
-        <div className='flex w-full flex-col gap-9'>
-          <div>
-            <label htmlFor='filterName' className='block text-sm font-medium text-gray-700'>
-              Search Course
-            </label>
-            <div className='relative mt-1 rounded-md shadow-sm'>
-              <input
-                type='text'
-                name='filterName'
-                id='filterName'
-                className='block w-full rounded-md border-gray-300 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='Title, description, objectives...'
-                onChange={e => {
-                  setSearchField(e.target.value);
-                }}
-              />
+        <div className='flex gap-2 py-16'>
+          <div className='w-52 '>
+            <SortAndFilterMenu categories={categories} setCategory={setCategory} setSortCriteria={setSortCriteria} />
+          </div>
+          <div className='flex w-full flex-col gap-9'>
+            <div>
+              <label htmlFor='filterName' className='block text-sm font-medium text-gray-700'>
+                Search Course
+              </label>
+              <div className='relative mt-1 rounded-md shadow-sm'>
+                <input
+                  type='text'
+                  name='filterName'
+                  id='filterName'
+                  className='block w-full rounded-md border-gray-300 pr-12 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+                  placeholder='Title, description, objectives...'
+                  onChange={e => {
+                    setSearchField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className='text-bold text-right text-sm text-[#7B7B7B]/50'>{`${filteredData.length} results`}</div>
+              {filteredData.map((course: Course, idx: number) => (
+                <CourseCard key={idx} course={course} />
+              ))}
             </div>
           </div>
-
-          <div>
-            <div className='text-bold text-right text-sm text-[#7B7B7B]/50'>{`${filteredData.length} results`}</div>
-            {filteredData.map((course: Course, idx: number) => (
-              <CourseCard key={idx} course={course} />
-            ))}
-          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
