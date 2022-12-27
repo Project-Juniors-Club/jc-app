@@ -66,6 +66,8 @@ model User {
 
 model NormalUser {
   userId String @id
+  age    Int?
+  pdpa   Boolean @default(false)
   user   User   @relation(fields: [userId], references: [id])
 
   @@map("normalUsers")

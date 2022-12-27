@@ -16,7 +16,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { signUpDobState, signUpEmailState, signUpInfoState, signUpNameState, signUpTocState } from '../../../atoms/atoms';
 
 import Layout from '../../../components/Layout';
-import useSnackbar from '../../../hooks/useSnackbar';
 
 type FormValues = {
   email: string;
@@ -39,8 +38,8 @@ const AccountDetails = () => {
   } = useForm({ defaultValues: { email, name, dob, toc } });
   const watchToc = watch('toc');
   const router = useRouter();
-  const { openErrorNotification, openSuccessNotification } = useSnackbar();
-  //TODO: update user + mutate
+  //fetch user data first if it exists
+
   const onSubmit = (data: FormValues) => {
     setEmail(data.email);
     setName(data.name);
