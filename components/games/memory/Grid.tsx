@@ -9,8 +9,7 @@ type CardGridProps = {
 const Grid = ({ randomCards, handleClick }: CardGridProps) => {
   return (
     <div className='flex flex-row'>
-      {randomCards &&
-        randomCards.map((card, index) => <Card name={card.name} handleClick={handleClick} card={card} cardIndex={index} key={card.id} />)}
+      {randomCards && randomCards.map((card, index) => <Card handleClick={() => handleClick(index, card)} card={card} key={card.id} />)}
     </div>
   );
 };

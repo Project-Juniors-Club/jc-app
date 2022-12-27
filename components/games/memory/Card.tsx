@@ -3,20 +3,18 @@ import CardUnflipped from './CardUnflipped';
 import CardFlipped from './CardFlipped';
 
 type CardProps = {
-  name: string;
   card: CardObj;
-  cardIndex: number;
   handleClick: (cardIndex: number, card: CardObj) => void;
 };
 
-const Card = ({ name, handleClick, card, cardIndex }: CardProps) => {
+const Card = ({ handleClick, card }: CardProps) => {
   return (
     <div
       onClick={() => {
-        handleClick(cardIndex, card);
+        handleClick(card.id, card);
       }}
     >
-      {card.flipped || card.found ? <CardFlipped name={name} /> : <CardUnflipped />}
+      {card.flipped || card.found ? <CardFlipped name={card.name} /> : <CardUnflipped />}
     </div>
   );
 };
