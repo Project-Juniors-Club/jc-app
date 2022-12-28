@@ -251,6 +251,20 @@
   dependencies:
     "@chakra-ui/shared-utils" "2.0.2"
 
+"@chakra-ui/icon@3.0.13":
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icon/-/icon-3.0.13.tgz#1782f8bd81946eabb39d4dde9eccebba1e5571ba"
+  integrity sha512-RaDLC4psd8qyInY2RX4AlYRfpLBNw3VsMih17BFf8EESVhBXNJcYy7Q9eMV/K4NvZfZT42vuVqGVNFmkG89lBQ==
+  dependencies:
+    "@chakra-ui/shared-utils" "2.0.3"
+
+"@chakra-ui/icons@^2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.0.14.tgz#8ac5157222a62964dc7ec19bc21a26697f8320b2"
+  integrity sha512-ZHjZ+ekDoW27MTDKqmKasBDEeSJB+dZXn2GubCPLVIzzXdL54TfwMrKOzLBJ2Q68YqFr7+OBbhlsLvKUKPSreA==
+  dependencies:
+    "@chakra-ui/icon" "3.0.13"
+
 "@chakra-ui/image@2.0.11":
   version "2.0.11"
   resolved "https://registry.npmjs.org/@chakra-ui/image/-/image-2.0.11.tgz"
@@ -638,6 +652,11 @@
   version "2.0.2"
   resolved "https://registry.npmjs.org/@chakra-ui/shared-utils/-/shared-utils-2.0.2.tgz"
   integrity sha512-wC58Fh6wCnFFQyiebVZ0NI7PFW9+Vch0QE6qN7iR+bLseOzQY9miYuzPJ1kMYiFd6QTOmPJkI39M3wHqrPYiOg==
+
+"@chakra-ui/shared-utils@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/shared-utils/-/shared-utils-2.0.3.tgz#97cbc11282e381ebd9f581c603088f9d60ead451"
+  integrity sha512-pCU+SUGdXzjAuUiUT8mriekL3tJVfNdwSTIaNeip7k/SWDzivrKGMwAFBxd3XVTDevtVusndkO4GJuQ3yILzDg==
 
 "@chakra-ui/skeleton@2.0.17":
   version "2.0.17"
@@ -2416,7 +2435,7 @@ deep-extend@^0.6.0:
   resolved "https://registry.npmjs.org/deep-extend/-/deep-extend-0.6.0.tgz"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
 
-deep-is@^0.1.4:
+deep-is@^0.1.3, deep-is@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npmjs.org/deep-is/-/deep-is-0.1.4.tgz"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
@@ -2903,6 +2922,11 @@ fast-json-stable-stringify@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz"
   integrity sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==
+
+fast-levenshtein@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+  integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
 fast-levenshtein@^3.0.0:
   version "3.0.0"
@@ -5635,7 +5659,7 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-type-check@~0.4.0:
+type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
   resolved "https://registry.npmjs.org/type-check/-/type-check-0.4.0.tgz"
   integrity sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==

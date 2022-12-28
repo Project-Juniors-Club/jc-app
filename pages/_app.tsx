@@ -7,11 +7,39 @@ import '../styles/globals.css';
 import { ChakraProvider } from '@chakra-ui/react';
 
 import { extendTheme } from '@chakra-ui/react';
+import { radioAnatomy, checkboxAnatomy } from '@chakra-ui/anatomy';
+import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Session } from 'next-auth';
 import Head from 'next/head';
 import favicon from '../public/favicon.ico';
+
+const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(radioAnatomy.keys);
+
+const baseStyle = definePartsStyle({
+  // define the part you're going to style
+  control: {
+    _checked: {
+      bg: '#7FB519',
+      borderColor: '#7FB519',
+      _before: {
+        color: 'white',
+      },
+    },
+    _hover: {
+      _checked: {
+        bg: '#7FB519',
+        borderColor: '#7FB519',
+        _before: {
+          color: 'white',
+        },
+      },
+    },
+  },
+});
+
+const radioTheme = defineMultiStyleConfig({ baseStyle });
 
 // TODO: add theme when we have the UI
 const colors = {
@@ -22,7 +50,8 @@ const colors = {
   },
 };
 
-const theme = extendTheme({ colors });
+// const theme = extendTheme({ colors, components: { Radio: controlTheme, Checkbox: controlTheme } });
+const theme = extendTheme({ colors, components: { Radio: radioTheme } });
 
 const memoize = fn => {
   let cache = {};
