@@ -1,6 +1,6 @@
 import React from 'react';
 import QuizCreator from '../../components/quiz-editor/creator';
-import { useForm, useWatch } from 'react-hook-form';
+import { UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import { Question } from '../../components/quiz-editor/Question';
 
 const QuizPage = () => {
@@ -27,7 +27,7 @@ const QuizPage = () => {
     defaultValues: {
       questions,
     },
-  });
+  }) as UseFormReturn<any>;
   const { control } = useFormReturns;
   const questionsWatch = useWatch({ name: 'questions', control: control }) as Question[];
   return <QuizCreator useFormReturns={useFormReturns} questions={questionsWatch} />;
