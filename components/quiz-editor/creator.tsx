@@ -21,14 +21,26 @@ const AddQuestionButton = ({ onClick }) => {
 
 const QuizCreator = ({ useFormReturns, questions }: QuizCreatorProp) => {
   const { watch, setValue, handleSubmit, getValues } = useFormReturns;
+  const handleOnQuestionDelete = (idx: number) => () => {
+    questions.splice(idx, 1);
+    setValue('questions', questions);
+  };
   return (
     <>
       <Box fontSize={14} fontFamily='Open Sans' fontWeight={400} px='3rem' bg='#E6E6E6' borderRadius={16} width='660px' py={8}>
-        <Text fontWeight={700}>Quiz Questions</Text>
+        <Text fontWeight={700} mb={5}>
+          Quiz Questions
+        </Text>
         <form onSubmit={handleSubmit(x => console.log(x))}>
-          <VStack gap={5} w='100%'>
+          <VStack w='100%'>
             {questions.map((question, idx) => (
-              <Question useFormReturns={useFormReturns} key={idx} question={question} registerLabel={`questions.${idx}`} />
+              <Question
+                useFormReturns={useFormReturns}
+                key={idx}
+                question={question}
+                registerLabel={`questions.${idx}`}
+                onDelete={handleOnQuestionDelete(idx)}
+              />
             ))}
           </VStack>
           <AddQuestionButton

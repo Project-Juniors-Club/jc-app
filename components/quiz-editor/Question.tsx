@@ -1,4 +1,4 @@
-import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox } from '@chakra-ui/react';
+import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton } from '@chakra-ui/react';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import QuestionTypeSelect from './QuestionTypeSelect';
@@ -46,9 +46,16 @@ type QuestionProp = {
   registerLabel: string;
   useFormReturns: UseFormReturn;
   question: Question;
+  onDelete: () => void;
 };
 
-export const Question = ({ registerLabel, question, useFormReturns, useFormReturns: { register, watch, setValue } }: QuestionProp) => {
+export const Question = ({
+  registerLabel,
+  question,
+  useFormReturns,
+  useFormReturns: { register, watch, setValue },
+  onDelete,
+}: QuestionProp) => {
   const options = watch(`${registerLabel}.options`, question.options) as Option[];
   const watchQuestionType = watch(`${registerLabel}.type`, question.type) as 'mcq' | 'mrq';
   const handleOnQuestionTypeChanged = () => {
@@ -79,7 +86,10 @@ export const Question = ({ registerLabel, question, useFormReturns, useFormRetur
     }
   };
   return (
-    <Flex bg='white' borderRadius={8} p={8} flexDir='column' w='100%'>
+    <Flex bg='white' borderRadius={8} px={8} flexDir='column' w='100%'>
+      <Flex justifyContent='right'>
+        <CloseButton onClick={onDelete} my={2} />
+      </Flex>
       <Flex columnGap={3}>
         <Textarea
           fontSize={14}
@@ -99,7 +109,7 @@ export const Question = ({ registerLabel, question, useFormReturns, useFormRetur
           <UploadImageButtonWithPreview useFormReturns={useFormReturns} registerLabel={`${registerLabel}.coverImage`} />
         </Flex>
       </Flex>
-      <VStack align='stretch' mt={6}>
+      <VStack align='stretch'>
         {options.map((option, idx) => (
           <Option
             key={idx}

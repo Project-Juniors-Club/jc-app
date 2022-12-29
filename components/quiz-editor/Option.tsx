@@ -31,7 +31,7 @@ export const Option = ({
   const optionTypeLabel = `${registerLabel}.type`;
   const optionType = useWatch({ name: optionTypeLabel, defaultValue: option.type, control: control }) as 'text' | 'image';
   return (
-    <Flex gap={4}>
+    <Flex gap={4} mt={5}>
       {questionType == 'mcq' ? (
         <Radio
           isChecked={option.isCorrect}
