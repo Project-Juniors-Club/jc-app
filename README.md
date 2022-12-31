@@ -3,8 +3,9 @@
 1. Setup Prettier on VScode
 2. Install Yarn
 3. Create `.env` file with `DATABASE_URL`
-4. `yarn`
-5. `yarn dev`
+4. Download client_secret.json from juniorsclub.nus@gmail.com Google Developer Console into the root folder. Add the client_secret field into the json.
+5. `yarn`
+6. `yarn dev`
 
 # Database
 

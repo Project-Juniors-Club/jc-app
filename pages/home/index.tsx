@@ -38,7 +38,7 @@ const LandingPage = () => {
                 </CustomButton>
               </VStack>
               <Box className='h-full w-5/12 rounded-lg'>
-                <Image src='/assets/login_left.jpg' className='h-full max-h-max w-full w-auto rounded-xl' />
+                <Image alt='login left' src='/assets/login_left.jpg' className='h-full max-h-max w-full rounded-xl' />
               </Box>
             </HStack>
           </Center>
