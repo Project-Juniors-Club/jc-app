@@ -1,6 +1,7 @@
 // External imports
 import { useState } from 'react';
-import { Text, Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid, Image } from '@chakra-ui/react';
+import { Text, Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid } from '@chakra-ui/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import CustomButton from '../../components/Button';
 import { useForm } from 'react-hook-form';
@@ -140,31 +141,27 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
               <Box width='full' textAlign='center' mt={5} mb={5}>
                 <Text as='b'>Login with SSO</Text>
               </Box>
-              <Image src={'/assets/logos/googleBig.svg'} width={36} height={41} alt='user' />
 
-              {Object.values(providers).map(provider =>
-                provider.id === 'email' ? (
-                  <form key={provider.name} method='post' action='/api/auth/signin/email'>
-                    <input name='csrfToken' type='hidden' defaultValue={csrfToken} />
-                    <label>
-                      Email address
-                      <input type='email' id='email' name='email' />
-                    </label>
-                    <button type='submit'>Sign in with Email</button>
-                  </form>
-                ) : (
-                  <div key={provider.name}>
-                    <button
-                      onClick={event => {
-                        event.preventDefault();
-                        signIn(provider.id);
-                      }}
-                    >
-                      Sign in with {provider.name}
-                    </button>
-                  </div>
-                ),
-              )}
+              <Flex justifyContent={'space-evenly'}>
+                {Object.values(providers).map(provider =>
+                  provider.id === 'email' ? (
+                    <></>
+                  ) : (
+                    <div className='m-7 cursor-pointer' key={provider.name}>
+                      <Image
+                        src={`/assets/${provider.name}Login.svg`}
+                        width='50'
+                        height='50'
+                        alt='user'
+                        onClick={event => {
+                          event.preventDefault();
+                          signIn(provider.id);
+                        }}
+                      />
+                    </div>
+                  ),
+                )}
+              </Flex>
             </Box>
           </>
         </Box>
