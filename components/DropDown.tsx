@@ -8,7 +8,7 @@ const DropDown = ({ buttonName, dropdownItems }) => {
     <Menu as='div'>
       <Menu.Button className='inline-flex items-center text-center text-black'>
         {buttonName}
-        <ChevronDownIcon className='ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100' aria-hidden='true' />
+        <ChevronDownIcon className='ml-2 -mr-1 h-5 w-5 text-[#434343]' aria-hidden='true' />
       </Menu.Button>
       <Menu.Items className={`absolute mt-8 divide-y divide-gray-100 shadow`}>
         {arr.map(item => {
