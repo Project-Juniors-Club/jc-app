@@ -38,6 +38,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.34.2",
     "recoil": "^0.7.5",
+    "tailwind-merge": "^1.8.1",
     "ts-node": "^10.9.1",
     "word-wrap": "^1.2.3",
     "yarn": "^1.22.19"
