@@ -57,7 +57,7 @@ export const Question = ({
   registerLabel,
   question,
   useFormReturns,
-  useFormReturns: { register, watch, setValue },
+  useFormReturns: { register, watch, setValue, clearErrors },
   onDelete,
   isDeletable,
   errors,
@@ -76,6 +76,7 @@ export const Question = ({
   const handleOnOptionDelete = (idx: number) => () => {
     options.splice(idx, 1);
     setValue(`${registerLabel}.options`, options);
+    clearErrors();
   };
   const handleOnSelectCorrect = (idx: number) => () => {
     if (watchQuestionType == 'mcq') {
