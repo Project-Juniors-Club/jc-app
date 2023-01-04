@@ -8,6 +8,18 @@ type QuizCreatorProp = {
   questions: Question[];
 };
 
+const MIN_NUM_QUESTION = 1;
+
+const DEFAULT_QUESTION = {
+  text: null,
+  type: 'mcq',
+  previewImageUrl: null,
+  options: [
+    { isCorrect: true, type: 'text', text: null },
+    { isCorrect: false, type: 'text', text: null },
+  ],
+} as Question;
+
 const AddQuestionButton = ({ onClick }) => {
   return (
     <Flex as={Button} onClick={onClick} bg='white' justifyContent='flex-start' p={0} w='100%' mt={5}>
@@ -20,10 +32,18 @@ const AddQuestionButton = ({ onClick }) => {
 };
 
 const QuizCreator = ({ useFormReturns, questions }: QuizCreatorProp) => {
-  const { watch, setValue, handleSubmit, getValues } = useFormReturns;
+  const {
+    watch,
+    setValue,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+    clearErrors,
+  } = useFormReturns;
   const handleOnQuestionDelete = (idx: number) => () => {
     questions.splice(idx, 1);
     setValue('questions', questions);
+    clearErrors();
   };
   return (
     <>
@@ -31,34 +51,26 @@ const QuizCreator = ({ useFormReturns, questions }: QuizCreatorProp) => {
         <Text fontWeight={700} mb={5}>
           Quiz Questions
         </Text>
-        <form onSubmit={handleSubmit(x => console.log(x))}>
-          <VStack w='100%'>
-            {questions.map((question, idx) => (
-              <Question
-                useFormReturns={useFormReturns}
-                key={idx}
-                question={question}
-                registerLabel={`questions.${idx}`}
-                onDelete={handleOnQuestionDelete(idx)}
-              />
-            ))}
-          </VStack>
-          <AddQuestionButton
-            onClick={() =>
-              setValue('questions', [
-                ...questions,
-                {
-                  text: null,
-                  type: 'mcq',
-                  previewImageUrl: null,
-                  options: [],
-                },
-              ])
-            }
-          />
-        </form>
+        <VStack w='100%'>
+          {questions.map((question, idx) => (
+            <Question
+              useFormReturns={useFormReturns}
+              key={idx}
+              question={question}
+              registerLabel={`questions.${idx}`}
+              onDelete={handleOnQuestionDelete(idx)}
+              isDeletable={questions.length > MIN_NUM_QUESTION}
+              errors={errors?.questions?.[idx]}
+            />
+          ))}
+        </VStack>
+        <AddQuestionButton
+          onClick={() => {
+            setValue('questions', [...questions, DEFAULT_QUESTION]);
+            clearErrors();
+          }}
+        />
       </Box>
-      <Button onClick={() => console.log(getValues())}>Console log recorded value</Button>
     </>
   );
 };

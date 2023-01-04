@@ -1,10 +1,12 @@
-import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton } from '@chakra-ui/react';
-import { useState } from 'react';
+import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton, FormControl } from '@chakra-ui/react';
 import { UseFormReturn } from 'react-hook-form';
 import QuestionTypeSelect from './QuestionTypeSelect';
 import { Option } from './Option';
 import UploadImageButtonWithPreview from './UploadImageButtonWithPreview';
 import { AddIcon } from '@chakra-ui/icons';
+
+const MIN_NUM_OPTION = 2;
+const MAX_NUM_OPTION = 5;
 
 const AddOptionButton = ({ onClick, questionType }) => {
   // the decorative radio/checkbox is still focusable not sure why
@@ -47,6 +49,8 @@ type QuestionProp = {
   useFormReturns: UseFormReturn;
   question: Question;
   onDelete: () => void;
+  isDeletable: boolean;
+  errors: any;
 };
 
 export const Question = ({
@@ -55,6 +59,8 @@ export const Question = ({
   useFormReturns,
   useFormReturns: { register, watch, setValue },
   onDelete,
+  isDeletable,
+  errors,
 }: QuestionProp) => {
   const options = watch(`${registerLabel}.options`, question.options) as Option[];
   const watchQuestionType = watch(`${registerLabel}.type`, question.type) as 'mcq' | 'mrq';
@@ -86,9 +92,9 @@ export const Question = ({
     }
   };
   return (
-    <Flex bg='white' borderRadius={8} px={8} flexDir='column' w='100%'>
+    <Flex bg='white' borderRadius={8} px={8} flexDir='column' w='100%' pb={2}>
       <Flex justifyContent='right'>
-        <CloseButton onClick={onDelete} my={2} />
+        <CloseButton onClick={onDelete} my={2} isDisabled={!isDeletable} />
       </Flex>
       <Flex columnGap={3}>
         <Textarea
@@ -98,6 +104,7 @@ export const Question = ({
           {...register(`${registerLabel}.text`, { required: true })}
           defaultValue={question.text}
           borderColor='#9E9E9E'
+          isInvalid={!!errors?.text}
         />
         <Flex w='50%' gap={2} flexDir='column'>
           <QuestionTypeSelect
@@ -109,7 +116,7 @@ export const Question = ({
           <UploadImageButtonWithPreview useFormReturns={useFormReturns} registerLabel={`${registerLabel}.coverImage`} />
         </Flex>
       </Flex>
-      <VStack align='stretch'>
+      <VStack align='stretch' mt={2}>
         {options.map((option, idx) => (
           <Option
             key={idx}
@@ -119,18 +126,23 @@ export const Question = ({
             questionType={watchQuestionType}
             onSelectCorrect={handleOnSelectCorrect(idx)}
             onDelete={handleOnOptionDelete(idx)}
+            isDeletable={options.length > MIN_NUM_OPTION}
+            errors={errors?.options?.[idx]}
           />
         ))}
       </VStack>
-      <AddOptionButton
-        onClick={() => {
-          setValue(`${registerLabel}.options`, [
-            ...options,
-            { isCorrect: false, type: 'text', text: null, previewImageUrl: null } as Option,
-          ]);
-        }}
-        questionType={watchQuestionType}
-      />
+      {options.length < MAX_NUM_OPTION && (
+        <AddOptionButton
+          onClick={() => {
+            setValue(`${registerLabel}.options`, [
+              ...options,
+              { isCorrect: false, type: 'text', text: null, previewImageUrl: null } as Option,
+            ]);
+          }}
+          questionType={watchQuestionType}
+        />
+      )}
+      {/* <Text>{JSON.stringify(errors) + '123'}</Text> */}
     </Flex>
   );
 };

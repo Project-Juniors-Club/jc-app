@@ -18,7 +18,7 @@ import {
   VStack,
   Input,
 } from '@chakra-ui/react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { RegisterOptions, UseFormReturn, useWatch } from 'react-hook-form';
 import CustomButton from '../Button';
 import { ChangeEvent, useRef, useState } from 'react';
 import { setConstantValue } from 'typescript';
@@ -26,16 +26,18 @@ import { register } from 'ts-node';
 
 type UploadImageButtonWithPreviewProps = {
   registerLabel: string;
+  registerOptions?: RegisterOptions;
   useFormReturns: UseFormReturn;
   selectedImageUrl?: string;
 };
 
 const UploadImageButtonWithPreview = ({
   registerLabel,
+  registerOptions,
   useFormReturns: { register, watch, setValue, resetField },
   selectedImageUrl,
 }: UploadImageButtonWithPreviewProps) => {
-  const { ref, onChange, ...rest } = register(registerLabel, { value: [] });
+  const { ref, onChange, ...rest } = register(registerLabel, { value: [], ...registerOptions });
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const previewUrlRegisterLabel = `${registerLabel}.previewImageUrl`;
