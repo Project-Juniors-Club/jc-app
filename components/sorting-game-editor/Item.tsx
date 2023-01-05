@@ -1,0 +1,57 @@
+import { UseFormReturn, useWatch } from 'react-hook-form';
+import UploadImageButtonWithPreview from '../UploadImageButtonWithPreview';
+import { Checkbox, CloseButton, Flex, Input, Radio, VStack, Text, Box } from '@chakra-ui/react';
+import ItemTypeSelect from './ItemTypeSelect';
+
+// TODO: update with image
+export type Item = {
+  type: 'text' | 'image';
+  text: string | null;
+};
+
+type ItemProp = {
+  registerLabel: string;
+  item: Item;
+  useFormReturns: UseFormReturn;
+  onDelete: () => void;
+  isDeletable: boolean;
+  errors: any;
+};
+
+export const Item = ({
+  registerLabel,
+  useFormReturns,
+  useFormReturns: { control, register },
+  item,
+  onDelete,
+  isDeletable,
+  errors,
+}: ItemProp) => {
+  const itemTypeLabel = `${registerLabel}.type`;
+  const itemType = useWatch({ name: itemTypeLabel, defaultValue: item.type, control: control }) as 'text' | 'image';
+  return (
+    <Flex gap={4}>
+      <ItemTypeSelect registerLabel={itemTypeLabel} useFormReturns={useFormReturns} />
+      <VStack gap={0.5} alignItems='start' w='100%'>
+        {itemType === 'text' && (
+          <Input
+            {...register(`${registerLabel}.text`, { value: item.text, required: itemType === 'text' })}
+            fontSize={14}
+            placeholder='Item'
+            defaultValue={item.text}
+            isInvalid={!!errors?.text}
+          />
+        )}
+
+        {itemType === 'image' && (
+          <UploadImageButtonWithPreview
+            registerLabel={`${registerLabel}.image`}
+            useFormReturns={useFormReturns}
+            registerOptions={{ required: itemType === 'image' }}
+          />
+        )}
+      </VStack>
+      <CloseButton onClick={onDelete} isDisabled={!isDeletable} />
+    </Flex>
+  );
+};
