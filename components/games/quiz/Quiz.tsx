@@ -1,8 +1,8 @@
+import { Switch } from '@headlessui/react';
 import React, { useState } from 'react';
 import { QuizType } from './QuizGame';
-import QuizOption from './QuizOption';
 const Quiz = ({
-  quiz: { text: title, choices, answer },
+  quiz: { text, type, choices, answer },
   handleSubmitQuiz,
   buttons,
   triggerNext,
@@ -13,36 +13,47 @@ const Quiz = ({
   triggerNext: boolean;
 }) => {
   const [errorMessage, setErrorMessage] = useState('');
+  const [selectedChoices, setSelectedChoices] = useState([]);
   const handleForm = e => {
     e.preventDefault();
-    const selected = choices.filter(choice => e.target[choice]?.checked);
-    if (selected.length === 0) {
+    if (selectedChoices.length === 0) {
       setErrorMessage('Please select at least one option');
       return;
     }
     setErrorMessage('');
-    const correct = choices.reduce((acc, choice) => {
-      if (!acc) return false;
-      const input = e.target[choice];
-      if (input) {
-        return e.target[choice].checked === answer.includes(choice);
-      } else {
-        return !answer.includes(choice);
-      }
-    }, true);
+    const correct = selectedChoices.length === answer.length && selectedChoices.every(choice => answer.includes(choice));
     handleSubmitQuiz(correct);
+  };
+  const handleClick = e => {
+    if (triggerNext) return;
+    setSelectedChoices(selected => {
+      if (type === 'mcq') return [e.target.textContent];
+      if (e.target.ariaChecked === 'false') {
+        return [...selected, e.target.textContent];
+      } else {
+        return selected.filter(choice => choice !== e.target.textContent);
+      }
+    });
   };
   return (
     <div>
-      <h1 className='mx-auto mt-24 h-48 w-2/3 text-6xl font-bold'>{title}</h1>
+      <h1 className='mx-auto mt-24 h-48 w-2/3 text-6xl font-bold'>{text}</h1>
       <form onSubmit={handleForm}>
         <div className='flex h-96 flex-col items-center justify-around'>
           {choices.map(choice => {
             const correct = triggerNext && answer.includes(choice);
+            const selected = selectedChoices.includes(choice);
             return (
-              <QuizOption key={choice} choice={choice} correct={correct} triggerNext={triggerNext}>
+              <Switch
+                key={choice}
+                onClick={handleClick}
+                className={`w-1/3 border border-solid border-black py-6 ${selected ? 'outline outline-4 outline-green-400' : ''}  ${
+                  correct ? 'bg-lime-300' : ''
+                } ${triggerNext ? 'cursor-not-allowed' : ''}`}
+                name={choice}
+              >
                 {choice}
-              </QuizOption>
+              </Switch>
             );
           })}
         </div>

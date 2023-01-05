@@ -3,13 +3,14 @@ import Quiz from './Quiz';
 
 export interface QuizType {
   text: string;
+  type: 'mcq' | 'mrq';
   choices: string[];
   answer: string[];
 }
 const quizes: QuizType[] = [
-  { text: 'first quiz', choices: ['apple', 'orange', 'banana', 'brocolli'], answer: ['apple', 'orange', 'banana'] },
-  { text: 'who is sus', choices: ['you', 'me', 'him'], answer: ['you', 'me'] },
-  { text: 'yeet', choices: ['dab', 'yote'], answer: ['dab'] },
+  { text: 'first quiz', type: 'mrq', choices: ['apple', 'orange', 'banana', 'brocolli'], answer: ['apple', 'orange', 'banana'] },
+  { text: 'who is sus', type: 'mcq', choices: ['you', 'me', 'him'], answer: ['you'] },
+  { text: 'yeet', type: 'mcq', choices: ['dab', 'yote'], answer: ['dab'] },
 ];
 const QuizGame = () => {
   const [index, setIndex] = useState(0);
