@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { QuizType } from './QuizGame';
 import QuizOption from './QuizOption';
 const Quiz = ({
@@ -9,11 +9,18 @@ const Quiz = ({
 }: {
   quiz: QuizType;
   handleSubmitQuiz: (correct: boolean) => void;
-  buttons: JSX.Element;
+  buttons: React.ReactNode;
   triggerNext: boolean;
 }) => {
+  const [errorMessage, setErrorMessage] = useState('');
   const handleForm = e => {
     e.preventDefault();
+    const selected = choices.filter(choice => e.target[choice]?.checked);
+    if (selected.length === 0) {
+      setErrorMessage('Please select at least one option');
+      return;
+    }
+    setErrorMessage('');
     const correct = choices.reduce((acc, choice) => {
       if (!acc) return false;
       const input = e.target[choice];
@@ -40,6 +47,7 @@ const Quiz = ({
           })}
         </div>
         {buttons}
+        {errorMessage && <p className='text-center text-red-500'>{errorMessage}</p>}
       </form>
     </div>
   );

@@ -16,17 +16,26 @@ const QuizGame = () => {
   const [score, setScore] = useState(0);
   const [triggerNext, setTriggerNext] = useState(false);
   const [endOfQuiz, setEndOfQuiz] = useState(false);
-  const handleSubmitQuiz = (correct: boolean) => {
-    if (correct) setScore(score + 1);
-    if (index === quizes.length - 1) {
-      setEndOfQuiz(true);
-    }
-    setTriggerNext(true);
-  };
+  const handleSubmitQuiz = useCallback(
+    (correct: boolean) => {
+      if (correct) setScore(score + 1);
+      if (index === quizes.length - 1) {
+        setEndOfQuiz(true);
+      }
+      setTriggerNext(true);
+    },
+    [index, score],
+  );
   const handleNextQuiz = useCallback(() => {
     setTriggerNext(false);
     setIndex(index + 1);
   }, [index]);
+  const handleReset = useCallback(() => {
+    setIndex(0);
+    setEndOfQuiz(false);
+    setScore(0);
+    setTriggerNext(false);
+  }, []);
   const buttons = useMemo(
     () => (
       <div className='flex justify-center'>
@@ -43,12 +52,7 @@ const QuizGame = () => {
         {endOfQuiz && (
           <button
             type='button'
-            onClick={() => {
-              setIndex(0);
-              setEndOfQuiz(false);
-              setScore(0);
-              setTriggerNext(false);
-            }}
+            onClick={handleReset}
             className='mx-auto mt-4 block w-1/3 border border-solid border-black bg-blue-500 py-4'
           >
             Play again
@@ -56,9 +60,8 @@ const QuizGame = () => {
         )}
       </div>
     ),
-    [endOfQuiz, handleNextQuiz, triggerNext],
+    [endOfQuiz, handleNextQuiz, handleReset, triggerNext],
   );
-
   return (
     <div>
       <Quiz key={quizes[index].text} quiz={quizes[index]} handleSubmitQuiz={handleSubmitQuiz} buttons={buttons} triggerNext={triggerNext} />
