@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Box = ({ name }) => {
+const Box = ({ name, isClicked }) => {
   const style = {
     width: '100px',
     height: '100px',
@@ -9,11 +9,9 @@ const Box = ({ name }) => {
   };
 
   return (
-    <>
-      <button className='my-10 mx-20' style={style}>
-        {name}
-      </button>
-    </>
+    <button style={style} className='my-10 mx-20' onClick={isClicked}>
+      {name}
+    </button>
   );
 };
 

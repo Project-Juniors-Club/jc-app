@@ -1,8 +1,5 @@
 import { Pair } from './Pair';
 import Box from './Box';
-import { useRef } from 'react';
-import Draggable from 'react-draggable';
-import { StraightLine } from 'react-drawline';
 
 const MatchingGame = () => {
   const senses: Pair[] = [
@@ -16,35 +13,47 @@ const MatchingGame = () => {
   let unsolvedPairs: Pair[] = [];
   let pairs: Pair[];
 
+  let leftChosen = 0;
+  let rightChosen = 0;
+
   for (let i = 0; i < senses.length; i++) {
     unsolvedPairs.push(senses[i]);
   }
 
-  const box1Ref = useRef(null);
-  const box2Ref = useRef(null);
+  let solved = 'Solved:';
+  const setClicked = (id, position) => {
+    if (position == 'left') {
+      leftChosen = id;
+    } else if (position == 'right') {
+      rightChosen = id;
+    }
+    console.log(leftChosen + ' ' + rightChosen);
+    if (leftChosen == rightChosen) {
+      solved += '\n' + id.toString();
+      for (let i = 0; i < unsolvedPairs.length; i++) {
+        if (unsolvedPairs[i].id == id) {
+          solvedPairs.push(unsolvedPairs[i]);
+          unsolvedPairs.splice(i, 1);
+        }
+      }
+    }
+  };
 
-  const items = unsolvedPairs.map(pair => (
+  const leftRandom = unsolvedPairs.map(pair => (
+    // LEFT SIDE
     <li key={pair.id}>
-      <Box ref={box1Ref} name={pair.leftpart}>
+      <Box name={pair.leftpart} isClicked={() => setClicked(pair.id, 'left')}>
         {' '}
       </Box>
-      <Box ref={box2Ref} name={pair.rightpart}>
+    </li>
+  ));
+
+  const rightRandom = unsolvedPairs.map(pair => (
+    // RIGHT SIDE
+    <li key={pair.id}>
+      <Box name={pair.rightpart} id={pair.id} isClicked={() => setClicked(pair.id, 'right')}>
         {' '}
       </Box>
-      <StraightLine
-        startingElement={{
-          ref: box1Ref,
-          x: 'left',
-          y: 'mid',
-        }}
-        endingElement={{
-          ref: box2Ref,
-          x: 'center',
-          y: 'top',
-        }}
-        style={{ backgroundColor: 'red' }}
-        className='beautiful-class-name'
-      />
     </li>
   ));
 
@@ -52,7 +61,8 @@ const MatchingGame = () => {
     <div>
       <p className='mt-4 text-center'> Draw lines between the pictures and the words that best go together.</p>
       <div className='flex flex-row justify-center'>
-        <ul>{items} </ul>
+        <ul>{leftRandom} </ul>
+        <ul>{rightRandom} </ul>
       </div>
     </div>
   );
