@@ -2,7 +2,7 @@ import React from 'react';
 import { QuizType } from './QuizGame';
 import QuizOption from './QuizOption';
 const Quiz = ({
-  quiz: { title, choices, answer },
+  quiz: { text: title, choices, answer },
   handleSubmitQuiz,
   buttons,
   triggerNext,

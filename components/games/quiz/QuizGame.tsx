@@ -2,14 +2,14 @@ import React, { useCallback, useMemo, useState } from 'react';
 import Quiz from './Quiz';
 
 export interface QuizType {
-  title: string;
+  text: string;
   choices: string[];
   answer: string[];
 }
 const quizes: QuizType[] = [
-  { title: 'first quiz', choices: ['apple', 'orange', 'banana', 'brocolli'], answer: ['apple', 'orange', 'banana'] },
-  { title: 'who is sus', choices: ['you', 'me', 'him'], answer: ['you', 'me'] },
-  { title: 'yeet', choices: ['dab', 'yote'], answer: ['dab'] },
+  { text: 'first quiz', choices: ['apple', 'orange', 'banana', 'brocolli'], answer: ['apple', 'orange', 'banana'] },
+  { text: 'who is sus', choices: ['you', 'me', 'him'], answer: ['you', 'me'] },
+  { text: 'yeet', choices: ['dab', 'yote'], answer: ['dab'] },
 ];
 const QuizGame = () => {
   const [index, setIndex] = useState(0);
@@ -61,13 +61,7 @@ const QuizGame = () => {
 
   return (
     <div>
-      <Quiz
-        key={quizes[index].title}
-        quiz={quizes[index]}
-        handleSubmitQuiz={handleSubmitQuiz}
-        buttons={buttons}
-        triggerNext={triggerNext}
-      />
+      <Quiz key={quizes[index].text} quiz={quizes[index]} handleSubmitQuiz={handleSubmitQuiz} buttons={buttons} triggerNext={triggerNext} />
       <div>
         {endOfQuiz && (
           <p className='text-center text-6xl'>

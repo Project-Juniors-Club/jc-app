@@ -1,6 +1,6 @@
 import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
 import { GetServerSideProps } from 'next';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import CustomButton from '../../../components/Button';
 import { useDisclosure } from '@chakra-ui/react';
 import TextInput from '../../../components/course/create/TextInput';
@@ -18,6 +18,7 @@ import { useState } from 'react';
 import prisma from '../../../lib/prisma';
 import NavBarCart from '../../../components/navbar/NavBarCourse';
 import Footer from '../../../components/Footer';
+import uploadFile from '../../../lib/upload';
 
 type FormValues = {
   title: string;
@@ -39,21 +40,21 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const [file, setFile] = useState<File>();
   const {
     register,
     handleSubmit,
     control,
     resetField,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, isSubmitSuccessful },
+    watch,
   } = useForm();
 
-  // returns course id created
-  const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { title, description, learningObjectives, isFree, category } = data;
+  const isDisabled = isSubmitting || isSubmitSuccessful;
 
-    // TODO: when we have image upload mechanism
-    // const coverImageAssetId = await axios.post('some endpoint')
+  const onSubmit: SubmitHandler<FormValues> = async data => {
+    const { title, description, learningObjectives, isFree, category, coverImage } = data;
+
+    const coverImageAssetId = coverImage.length ? await uploadFile(coverImage[0]) : undefined;
 
     // returns id of course created
     return await axios
@@ -61,7 +62,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
         title: title.trim(),
         description: description.trim(),
         learningObjectives: learningObjectives.trim(),
-        coverImageAssetId: undefined,
+        coverImageAssetId: coverImageAssetId,
         creatorId: sess.user.id,
         price: +isFree ? 0 : data?.price,
         categoryId: category?.id,
@@ -78,6 +79,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     } catch (err) {
       console.log(err);
       openErrorNotification('Course Creation Failed', 'Please try again');
+      throw err;
     }
   };
 
@@ -89,6 +91,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
     } catch (err) {
       console.log(err);
       openErrorNotification('Course Creation Failed', 'Please try again');
+      throw err;
     }
   };
 
@@ -110,7 +113,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                   message: 'This is required',
                 },
               }}
-              isDisabled={isSubmitting}
+              isDisabled={isDisabled}
               errors={errors}
             />
             <TextAreaInput
@@ -124,7 +127,7 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                   message: 'This is required',
                 },
               }}
-              isDisabled={isSubmitting}
+              isDisabled={isDisabled}
               errors={errors}
             />
             <TextAreaInput
@@ -138,25 +141,24 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                   message: 'This is required',
                 },
               }}
-              isDisabled={isSubmitting}
+              isDisabled={isDisabled}
               errors={errors}
             />
-            <CategorySelect categories={categories} name='category' control={control} disabled={isSubmitting} />
+            <CategorySelect categories={categories} name='category' control={control} disabled={isDisabled} />
             <UploadButton
               register={register}
               resetField={resetField}
               label={'coverImage'}
               headerText={'Course Cover Image Upload'}
               buttonText={'Upload Image'}
-              isDisabled={isSubmitting}
-              file={file}
-              setFile={setFile}
+              isDisabled={isDisabled}
+              watch={watch}
             />
-            <PriceInput register={register} errors={errors} isDisabled={isSubmitting} />
+            <PriceInput register={register} errors={errors} isDisabled={isDisabled} />
           </div>
           <div className='flex w-full justify-between py-8'>
             <div className='flex gap-x-3'>
-              <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isSubmitting}>
+              <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isDisabled}>
                 <div className='text-[#FFFFFF]'>Save & Exit</div>
               </CustomButton>
               <CustomButton
@@ -165,12 +167,12 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                   e.preventDefault();
                   onOpen();
                 }}
-                isDisabled={isSubmitting}
+                isDisabled={isDisabled}
               >
                 Cancel
               </CustomButton>
             </div>
-            <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isSubmitting}>
+            <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isDisabled}>
               Next: Edit Course
             </CustomButton>
           </div>
