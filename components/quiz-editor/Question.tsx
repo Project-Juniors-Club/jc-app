@@ -2,7 +2,7 @@ import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton, For
 import { UseFormReturn } from 'react-hook-form';
 import QuestionTypeSelect from './QuestionTypeSelect';
 import { Option } from './Option';
-import UploadImageButtonWithPreview from './UploadImageButtonWithPreview';
+import UploadImageButtonWithPreview from '../UploadImageButtonWithPreview';
 import { AddIcon } from '@chakra-ui/icons';
 
 const MIN_NUM_OPTION = 2;

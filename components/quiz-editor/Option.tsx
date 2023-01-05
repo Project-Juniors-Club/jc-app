@@ -1,5 +1,5 @@
 import { UseFormReturn, useWatch } from 'react-hook-form';
-import UploadImageButtonWithPreview from './UploadImageButtonWithPreview';
+import UploadImageButtonWithPreview from '../UploadImageButtonWithPreview';
 import { Checkbox, CloseButton, Flex, Input, Radio, VStack, Text, Box } from '@chakra-ui/react';
 import OptionTypeSelect from './OptionTypeSelect';
 
