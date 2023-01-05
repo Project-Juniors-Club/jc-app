@@ -1,6 +1,7 @@
 import { Switch } from '@headlessui/react';
 import React, { useState } from 'react';
 import { QuizType } from './QuizGame';
+import styles from './Quiz.module.css';
 const Quiz = ({
   quiz: { text, type, choices, answer },
   handleSubmitQuiz,
@@ -41,15 +42,17 @@ const Quiz = ({
       <form onSubmit={handleForm}>
         <div className='flex h-96 flex-col items-center justify-around'>
           {choices.map(choice => {
-            const correct = triggerNext && answer.includes(choice);
             const selected = selectedChoices.includes(choice);
+            const correct = triggerNext && answer.includes(choice);
+            const incorrect = triggerNext && selected && !answer.includes(choice);
             return (
               <Switch
                 key={choice}
                 onClick={handleClick}
                 className={`w-1/3 border border-solid border-black py-6 ${selected ? 'outline outline-4 outline-green-400' : ''}  ${
                   correct ? 'bg-lime-300' : ''
-                } ${triggerNext ? 'cursor-not-allowed' : ''}`}
+                } ${incorrect ? styles.shake : ''}
+                 ${triggerNext ? 'cursor-not-allowed' : ''}`}
                 name={choice}
               >
                 {choice}
