@@ -33,7 +33,7 @@ const Quiz = ({
           {choices.map(choice => {
             const correct = triggerNext && answer.includes(choice);
             return (
-              <QuizOption key={choice} choice={choice} correct={correct}>
+              <QuizOption key={choice} choice={choice} correct={correct} triggerNext={triggerNext}>
                 {choice}
               </QuizOption>
             );
