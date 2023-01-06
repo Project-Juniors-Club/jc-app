@@ -29,7 +29,7 @@ const Quiz = ({
     if (triggerNext) return;
     setSelectedChoices(selected => {
       if (type === 'mcq') return [e.target.textContent];
-      if (e.target.ariaChecked === 'false') {
+      if (e.target.attributes['aria-checked'].value === 'false') {
         return [...selected, e.target.textContent];
       } else {
         return selected.filter(choice => choice !== e.target.textContent);
@@ -38,7 +38,9 @@ const Quiz = ({
   };
   return (
     <div>
-      <h1 className='mx-auto mt-24 h-48 w-2/3 text-6xl font-bold'>{text}</h1>
+      <h1 className='mx-auto mt-24 h-48 w-2/3 text-6xl font-bold'>
+        {text}, ({type})
+      </h1>
       <form onSubmit={handleForm}>
         <div className='flex h-96 flex-col items-center justify-around'>
           {choices.map(choice => {
