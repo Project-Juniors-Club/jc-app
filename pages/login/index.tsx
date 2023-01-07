@@ -143,24 +143,31 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
               </Box>
 
               <Flex justifyContent={'space-evenly'}>
-                {Object.values(providers).map(provider =>
-                  provider.id === 'email' ? (
-                    <></>
-                  ) : (
-                    <div className='m-7 cursor-pointer' key={provider.name}>
-                      <Image
-                        src={`/assets/${provider.name}Login.svg`}
-                        width='50'
-                        height='50'
-                        alt='user'
-                        onClick={event => {
-                          event.preventDefault();
-                          signIn(provider.id);
-                        }}
-                      />
-                    </div>
-                  ),
-                )}
+                <div className='m-7 cursor-pointer' key='google'>
+                  <Image
+                    src={`/assets/googleLogin.svg`}
+                    width='50'
+                    height='50'
+                    alt='user'
+                    onClick={event => {
+                      event.preventDefault();
+                      signIn('google');
+                    }}
+                  />
+                </div>
+
+                <div className='m-7 cursor-pointer' key='fb'>
+                  <Image
+                    src={`/assets/facebookLogin.svg`}
+                    width='50'
+                    height='50'
+                    alt='user'
+                    onClick={event => {
+                      event.preventDefault();
+                      signIn('facebook');
+                    }}
+                  />
+                </div>
               </Flex>
             </Box>
           </>
