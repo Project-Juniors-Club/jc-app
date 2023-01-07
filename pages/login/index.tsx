@@ -128,7 +128,7 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                   </Button>
                   <Box width='full' textAlign='center' mt={5}>
                     Don&#39;t have an account?{' '}
-                    <Text as='b'>
+                    <Text as='b' color={'rgb(56, 86, 0)'}>
                       <Text as='u'>
                         <Link href='/signup'>Sign Up</Link>
                       </Text>
