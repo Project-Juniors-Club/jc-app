@@ -1,5 +1,6 @@
 import { Pair } from './Pair';
-import Box from './Box';
+import LeftBox from './LeftBox';
+import RightBox from './RightBox';
 
 const MatchingGame = () => {
   const senses: Pair[] = [
@@ -11,7 +12,6 @@ const MatchingGame = () => {
   ];
   let solvedPairs: Pair[] = [];
   let unsolvedPairs: Pair[] = [];
-  let pairs: Pair[];
 
   let leftChosen = 0;
   let rightChosen = 0;
@@ -21,15 +21,13 @@ const MatchingGame = () => {
   }
 
   let solved = 'Solved:';
-  const setClicked = (id, position) => {
-    if (position == 'left') {
-      leftChosen = id;
-    } else if (position == 'right') {
-      rightChosen = id;
-    }
-    console.log(leftChosen + ' ' + rightChosen);
+
+  // CHECK IF PAIR IS SOLVED
+  const checkPair = id => {
+    rightChosen = id;
     if (leftChosen == rightChosen) {
       solved += '\n' + id.toString();
+      alert(solved);
       for (let i = 0; i < unsolvedPairs.length; i++) {
         if (unsolvedPairs[i].id == id) {
           solvedPairs.push(unsolvedPairs[i]);
@@ -39,21 +37,26 @@ const MatchingGame = () => {
     }
   };
 
+  // ADD LEFT VALUE
+  const addPair = id => {
+    leftChosen = id;
+  };
+
   const leftRandom = unsolvedPairs.map(pair => (
     // LEFT SIDE
     <li key={pair.id}>
-      <Box name={pair.leftpart} isClicked={() => setClicked(pair.id, 'left')}>
+      <LeftBox name={pair.leftpart} handleMouseDown={() => addPair(pair.id)}>
         {' '}
-      </Box>
+      </LeftBox>
     </li>
   ));
 
   const rightRandom = unsolvedPairs.map(pair => (
     // RIGHT SIDE
     <li key={pair.id}>
-      <Box name={pair.rightpart} id={pair.id} isClicked={() => setClicked(pair.id, 'right')}>
+      <RightBox name={pair.rightpart} id={pair.id} handleMouseUp={() => checkPair(pair.id)}>
         {' '}
-      </Box>
+      </RightBox>
     </li>
   ));
 

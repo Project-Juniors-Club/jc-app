@@ -1,6 +1,7 @@
 import React from 'react';
 
-const Box = ({ name, isClicked }) => {
+const LeftBox = ({ name, handleMouseDown }) => {
+  // TO SUPPORT PICTURES
   const style = {
     width: '100px',
     height: '100px',
@@ -9,10 +10,10 @@ const Box = ({ name, isClicked }) => {
   };
 
   return (
-    <button style={style} className='my-10 mx-20' onClick={isClicked}>
+    <button style={style} className='my-10 mx-20' onMouseDown={handleMouseDown}>
       {name}
     </button>
   );
 };
 
-export default Box;
+export default LeftBox;
