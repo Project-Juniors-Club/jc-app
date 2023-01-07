@@ -15,7 +15,7 @@ const TYPE_DISPLAY_TEXT = {
 
 const ItemTypeSelect = ({ registerLabel, defaultType = 'text', useFormReturns: { watch, register, setValue } }: ItemTypeSelectProp) => {
   register(registerLabel, { value: defaultType });
-  const optionTypeWatch = watch(registerLabel, defaultType) as string;
+  const optionTypeWatch: string = watch(registerLabel, defaultType);
   return (
     <Menu>
       <MenuButton

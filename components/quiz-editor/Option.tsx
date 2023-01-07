@@ -53,6 +53,7 @@ export const Option = ({
             placeholder='Option'
             defaultValue={option.text}
             isInvalid={!!errors?.text}
+            borderColor='#9E9E9E'
           />
         )}
 

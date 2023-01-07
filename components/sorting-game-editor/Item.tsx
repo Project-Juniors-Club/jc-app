@@ -28,7 +28,7 @@ export const Item = ({
   errors,
 }: ItemProp) => {
   const itemTypeLabel = `${registerLabel}.type`;
-  const itemType = useWatch({ name: itemTypeLabel, defaultValue: item.type, control: control }) as 'text' | 'image';
+  const itemType: 'text' | 'image' = useWatch({ name: itemTypeLabel, defaultValue: item.type, control: control });
   return (
     <Flex gap={4}>
       <ItemTypeSelect registerLabel={itemTypeLabel} useFormReturns={useFormReturns} />
@@ -40,6 +40,7 @@ export const Item = ({
             placeholder='Item'
             defaultValue={item.text}
             isInvalid={!!errors?.text}
+            borderColor='#9E9E9E'
           />
         )}
 

@@ -42,7 +42,7 @@ export const Bucket = ({
   isDeletable,
   errors,
 }: BucketProp) => {
-  const items = watch(`${registerLabel}.items`, bucket.items) as Item[];
+  const items: Item[] = watch(`${registerLabel}.items`, bucket.items);
   const handleOnItemDelete = (idx: number) => () => {
     items.splice(idx, 1);
     setValue(`${registerLabel}.items`, items);
@@ -80,7 +80,8 @@ export const Bucket = ({
       {items.length < MAX_NUM_ITEM && (
         <AddItemButton
           onClick={() => {
-            setValue(`${registerLabel}.items`, [...items, { type: 'text', text: null } as Item]);
+            const newItems: Item[] = [...items, { type: 'text', text: null }];
+            setValue(`${registerLabel}.items`, newItems);
           }}
         />
       )}

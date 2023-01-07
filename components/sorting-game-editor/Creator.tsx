@@ -15,10 +15,10 @@ type SortingGameCreatorProp = {
 const MIN_NUM_BUCKET = 2;
 const MAX_NUM_BUCKET = 3;
 
-const DEFAULT_BUCKET = {
+const DEFAULT_BUCKET: Bucket = {
   text: null,
   items: [{ type: 'text', text: null }],
-} as Bucket;
+};
 
 const AddBucketButton = ({ onClick }) => {
   return (

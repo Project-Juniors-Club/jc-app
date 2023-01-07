@@ -5,7 +5,7 @@ import SortingGameCreator, { SortingGame } from '../../components/sorting-game-e
 
 const SortingGameEditorPage = () => {
   // TODO: retrieve from db
-  const sortingGame = {
+  const sortingGame: SortingGame = {
     text: 'Which is real?',
     buckets: [
       {
@@ -27,7 +27,7 @@ const SortingGameEditorPage = () => {
         ],
       },
     ],
-  } as SortingGame;
+  };
   const useFormReturns = useForm({
     defaultValues: {
       sortingGame,
