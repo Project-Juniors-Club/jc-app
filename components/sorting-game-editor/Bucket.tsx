@@ -2,6 +2,7 @@ import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton, For
 import { UseFormReturn } from 'react-hook-form';
 import { AddIcon } from '@chakra-ui/icons';
 import { Item } from './Item';
+import { SortingGame } from './Creator';
 
 const MIN_NUM_ITEM = 1;
 const MAX_NUM_ITEM = 5;
@@ -26,7 +27,7 @@ export type Bucket = {
 
 type BucketProp = {
   registerLabel: string;
-  useFormReturns: UseFormReturn;
+  useFormReturns: UseFormReturn<any>;
   bucket: Bucket;
   onDelete: () => void;
   isDeletable: boolean;
