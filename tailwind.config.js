@@ -4,11 +4,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'open-sans': ['Open Sans', 'sans-serif']
-      }
+        'open-sans': ['Open Sans', 'sans-serif'],
+      },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require('@tailwindcss/forms')],
 };
