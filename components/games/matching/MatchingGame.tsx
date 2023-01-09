@@ -1,8 +1,10 @@
 import { Pair } from './Pair';
 import LeftBox from './LeftBox';
 import RightBox from './RightBox';
+import { useEffect, useState } from 'react';
 
 const MatchingGame = () => {
+  const NUM_OF_PAIRS = 5;
   const senses: Pair[] = [
     { id: 1, leftpart: 'hand', rightpart: 'touch' },
     { id: 2, leftpart: 'nose', rightpart: 'smell' },
@@ -20,20 +22,22 @@ const MatchingGame = () => {
     unsolvedPairs.push(senses[i]);
   }
 
-  let solved = 'Solved:';
-
   // CHECK IF PAIR IS SOLVED
   const checkPair = id => {
     rightChosen = id;
     if (leftChosen == rightChosen) {
-      solved += '\n' + id.toString();
-      alert(solved);
+      console.log(id + ' is solved!');
       for (let i = 0; i < unsolvedPairs.length; i++) {
         if (unsolvedPairs[i].id == id) {
           solvedPairs.push(unsolvedPairs[i]);
           unsolvedPairs.splice(i, 1);
         }
       }
+    } else {
+      console.log('Incorrect');
+    }
+    if (unsolvedPairs.length == 0) {
+      console.log('All are solved!');
     }
   };
 
@@ -41,6 +45,13 @@ const MatchingGame = () => {
   const addPair = id => {
     leftChosen = id;
   };
+
+  // TO RANDOMISE THE RIGHT SIDE
+  const [randomArray, setRandomArray] = useState([]);
+  useEffect(() => {
+    const randomizeArray = [...unsolvedPairs].sort(() => 0.5 - Math.random());
+    setRandomArray(randomizeArray.slice(0, NUM_OF_PAIRS));
+  }, []);
 
   const leftRandom = unsolvedPairs.map(pair => (
     // LEFT SIDE
@@ -51,7 +62,7 @@ const MatchingGame = () => {
     </li>
   ));
 
-  const rightRandom = unsolvedPairs.map(pair => (
+  const rightRandom = randomArray.map(pair => (
     // RIGHT SIDE
     <li key={pair.id}>
       <RightBox name={pair.rightpart} id={pair.id} handleMouseUp={() => checkPair(pair.id)}>
