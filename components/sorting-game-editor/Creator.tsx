@@ -1,6 +1,6 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Box, Flex, Text, Button, VStack, Checkbox, Input, Textarea } from '@chakra-ui/react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { FieldValues, UseFormReturn, useWatch } from 'react-hook-form';
 import { Bucket } from './Bucket';
 
 export type SortingGame = {
@@ -9,7 +9,7 @@ export type SortingGame = {
 };
 
 type SortingGameCreatorProp = {
-  useFormReturns: UseFormReturn<{ sortingGame: SortingGame }>;
+  useFormReturns: UseFormReturn<any>;
 };
 
 const MIN_NUM_BUCKET = 2;
@@ -41,9 +41,9 @@ const SortingGameCreator = ({ useFormReturns }: SortingGameCreatorProp) => {
     formState: { errors },
     clearErrors,
     control,
-  } = useFormReturns;
+  } = useFormReturns as UseFormReturn<{ sortingGame: SortingGame }>;
   const sortingGame = useWatch({ name: 'sortingGame', control: control });
-  const buckets = sortingGame.buckets;
+  const buckets = sortingGame?.buckets;
   const handleOnBucketDelete = (idx: number) => () => {
     buckets.splice(idx, 1);
     setValue('sortingGame.buckets', buckets);
