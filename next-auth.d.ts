@@ -6,7 +6,7 @@ import { JWT } from 'next-auth/jwt';
 declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    role?: UserType;
+    type?: UserType;
     id?: string;
   }
 }
@@ -18,14 +18,14 @@ declare module 'next-auth' {
    */
   interface Session {
     user?: {
-      role?: UserType;
+      type?: UserType;
       id?: string;
     } & DefaultSession['user'];
   }
 
   /** Passed as a parameter to the `jwt` callback */
   interface User {
-    role?: UserType;
+    type?: UserType;
     id?: string;
   }
 }
