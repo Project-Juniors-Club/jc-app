@@ -1,7 +1,7 @@
 import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { FieldValues, SubmitErrorHandler, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { FieldValues, SubmitErrorHandler, SubmitHandler, UseFormRegister, useForm, useWatch } from 'react-hook-form';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, Box, Button, Heading } from '@chakra-ui/react';
 import { SimpleGrid, Center, Input, Select, Spacer, Flex, Stack, HStack, VStack, FormLabel, FormControl, Textarea } from '@chakra-ui/react';
 import CustomButton from '../../../../../../components/Button';
@@ -22,11 +22,10 @@ import prisma from '../../../../../../lib/prisma';
 import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
 import uploadFile from '../../../../../../lib/upload';
-import MyAccordion from '../MyAccordion';
+import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
 import { setConstantValue } from 'typescript';
-import UploadImageButton from '../UploadImageButton';
-import QuizCreator from '../../../../../../components/quiz-editor/creator';
-import SortingGame from '../../../../../../components/games/sorting/SortingGame';
+import UploadImageButton from '../../../../../../components/course/content/editor/UploadImageButton';
+import QuizCreator from '../../../../../../components/quiz-editor/Creator';
 import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 
 type FormValues = {
@@ -53,7 +52,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
   const useFormReturns = useForm({
     defaultValues: {
       questions: [],
-      sortingGame: { buckets: [] },
+      sortingGame: { text: null, buckets: [] },
       pageType: '',
       title: '',
       duration: '',
@@ -198,7 +197,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
                         <option value='sort'>Sorting Game</option>
                         <option value='tbc'>TBC</option>
                       </Select>
-                      {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} questions={[]} />}
+                      {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} />}
                       {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} />}
                     </Box>
                   )}

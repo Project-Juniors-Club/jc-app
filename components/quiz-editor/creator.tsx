@@ -4,8 +4,7 @@ import { UseFormReturn, useWatch } from 'react-hook-form';
 import { Question } from './Question';
 
 type QuizCreatorProp = {
-  useFormReturns: UseFormReturn;
-  questions: Question[];
+  useFormReturns: UseFormReturn<any>;
 };
 
 const MIN_NUM_QUESTION = 1;
@@ -31,7 +30,7 @@ const AddQuestionButton = ({ onClick }) => {
   );
 };
 
-const QuizCreator = ({ useFormReturns, questions: initialQuestions = [] }: QuizCreatorProp) => {
+const QuizCreator = ({ useFormReturns }: QuizCreatorProp) => {
   const {
     watch,
     setValue,
@@ -46,7 +45,7 @@ const QuizCreator = ({ useFormReturns, questions: initialQuestions = [] }: QuizC
     setValue('questions', questions);
     clearErrors();
   };
-  const questions = useWatch({ name: 'questions', defaultValue: initialQuestions, control: control });
+  const questions = useWatch({ name: 'questions', control: control });
   return (
     <>
       <Box fontSize={14} fontFamily='Open Sans' fontWeight={400} px='3rem' bg='#E6E6E6' borderRadius={16} width='660px' py={8}>

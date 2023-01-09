@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Button from '../../../../../components/Button';
+import Button from '../../../Button';
 import { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
 import { FieldValues, UseFormRegister, UseFormRegisterReturn, UseFormResetField, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 

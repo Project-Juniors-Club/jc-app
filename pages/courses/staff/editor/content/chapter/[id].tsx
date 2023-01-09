@@ -7,7 +7,7 @@ import { SimpleGrid, Center, Input, Select, Spacer, Flex, Stack, HStack, VStack,
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import MyAccordion from '../MyAccordion';
+import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
 import { useForm } from 'react-hook-form';
 
 const EditorPnumber = () => {

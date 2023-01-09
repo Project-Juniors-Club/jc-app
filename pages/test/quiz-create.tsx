@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Flex, Text, Button, VStack, Checkbox } from '@chakra-ui/react';
-import QuizCreator from '../../components/quiz-editor/creator';
+import QuizCreator from '../../components/quiz-editor/Creator';
 import { UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import { Question } from '../../components/quiz-editor/Question';
 
@@ -37,7 +37,7 @@ const QuizPage = () => {
   } = useFormReturns;
   return (
     <form onSubmit={handleSubmit(x => console.log(x))}>
-      <QuizCreator useFormReturns={useFormReturns} questions={questions} />
+      <QuizCreator useFormReturns={useFormReturns} />
       <Button type='submit'>Console log recorded value</Button>
       <Button onClick={() => console.log(errors)}>Console log errors</Button>
     </form>
