@@ -19,7 +19,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { RegisterOptions, UseFormReturn, useWatch } from 'react-hook-form';
-import CustomButton from '../Button';
+import CustomButton from './Button';
 import { ChangeEvent, useRef, useState } from 'react';
 import { setConstantValue } from 'typescript';
 import { register } from 'ts-node';
