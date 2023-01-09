@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import Input from '../../components/Input';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 const editAction = {
   EDIT: 'EDIT',
@@ -91,6 +91,7 @@ const DeletePopUp = ({ isOpen, setIsOpen, handleDeleteAccount }) => {
   const handleClose = () => {
     setProgress(deleteProgress.INITIAL);
     setIsOpen(false);
+    signOut();
   };
 
   const verifyOTP = () => {
@@ -192,16 +193,30 @@ const Manage = () => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [action, setAction] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  // const [userDetails, setUserDetails] = useState({
-  //   email: session?.user?.email,
-  //   fullName: session?.user?.name,
-  //   //todo
-  //   dateOfBirth: '',
-  // });
-  const [fullName, setFullName] = useState(session?.user?.name);
-  const [email, setEmail] = useState(session?.user?.email);
+
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   //TODO
   const [dateOfBirth, setDateOfBirth] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      return await axios.get('/api/users/' + session?.user?.id);
+    };
+
+    fetchData()
+      .then(res => res.data.data)
+      .then(user => {
+        console.log('USER');
+        console.log(user);
+
+        if (user) {
+          setFullName(user.name);
+          setEmail(user.email);
+          //TODO set date of birth
+        }
+      });
+  }, [session?.user?.id]);
 
   console.log(session?.user?.id);
 
