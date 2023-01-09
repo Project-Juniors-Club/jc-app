@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import DropDown from '../DropDown';
+import DropDown from './DropDown';
+import UserDropdown from './UserDropdown';
 
 const NavBarCart = () => {
   const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];
@@ -33,10 +34,7 @@ const NavBarCart = () => {
               My Cart
             </a>
           </div>
-          <div className='flex flex-row items-center gap-2 p-0'>
-            <Image src={'/assets/logos/user.svg'} width={36} height={41} alt='user' />
-            <DropDown buttonName={'Username'} dropdownItems={loginItems}></DropDown>
-          </div>
+          <UserDropdown />
         </div>
       </nav>
     </>
