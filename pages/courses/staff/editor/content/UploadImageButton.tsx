@@ -7,10 +7,10 @@ type Props = {
   label: string;
   headerText: string;
   buttonText: string;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<any>;
   resetField: UseFormResetField<FieldValues>;
   isDisabled: boolean;
-  watch: UseFormWatch<FieldValues>;
+  watch: UseFormWatch<any>;
   removeImageOnClick?: () => void;
   imageFilename?: string;
 };

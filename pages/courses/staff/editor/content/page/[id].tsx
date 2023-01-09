@@ -1,7 +1,7 @@
 import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { FieldValues, SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, SubmitErrorHandler, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, Box, Button, Heading } from '@chakra-ui/react';
 import { SimpleGrid, Center, Input, Select, Spacer, Flex, Stack, HStack, VStack, FormLabel, FormControl, Textarea } from '@chakra-ui/react';
 import CustomButton from '../../../../../../components/Button';
@@ -49,7 +49,20 @@ const EditContentPage = ({ categories, sess }: Props) => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const useFormReturns = useForm();
+  // TODO: fill this in with database value
+  const useFormReturns = useForm({
+    defaultValues: {
+      questions: [],
+      sortingGame: { buckets: [] },
+      pageType: '',
+      title: '',
+      duration: '',
+      interactiveType: '',
+      text: '',
+      imageDesc: '',
+      videoDesc: '',
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -61,7 +74,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
   } = useFormReturns;
 
   const isDisabled = isSubmitting || isSubmitSuccessful;
-  const interactiveType = watch('interactiveType', '');
+  const interactiveType: string = useWatch({ name: 'interactiveType', defaultValue: '', control: control });
 
   const onSubmit: SubmitHandler<FormValues> = async data => {
     const { title, description, learningObjectives, isFree, category, coverImage } = data;
@@ -93,7 +106,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
   return (
     <div>
       <NavBarCart />
-      <div className='px-[9.375rem] font-open-sans'>
+      <div className='min-h-max px-[9.375rem] font-open-sans'>
         <header className='py-16 text-5xl font-bold'>Edit Course Content</header>
         <SimpleGrid minChildWidth='200px' spacing='20px'>
           <Box height='600px'>
@@ -111,9 +124,9 @@ const EditContentPage = ({ categories, sess }: Props) => {
               </Center>
             </VStack>
           </Box>
-          <Box height='600px'>
+          <Box>
             <VStack spacing='24px'>
-              <Center height='600px'>
+              <Center minH='max-content'>
                 <form onSubmit={handleSubmit(data => console.log(data))}>
                   <Box mt={4}>
                     <FormLabel htmlFor='title'>Page Title:</FormLabel>
@@ -155,7 +168,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
                   {pageContent === 'image' && (
                     <Box mt={4}>
                       <FormLabel htmlFor='image-desc'>Image Description:</FormLabel>
-                      <Textarea placeholder='Image Description' size='sm' resize='vertical' {...register('image-desc')} />
+                      <Textarea placeholder='Image Description' size='sm' resize='vertical' {...register('imageDesc')} />
                     </Box>
                   )}
                   {pageContent === 'video' && (
@@ -169,11 +182,11 @@ const EditContentPage = ({ categories, sess }: Props) => {
                   {pageContent === 'video' && (
                     <Box mt={4}>
                       <FormLabel htmlFor='video-desc'>Video Description:</FormLabel>
-                      <Textarea placeholder='Video Description' size='sm' resize='vertical' {...register('video-desc')} />
+                      <Textarea placeholder='Video Description' size='sm' resize='vertical' {...register('videoDesc')} />
                     </Box>
                   )}
                   {pageContent === 'interactive' && (
-                    <Box mt={4}>
+                    <Box mt={4} minH='max-content'>
                       <FormLabel htmlFor='interactive'>Interactive Component Type:</FormLabel>
                       <Select
                         placeholder='Interactive Component Type'
@@ -186,7 +199,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
                         <option value='tbc'>TBC</option>
                       </Select>
                       {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} questions={[]} />}
-                      {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} buckets={[]} />}
+                      {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} />}
                     </Box>
                   )}
                   <Box mt={4}>

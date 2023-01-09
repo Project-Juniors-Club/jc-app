@@ -35,10 +35,9 @@ const QuizPage = () => {
     getValues,
     formState: { errors },
   } = useFormReturns;
-  const questionsWatch = useWatch({ name: 'questions', control: control }) as Question[];
   return (
     <form onSubmit={handleSubmit(x => console.log(x))}>
-      <QuizCreator useFormReturns={useFormReturns} questions={questionsWatch} />
+      <QuizCreator useFormReturns={useFormReturns} questions={questions} />
       <Button type='submit'>Console log recorded value</Button>
       <Button onClick={() => console.log(errors)}>Console log errors</Button>
     </form>
