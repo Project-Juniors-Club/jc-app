@@ -13,6 +13,11 @@ const MyAccordion = props => {
       title: <Link href={'../chapter/' + uuidv4()}>Chapter 1</Link>,
       content: <MyTable />,
     },
+    {
+      uuid: uuidv4(),
+      title: <Link href={'../chapter/' + uuidv4()}>Chapter 2</Link>,
+      content: <MyTable />,
+    },
   ]);
 
   const addAccordion = () => {
@@ -24,20 +29,20 @@ const MyAccordion = props => {
     setItems([...items, newItem]);
   };
 
-  const deleteAccordion = uuid => {
-    setItems(items.filter(item => item.uuid !== uuid));
-  };
-
   return (
     <Accordion defaultIndex={[0]}>
       {items.map(item => (
         <AccordionItem key={item.uuid}>
-          <AccordionButton>
-            <Box as='span' flex='1' textAlign='left'>
+          <Box display='flex'>
+            <Button>
               <b>{item.title}</b>
-            </Box>
-            <Text onClick={() => deleteAccordion(item.uuid)}>x</Text>
-          </AccordionButton>
+            </Button>
+            <AccordionButton>
+              <Box>
+                <b>V</b>
+              </Box>
+            </AccordionButton>
+          </Box>
           <AccordionPanel pb={4}>
             <div>{item.content}</div>
           </AccordionPanel>

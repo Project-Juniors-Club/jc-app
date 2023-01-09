@@ -23,6 +23,11 @@ import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
 import uploadFile from '../../../../../../lib/upload';
 import MyAccordion from '../MyAccordion';
+import { setConstantValue } from 'typescript';
+import UploadImageButton from '../UploadImageButton';
+import QuizCreator from '../../../../../../components/quiz-editor/creator';
+import SortingGame from '../../../../../../components/games/sorting/SortingGame';
+import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 
 type FormValues = {
   title: string;
@@ -44,6 +49,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
+  const useFormReturns = useForm();
   const {
     register,
     handleSubmit,
@@ -51,9 +57,11 @@ const EditContentPage = ({ categories, sess }: Props) => {
     resetField,
     formState: { isSubmitting, errors, isSubmitSuccessful },
     watch,
-  } = useForm();
+    setValue,
+  } = useFormReturns;
 
   const isDisabled = isSubmitting || isSubmitSuccessful;
+  const interactiveType = watch('interactiveType', '');
 
   const onSubmit: SubmitHandler<FormValues> = async data => {
     const { title, description, learningObjectives, isFree, category, coverImage } = data;
@@ -78,6 +86,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
   const [pageContent, setPageContent] = React.useState('');
 
   const pageContentChange = event => {
+    setValue('pageType', event.target.value);
     setPageContent(event.target.value);
   };
 
@@ -105,7 +114,7 @@ const EditContentPage = ({ categories, sess }: Props) => {
           <Box height='600px'>
             <VStack spacing='24px'>
               <Center height='600px'>
-                <form>
+                <form onSubmit={handleSubmit(data => console.log(data))}>
                   <Box mt={4}>
                     <FormLabel htmlFor='title'>Page Title:</FormLabel>
                     <Input placeholder='Page Title Here' {...register('title')} />
@@ -132,9 +141,15 @@ const EditContentPage = ({ categories, sess }: Props) => {
                   {pageContent === 'image' && (
                     <Box mt={4}>
                       <FormLabel htmlFor='image'>Image Upload:</FormLabel>
-                      <Button colorScheme='green' variant='outline'>
-                        Upload Image
-                      </Button>
+                      <UploadImageButton
+                        register={register}
+                        resetField={resetField}
+                        label={'image'}
+                        buttonText={'Upload Image'}
+                        isDisabled={isDisabled}
+                        headerText=''
+                        watch={watch}
+                      />
                     </Box>
                   )}
                   {pageContent === 'image' && (
@@ -160,11 +175,18 @@ const EditContentPage = ({ categories, sess }: Props) => {
                   {pageContent === 'interactive' && (
                     <Box mt={4}>
                       <FormLabel htmlFor='interactive'>Interactive Component Type:</FormLabel>
-                      <Select placeholder='Interactive Component Type'>
+                      <Select
+                        placeholder='Interactive Component Type'
+                        onChange={event => {
+                          setValue('interactiveType', event.target.value);
+                        }}
+                      >
                         <option value='quiz'>Quiz</option>
                         <option value='sort'>Sorting Game</option>
                         <option value='tbc'>TBC</option>
                       </Select>
+                      {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} questions={[]} />}
+                      {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} buckets={[]} />}
                     </Box>
                   )}
                   <Box mt={4}>
