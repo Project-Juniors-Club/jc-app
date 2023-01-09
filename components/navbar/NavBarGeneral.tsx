@@ -5,7 +5,7 @@ import Button from '../Button';
 const NavbarGeneral = () => {
   return (
     <>
-      <nav className='navbar flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-md'>
+      <nav className='navbar flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
         <div className='flex h-[88px] w-[775px] flex-row'>
           <div className='logo flex h-[88px] w-[113px] flex-col items-center justify-center gap-2.5 p-4'>
             <Image src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
