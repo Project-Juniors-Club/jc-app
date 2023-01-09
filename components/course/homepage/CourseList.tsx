@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Course } from '../../../interfaces';
 import FilterButton from '../../buttons/FilterButton';
+import styles from './CourseList.module.css';
 
 type SortTypes = 'priceAscending' | 'priceDescending' | 'durationAscending' | 'durationDescending' | '';
 export type FilterTypes = {
@@ -63,7 +64,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
           Explore Courses:
         </h2>
 
-        <div className='search-outline my-6 flex h-12 w-[28rem] rounded-lg border border-solid border-black px-4'>
+        <div className={`${styles.search} my-6 flex h-12 w-[28rem] rounded-lg border border-solid border-black px-4`}>
           <Image src={'/icons/Search.svg'} width='24' height={'24'} alt='Search' />
           <input
             className='w-full pl-2.5 focus:outline-none'
