@@ -723,6 +723,33 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "youtube",
+      "item": [
+        {
+          "name": "Upload with title",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"videoTitle\": \"abcd\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/youtube/",
+              "host": ["{{hostname}}"],
+              "path": ["youtube", ""]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "event": [

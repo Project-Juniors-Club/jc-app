@@ -1,5 +1,6 @@
 import { Spinner } from '@chakra-ui/react';
 import React, { ReactNode } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 type Variants = 'green-solid' | 'green-outline' | 'black-solid' | 'black-outline';
 
@@ -22,7 +23,7 @@ const Button = ({ className = '', variant = 'green-solid', isDisabled = false, i
   } else {
     toShow = children;
   }
-  const styling = getConfig(variant) + className;
+  const styling = twMerge(getConfig(variant), className);
   return (
     <button className={styling} disabled={isDisabled} {...rest}>
       {toShow}
@@ -42,14 +43,14 @@ const getConfig = (variant: Variants) => {
       colourConfig = 'bg-[#FFFFFF] border-[#7FB519] hover:bg-[#EBF8D3] ';
       break;
     case 'black-solid':
-      colourConfig = 'bg-[#4D4D4D] border-[#2D2D2D] hover:bg-[#2D2D2D] ';
+      colourConfig = 'bg-[#4D4D4D] border-[#2D2D2D] hover:bg-[#2D2D2D] text-white ';
       break;
     case 'black-outline':
       colourConfig = 'bg-[#FFFFFF] border-[#131313] hover:bg-[#B5B5B5] ';
       break;
   }
 
-  return colourConfig + config;
+  return twMerge(colourConfig, config);
 };
 
 export default Button;

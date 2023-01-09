@@ -1,0 +1,17 @@
+.shake {
+  animation: 0.3s ease-in-out 0s 2 shake;
+}
+@keyframes shake {
+  0% {
+    transform: 0;
+  }
+  25% {
+    transform: translateX(1rem);
+  }
+  75% {
+    transform: translateX(-1rem);
+  }
+  100% {
+    transform: 0;
+  }
+}
