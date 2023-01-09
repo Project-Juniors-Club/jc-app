@@ -14,10 +14,12 @@ const Input = ({ isDisabled = false, id, label, value, onChange }) => {
         }
         disabled={isDisabled}
         value={value}
-        onChange={val => {
-          console.log('value');
-          console.log(val);
-          onChange(val);
+        onChange={event => {
+          if (!onChange) {
+            return;
+          }
+
+          onChange(event.target.value);
         }}
       />
     </div>

@@ -1,5 +1,5 @@
 import NavBarCart from '../../components/navbar/NavBarCart';
-import CustomButton from '../../components/Buttons';
+import CustomButton from '../../components/Button';
 import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import Input from '../../components/Input';
@@ -11,12 +11,20 @@ const editAction = {
   DELETE: 'DELETE',
 };
 
-const EditPopUp = ({ isOpen, setIsOpen }) => {
+const EditPopUp = ({ isOpen, setIsOpen, handleEditAccount }) => {
   const [isCompleted, setIsCompleted] = useState(false);
 
   const handleClose = () => {
     setIsCompleted(false);
     setIsOpen(false);
+  };
+
+  const handleSubmit = async event => {
+    // 1. verify OTP
+    // 2. update
+    await handleEditAccount(event);
+    // 3. setIsCompleted
+    setIsCompleted(true);
   };
 
   return (
@@ -53,7 +61,7 @@ const EditPopUp = ({ isOpen, setIsOpen }) => {
                 <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
                   <h3 className='text-base'>Cancel</h3>
                 </CustomButton>
-                <CustomButton variant='black-solid' onClick={() => setIsCompleted(true)}>
+                <CustomButton variant='black-solid' onClick={event => handleSubmit(event)} type='submit'>
                   <h3 className='text-base text-white'>Submit</h3>
                 </CustomButton>
               </>
@@ -71,7 +79,7 @@ const EditPopUp = ({ isOpen, setIsOpen }) => {
   );
 };
 
-const DeletePopUp = ({ isOpen, setIsOpen }) => {
+const DeletePopUp = ({ isOpen, setIsOpen, handleDeleteAccount }) => {
   const deleteProgress = {
     INITIAL: 'INITIAL',
     CONFIRMATION: 'CONFIRMATION',
@@ -83,6 +91,19 @@ const DeletePopUp = ({ isOpen, setIsOpen }) => {
   const handleClose = () => {
     setProgress(deleteProgress.INITIAL);
     setIsOpen(false);
+  };
+
+  const verifyOTP = () => {
+    // 1. verifyOTP
+    // 2. update progress
+    setProgress(deleteProgress.CONFIRMATION);
+  };
+
+  const handleSubmit = event => {
+    // 1. delete
+    handleDeleteAccount(event);
+    // 2. update progress
+    setProgress(deleteProgress.COMPLETE);
   };
 
   return (
@@ -138,7 +159,7 @@ const DeletePopUp = ({ isOpen, setIsOpen }) => {
               <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
                 <h3 className='text-base'>Cancel</h3>
               </CustomButton>
-              <CustomButton variant='black-solid' onClick={() => setProgress(deleteProgress.CONFIRMATION)}>
+              <CustomButton variant='black-solid' onClick={verifyOTP}>
                 <h3 className='text-base text-white'>Submit</h3>
               </CustomButton>
             </div>
@@ -148,7 +169,7 @@ const DeletePopUp = ({ isOpen, setIsOpen }) => {
               <CustomButton variant='green-outline' onClick={() => setIsOpen(false)}>
                 <h3 className='text-base'>Cancel</h3>
               </CustomButton>
-              <CustomButton variant='black-solid' onClick={() => setProgress(deleteProgress.COMPLETE)}>
+              <CustomButton variant='black-solid' onClick={event => handleSubmit(event)}>
                 <h3 className='text-base text-white'>Confirm</h3>
               </CustomButton>
             </div>
@@ -182,6 +203,8 @@ const Manage = () => {
   //TODO
   const [dateOfBirth, setDateOfBirth] = useState('');
 
+  console.log(session?.user?.id);
+
   const handleEdit = () => {
     setIsDisabled(false);
   };
@@ -196,6 +219,32 @@ const Manage = () => {
   const handleDelete = () => {
     setAction(editAction.DELETE);
     setIsOpen(true);
+  };
+
+  const handleEditAccount = async event => {
+    event.preventDefault();
+    console.log('SUBMITTTT');
+    console.log(event);
+    // post request to edit
+    await axios
+      .put('/api/users/' + session.user.id, {
+        name: fullName,
+        email: email,
+        // dateOfBirth: dateOfBirth
+      })
+      .then(res => {
+        console.log(res);
+      });
+  };
+
+  const handleDeleteAccount = async event => {
+    event.preventDefault();
+    console.log('DELETE');
+    console.log(event);
+    // delete request to delete
+    await axios.delete('/api/users/' + session.user.id).then(res => {
+      console.log(res);
+    });
   };
 
   const isSessionLoading = status === 'loading';
@@ -214,6 +263,13 @@ const Manage = () => {
     <>
       <NavBarCart />
       <h1 className='my-10 text-center text-3xl font-bold'> Account Details </h1>
+      {/* <form
+        onSubmit={event => {
+          event.preventDefault();
+          console.log('SUBMITTTT');
+          console.log(event);
+        }}
+      > */}
       <div className='align grid place-items-center'>
         <div className='mb-5 flex w-full flex-col items-center justify-center'>
           <Input isDisabled={isDisabled} id='email' label='Email' value={email} onChange={setEmail} />
@@ -235,8 +291,9 @@ const Manage = () => {
           </CustomButton>
         </div>
       </div>
-      <EditPopUp isOpen={isOpen && action === editAction.EDIT} setIsOpen={setIsOpen} />
-      <DeletePopUp isOpen={isOpen && action === editAction.DELETE} setIsOpen={setIsOpen} />
+      <EditPopUp isOpen={isOpen && action === editAction.EDIT} setIsOpen={setIsOpen} handleEditAccount={handleEditAccount} />
+      <DeletePopUp isOpen={isOpen && action === editAction.DELETE} setIsOpen={setIsOpen} handleDeleteAccount={handleDeleteAccount} />
+      {/* </form> */}
     </>
   );
 };
