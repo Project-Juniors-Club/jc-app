@@ -56,18 +56,14 @@ const MatchingGame = () => {
   const leftRandom = unsolvedPairs.map(pair => (
     // LEFT SIDE
     <li key={pair.id}>
-      <LeftBox name={pair.leftpart} handleMouseDown={() => addPair(pair.id)}>
-        {' '}
-      </LeftBox>
+      <LeftBox name={pair.leftpart} handleMouseDown={() => addPair(pair.id)} />
     </li>
   ));
 
   const rightRandom = randomArray.map(pair => (
     // RIGHT SIDE
     <li key={pair.id}>
-      <RightBox name={pair.rightpart} id={pair.id} handleMouseUp={() => checkPair(pair.id)}>
-        {' '}
-      </RightBox>
+      <RightBox name={pair.rightpart} handleMouseUp={() => checkPair(pair.id)} />
     </li>
   ));
 
