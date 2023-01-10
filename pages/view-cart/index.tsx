@@ -8,8 +8,10 @@ import Layout from '../../components/Layout';
 import styles from './ViewCart.module.css';
 import Button from '../../components/Button';
 import { Course } from '../../interfaces/index';
+import NavBarCart from '../../components/navbar/NavBarCart';
+import prisma from '../../lib/prisma';
 
-const ViewCart = () => {
+const ViewCart = ({ courses }) => {
   const router = useRouter();
 
   const [cartCourses, setCartCourses] = useState([]);
@@ -17,6 +19,16 @@ const ViewCart = () => {
   const allChecked = checkedItems.every(Boolean);
 
   useEffect(() => {
+    const courseList = JSON.parse(localStorage.getItem('Cart'));
+    // dummy data
+    // const courses = await prisma.course.findMany({
+    //   where: {
+    //     id: {
+    //       in: courseList.map(course => course.id),
+    //     }
+    //   }
+    // });
+
     // dummy data
     const courses = [
       {
@@ -36,8 +48,9 @@ const ViewCart = () => {
         price: 10.0,
       },
     ];
-    setCartCourses(JSON.parse(localStorage.getItem('Cart')) || courses);
-    setCheckedItems(cartCourses.map(() => false));
+
+    setCartCourses(courses);
+    setCheckedItems(courseList.map(course => course.selected));
   }, []);
 
   const handleRemove = index => {
@@ -46,17 +59,18 @@ const ViewCart = () => {
   };
 
   const handleProceed = () => {
-    localStorage.setItem('Cart', JSON.stringify(cartCourses.filter((course, index: number) => checkedItems[index])));
+    localStorage.setItem('Cart', JSON.stringify(cartCourses.map((course, i) => ({ id: course.id, selected: checkedItems[i] }))));
     router.push('/apply-vouchers');
   };
 
   const handleCancel = () => {
-    localStorage.setItem('Cart', JSON.stringify(cartCourses));
+    localStorage.setItem('Cart', JSON.stringify(cartCourses.map((course, i) => ({ id: course.id, selected: checkedItems[i] }))));
     router.push('/');
   };
 
   return (
     <Layout title='View Cart'>
+      <NavBarCart />
       <Box>
         <Text className={styles.header} pb='55px' pt='35px' pl='160px'>
           My Cart
