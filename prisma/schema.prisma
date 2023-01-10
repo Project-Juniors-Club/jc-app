@@ -190,6 +190,8 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  QuizGameQuestion           QuizGameQuestion[]
+  QuizGameImageOption        QuizGameImageOption[]
 
   @@map("images")
 }
@@ -217,8 +219,8 @@ model Game {
   assetId               String                 @id
   asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
   matchingGame          MatchingGame?
-  sortingGame           SortingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
+  QuizGame              QuizGame?
 
   @@map("games")
 }
@@ -239,9 +241,62 @@ model MatchingGame {
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
-model SortingGame {
+model QuizGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  quizGameQuestions QuizGameQuestion[]
+}
+
+model QuizGameQuestion {
+  id String @id @default(cuid())
+
+  isMultipleResponse Boolean
+  questionTitle      String
+
+  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+  quizGameId String
+
+  image   Image?  @relation(fields: [imageId], references: [assetId])
+  imageId String?
+
+  quizGameOptions QuizGameOption[]
+}
+
+model QuizGameOption {
+  id                 String             @id @default(cuid())
+  isCorrectOption    Boolean
+  quizGameOptionType QuizGameOptionType
+
+  quizGameTextOption  QuizGameTextOption?
+  quizGameImageOption QuizGameImageOption?
+
+  quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
+  quizGameQuestionId String
+}
+
+model QuizGameTextOption {
+  id String @id @default(cuid())
+
+  optionText String
+
+  quizGameOption   QuizGameOption @relation(fields: [quizGameOptionId], references: [id], onDelete: Cascade)
+  quizGameOptionId String         @unique
+}
+
+model QuizGameImageOption {
+  id String @id @default(cuid())
+
+  image   Image  @relation(fields: [imageId], references: [assetId])
+  imageId String
+
+  quizGameOption   QuizGameOption @relation(fields: [quizGameOptionId], references: [id], onDelete: Cascade)
+  quizGameOptionId String         @unique
+}
+
+enum QuizGameOptionType {
+  text
+  image
 }
 
 enum UserType {
@@ -267,4 +322,5 @@ enum GameType {
   spotTheDifferenceGame
   matchingGame
   sortingGame
+  quizGame
 }
