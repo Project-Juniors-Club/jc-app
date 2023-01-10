@@ -190,7 +190,8 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
-  QuizGameOption             QuizGameOption[]
+  QuizGameQuestion           QuizGameQuestion[]
+  QuizGameImageOption        QuizGameImageOption[]
 
   @@map("images")
 }
@@ -250,27 +251,50 @@ model QuizGame {
 model QuizGameQuestion {
   id String @id
 
-  isMultipleResponse  Boolean
-  questionTitle       String
-  questionDescription String  @default("")
+  isMultipleResponse Boolean
+  questionTitle      String
 
   quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
   quizGameId String
+
+  image   Image?  @relation(fields: [imageId], references: [assetId])
+  imageId String?
 
   quizGameOptions QuizGameOption[]
 }
 
 model QuizGameOption {
-  id              String  @id
-  isCorrectOption Boolean
-  optionText      String
+  id                 String             @id
+  isCorrectOption    Boolean
+  quizGameOptionType QuizGameOptionType
 
-  // For extensibility to support images in the future
-  image   Image?  @relation(fields: [imageId], references: [assetId])
-  imageId String?
+  quizGameTextOption    QuizGameTextOption?  @relation(fields: [quizGameTextOptionId], references: [id])
+  quizGameTextOptionId  String?
+  quizGameImageOption   QuizGameImageOption? @relation(fields: [quizGameImageOptionId], references: [id])
+  quizGameImageOptionId String?
 
   quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
   quizGameQuestionId String
+}
+
+model QuizGameTextOption {
+  id String @id
+
+  optionText     String
+  QuizGameOption QuizGameOption[]
+}
+
+model QuizGameImageOption {
+  id String @id
+
+  image          Image            @relation(fields: [imageId], references: [assetId])
+  imageId        String
+  QuizGameOption QuizGameOption[]
+}
+
+enum QuizGameOptionType {
+  text
+  image
 }
 
 enum UserType {
@@ -295,5 +319,5 @@ enum AssetType {
 enum GameType {
   spotTheDifferenceGame
   matchingGame
-  1Game
+  sortingGame
 }
