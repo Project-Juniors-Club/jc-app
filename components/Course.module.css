@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+.header {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 44px;
+}
+
+.description {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.content {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* styles from here onwards are for staff page */
+
+.navigateBack {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.navigateBack:hover {
+  color: rgb(95, 95, 95);
+}
+
+.status {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #606060;
+  margin-top: 50px;
+  margin-bottom: 25px;
+}
+
+.category {
+  box-sizing: border-box;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3d3d3d;
+  padding: 6px 16px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  width: 125px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #3d3d3d;
+  border-radius: 15px;
+}
+
+.courseButton {
+  margin-left: 20px;
+}
+
+.coverImage {
+  width: 322px;
+  height: 184px;
+  background-color: #ebf8d3;
+  border-radius: 16px;
+  margin-top: 125px;
+  margin-left: 200px;
+}
+
+.secondaryHeader {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.secondaryDescription {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30px;
+  margin-bottom: 15px;
+}
+
+.changeHistory {
+  font-family: 'Open Sans';
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.editCourseContentButton {
+  margin-right: 200px;
+}
+
+/* .button {
+  align-items: center;
+  justify-content: center;
+} */
+
+.icon {
+  width: 23px;
+  height: 23px;
+  margin-left: 5px;
+}
