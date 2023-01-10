@@ -5,6 +5,7 @@ import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import Footer from './Footer';
 import { calc } from '@chakra-ui/react';
+import styles from './Layout.module.css';
 
 type Props = {
   children?: ReactNode;
@@ -15,7 +16,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
   const { data: session, status } = useSession();
 
   return (
-    <div>
+    <div className={styles.layout}>
       <Head>
         <title>{title}</title>
         <meta charSet='utf-8' />
