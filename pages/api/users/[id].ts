@@ -25,13 +25,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteUser });
     } else if (httpMethod == 'PUT') {
       // UPDATE UPDATE USER PASSWORD WITH EMAIL
-      const { email } = req.body;
+      const { email, name } = req.body;
       const updatedUser = await prisma.user.update({
         where: {
           id: id,
         },
         data: {
           email: email,
+          name: name,
         },
       });
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedUser });
