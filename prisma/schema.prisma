@@ -190,6 +190,7 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  QuizGameOption             QuizGameOption[]
 
   @@map("images")
 }
@@ -217,8 +218,8 @@ model Game {
   assetId               String                 @id
   asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
   matchingGame          MatchingGame?
-  sortingGame           SortingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
+  QuizGame              QuizGame?
 
   @@map("games")
 }
@@ -239,9 +240,37 @@ model MatchingGame {
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
-model SortingGame {
+model QuizGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  quizGameQuestions QuizGameQuestion[]
+}
+
+model QuizGameQuestion {
+  id String @id
+
+  isMultipleResponse  Boolean
+  questionTitle       String
+  questionDescription String  @default("")
+
+  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+  quizGameId String
+
+  quizGameOptions QuizGameOption[]
+}
+
+model QuizGameOption {
+  id              String  @id
+  isCorrectOption Boolean
+  optionText      String
+
+  // For extensibility to support images in the future
+  image   Image?  @relation(fields: [imageId], references: [assetId])
+  imageId String?
+
+  quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
+  quizGameQuestionId String
 }
 
 enum UserType {
@@ -266,5 +295,5 @@ enum AssetType {
 enum GameType {
   spotTheDifferenceGame
   matchingGame
-  sortingGame
+  1Game
 }
