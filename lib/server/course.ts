@@ -82,3 +82,42 @@ export const getCourseWithAuthorAndDate = async (id: string) => {
   };
   return result;
 };
+
+export const getAllCourses = async () => {
+  const courses = await prisma.course.findMany({
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  const result = courses.map(course => {
+    return {
+      ...course,
+      price: course.price.toNumber(),
+      createDate: course.createDate.toLocaleDateString(),
+      lastUpdatedDate: course.createDate.toLocaleDateString(),
+    };
+  });
+  return result;
+};

@@ -4,43 +4,45 @@ import CustomButton from '../../components/Button';
 import prisma from '../../lib/prisma';
 import NavBarCart from '../../components/navbar/NavBarCart';
 import { useRouter } from 'next/router';
+import { getAllCourses } from '../../lib/server/course';
+import { Box, Heading, LinkBox, LinkOverlay } from '@chakra-ui/react';
 
-interface ICourseCardProps {
-  course: Course;
-}
-
-const CourseCard = ({ course }: ICourseCardProps) => {
-  const isFree = course.price.toNumber() === Number(0);
+const CourseCard = ({ course }) => {
+  const isFree = course.price <= 0;
   return (
-    <div className='flex w-full items-center gap-x-12 py-6'>
-      <div>
-        {
-          // course.imageUrl ? (
-          //   <Image src={course.imageUrl} alt={`Thumbnail for ${course.name}`} />
-          // ) :
-          <div className='grid h-[148px] w-[259px] place-content-center rounded-2xl bg-[#C7C7C7]'>
-            <div className='h-min font-bold'>No Image Found</div>
-          </div>
-        }
-      </div>
-      <div className='flex w-full flex-col gap-8'>
-        <div className='flex flex-col gap-3'>
-          <div className='text-[11px] italic text-[#7B7B7B]'>{course.status}</div>
+    <LinkBox as='article' borderWidth='1px' rounded='md' className='m-1 p-2'>
+      <LinkOverlay href={`courses/staff/${course.id}`}>
+        <div className='flex w-full items-center gap-x-12 py-6'>
           <div>
-            <div className='text-xl font-bold'>{course.title}</div>
-            <div className='text-sm font-bold text-[#8E8E8E]'>{course.creatorId}</div>
+            {
+              // course.imageUrl ? (
+              //   <Image src={course.imageUrl} alt={`Thumbnail for ${course.name}`} />
+              // ) :
+              <div className='grid h-[148px] w-[259px] place-content-center rounded-2xl bg-[#C7C7C7]'>
+                <div className='h-min font-bold'>No Image Found</div>
+              </div>
+            }
+          </div>
+          <div className='flex w-full flex-col gap-8'>
+            <div className='flex flex-col gap-3'>
+              <div className='text-[11px] italic text-[#7B7B7B]'>{course.status}</div>
+              <div>
+                <div className='text-xl font-bold'>{course.title}</div>
+                <div className='text-sm font-bold text-[#8E8E8E]'>{course.createdBy.user.name}</div>
+              </div>
+            </div>
+            <div className='flex h-8 w-full justify-between'>
+              <div className='w-max rounded-full px-4 py-1.5 text-sm font-bold text-[#3D3D3D] outline outline-2 outline-black'>
+                {course.category.name}
+              </div>
+              <div className={`flex w-max flex-row px-3 py-1 ${isFree ? 'bg-[#A9D357]' : 'bg-[#606060]'} rounded-md text-white`}>
+                {isFree ? 'FREE' : `S\$${Number(course.price).toFixed(2)}`}
+              </div>
+            </div>
           </div>
         </div>
-        <div className='flex h-8 w-full justify-between'>
-          <div className='w-max rounded-full px-4 py-1.5 text-sm font-bold text-[#3D3D3D] outline outline-2 outline-black'>
-            {course.creatorId}
-          </div>
-          <div className={`flex w-max flex-row px-3 py-1 ${isFree ? 'bg-[#A9D357]' : 'bg-[#606060]'} rounded-md text-white`}>
-            {isFree ? 'FREE' : `S\$${Number(course.price).toFixed(2)}`}
-          </div>
-        </div>
-      </div>
-    </div>
+      </LinkOverlay>
+    </LinkBox>
   );
 };
 
@@ -76,11 +78,11 @@ const SortAndFilterMenu = ({ categories, setCategory, setSortCriteria }) => {
             setCategory(e.target.value);
           }}
         >
-          <option value={''}>All Categories</option>
+          <option value={' '}>All Categories</option>
           {categories.map((category, index) => {
             return (
-              <option key={index} value={category}>
-                {category}
+              <option key={index} value={category.name}>
+                {category.name}
               </option>
             );
           })}
@@ -95,11 +97,7 @@ interface IProps {
   categories: Category[];
 }
 
-//TODO: replace button - done
-//TODO: replace search bar - done
 //TODO: maybe standardise header across all pages?
-//TODO: replace dropdown - done
-//TODO: filter menu style? - done
 const OverviewPage = ({ courses, categories }: IProps) => {
   const [category, setCategory] = useState<Category>(null);
   const [sortCriteria, setSortCriteria] = useState<string>('');
@@ -175,8 +173,8 @@ const OverviewPage = ({ courses, categories }: IProps) => {
 };
 
 export async function getServerSideProps(): Promise<{ props: { courses: Course[]; categories: Category[] } }> {
-  const courses = JSON.parse(JSON.stringify(await prisma.course.findMany()));
   const categories = JSON.parse(JSON.stringify(await prisma.category.findMany()));
+  const courses = JSON.parse(JSON.stringify(await getAllCourses()));
   return { props: { courses, categories } };
 }
 
