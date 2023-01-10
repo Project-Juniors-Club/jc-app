@@ -51,7 +51,7 @@ const ViewCart = () => {
   };
 
   const handleCancel = () => {
-    localStorage.setItem('Cart', JSON.stringify(cartCourses.filter((course, index: number) => checkedItems[index])));
+    localStorage.setItem('Cart', JSON.stringify(cartCourses));
     router.push('/');
   };
 
