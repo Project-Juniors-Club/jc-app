@@ -34,8 +34,7 @@ const YoutubeVideo = () => {
       <Button
         colorScheme='green'
         onClick={async () => {
-          const response = await axios
-            .post(appUrl + 'api/youtube', { videoTitle: videoTitle });
+          const response = await axios.post(appUrl + 'api/youtube', { videoTitle: videoTitle });
           const { data } = response;
           setVideoId(data.videoId);
           setVideoTitle('');
