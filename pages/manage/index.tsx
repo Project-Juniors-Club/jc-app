@@ -207,7 +207,6 @@ const Manage = () => {
     fetchData()
       .then(res => res.data.data)
       .then(user => {
-        console.log('USER');
         console.log(user);
 
         if (user) {
@@ -238,7 +237,6 @@ const Manage = () => {
 
   const handleEditAccount = async event => {
     event.preventDefault();
-    console.log('SUBMITTTT');
     console.log(event);
     // post request to edit
     await axios
@@ -254,7 +252,6 @@ const Manage = () => {
 
   const handleDeleteAccount = async event => {
     event.preventDefault();
-    console.log('DELETE');
     console.log(event);
     // delete request to delete
     await axios.delete('/api/users/' + session.user.id).then(res => {
@@ -278,13 +275,6 @@ const Manage = () => {
     <>
       <NavBarCart />
       <h1 className='my-10 text-center text-3xl font-bold'> Account Details </h1>
-      {/* <form
-        onSubmit={event => {
-          event.preventDefault();
-          console.log('SUBMITTTT');
-          console.log(event);
-        }}
-      > */}
       <div className='align grid place-items-center'>
         <div className='mb-5 flex w-full flex-col items-center justify-center'>
           <Input isDisabled={isDisabled} id='email' label='Email' value={email} onChange={setEmail} />
