@@ -13,7 +13,7 @@ const DropDown = ({ buttonName, dropdownItems }) => {
       <Menu.Items className={`absolute mt-8 divide-y divide-gray-100 shadow`}>
         {arr.map(item => {
           return (
-            <Menu.Item as='div' key='item' className={`block py-2 px-4 hover:bg-gray-100`}>
+            <Menu.Item as='div' key='item.clickOption' className={`block py-2 px-4`}>
               {({ active }) => (
                 <a className={`${active}`} href='#'>
                   {item.clickOption}

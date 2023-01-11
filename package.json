@@ -39,6 +39,7 @@
     "next-auth": "^4.10.3",
     "nodemailer": "^6.7.8",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.34.2",
     "react-youtube": "^9.0.3",
