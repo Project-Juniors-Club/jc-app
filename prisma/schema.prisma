@@ -191,7 +191,7 @@ model Image {
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
   QuizGameQuestion           QuizGameQuestion[]
-  QuizGameImageOption        QuizGameImageOption[]
+  QuizGameImageOption        QuizGameOptionImage[]
 
   @@map("images")
 }
@@ -251,16 +251,17 @@ model QuizGame {
 model QuizGameQuestion {
   id String @id @default(cuid())
 
+  questionNumber     Int
   isMultipleResponse Boolean
   questionTitle      String
-
-  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
-  quizGameId String
 
   image   Image?  @relation(fields: [imageId], references: [assetId])
   imageId String?
 
   quizGameOptions QuizGameOption[]
+
+  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+  quizGameId String
 }
 
 model QuizGameOption {
@@ -268,14 +269,14 @@ model QuizGameOption {
   isCorrectOption    Boolean
   quizGameOptionType QuizGameOptionType
 
-  quizGameTextOption  QuizGameTextOption?
-  quizGameImageOption QuizGameImageOption?
+  quizGameOptionText  QuizGameOptionText?
+  quizGameOptionImage QuizGameOptionImage?
 
   quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
   quizGameQuestionId String
 }
 
-model QuizGameTextOption {
+model QuizGameOptionText {
   id String @id @default(cuid())
 
   optionText String
@@ -284,11 +285,11 @@ model QuizGameTextOption {
   quizGameOptionId String         @unique
 }
 
-model QuizGameImageOption {
+model QuizGameOptionImage {
   id String @id @default(cuid())
 
-  image   Image  @relation(fields: [imageId], references: [assetId])
-  imageId String
+  optionImage Image  @relation(fields: [imageId], references: [assetId])
+  imageId     String
 
   quizGameOption   QuizGameOption @relation(fields: [quizGameOptionId], references: [id], onDelete: Cascade)
   quizGameOptionId String         @unique
@@ -297,6 +298,7 @@ model QuizGameImageOption {
 enum QuizGameOptionType {
   text
   image
+  textAndImage
 }
 
 enum UserType {

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { deleteQuiz, findUniqueQuiz, updateQuiz, SerializedQuizQuestion } from '../../../lib/server/quiz';
 import { entityMessageCreator } from '../../../utils/api-messages';
 import { errorMessageHandler } from '../../../utils/error-message-handler';
-import validateQuestions from './quizGameValidator';
+import validateQuestions from '../../../utils/quizGameValidator';
 
 const entityMessageObj = entityMessageCreator('quizGame');
 
@@ -41,17 +41,17 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 create: question.quizGameOptions.map(option => ({
                   isCorrectOption: option.isCorrectOption,
                   quizGameOptionType: option.quizGameOptionType,
-                  quizGameTextOption: option.quizGameTextOption
+                  quizGameOptionText: option.quizGameOptionText
                     ? {
                         create: {
-                          optionText: option.quizGameTextOption.optionText,
+                          optionText: option.quizGameOptionText.optionText,
                         },
                       }
                     : null,
-                  quizGameImageOption: option.quizGameImageOption
+                  quizGameOptionImage: option.quizGameOptionImage
                     ? {
                         create: {
-                          imageId: option.quizGameImageOption.imageId,
+                          imageId: option.quizGameOptionImage.imageId,
                         },
                       }
                     : null,

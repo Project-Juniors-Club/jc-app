@@ -1,16 +1,19 @@
 import { Prisma, GameType, AssetType, QuizGame, QuizGameOptionType } from '@prisma/client';
 import prisma from '../prisma';
 
+export type SerializedQuizOption = {
+  isCorrectOption: boolean;
+  quizGameOptionType: QuizGameOptionType;
+  quizGameOptionText: { optionText: string } | null;
+  quizGameOptionImage: { imageId: string } | null;
+};
+
 export type SerializedQuizQuestion = {
+  questionNumber: number;
   isMultipleResponse: boolean;
   questionTitle: string;
   imageId: string | null;
-  quizGameOptions: {
-    isCorrectOption: boolean;
-    quizGameOptionType: QuizGameOptionType;
-    quizGameTextOption: { optionText: string } | null;
-    quizGameImageOption: { imageId: string } | null;
-  }[];
+  quizGameOptions: SerializedQuizOption[];
 };
 
 export const createQuiz = async (questions: SerializedQuizQuestion[]) => {
@@ -28,28 +31,33 @@ export const createQuiz = async (questions: SerializedQuizQuestion[]) => {
       },
       quizGameQuestions: {
         create: questions.map(question => ({
+          questionNumber: question.questionNumber,
           isMultipleResponse: question.isMultipleResponse,
           questionTitle: question.questionTitle,
-          image: {
+          image: question.imageId && {
             connect: {
-              assetId: question.imageId ?? undefined,
+              assetId: question.imageId,
             },
           },
           quizGameOptions: {
             create: question.quizGameOptions.map(option => ({
               isCorrectOption: option.isCorrectOption,
               quizGameOptionType: option.quizGameOptionType,
-              quizGameTextOption: option.quizGameTextOption
+              quizGameOptionText: option.quizGameOptionText
                 ? {
                     create: {
-                      optionText: option.quizGameTextOption.optionText,
+                      optionText: option.quizGameOptionText.optionText,
                     },
                   }
                 : null,
-              quizGameImageOption: option.quizGameImageOption
+              quizGameOptionImage: option.quizGameOptionImage
                 ? {
                     create: {
-                      imageId: option.quizGameImageOption.imageId,
+                      optionImage: {
+                        connect: {
+                          imageId: option.quizGameOptionImage.imageId,
+                        },
+                      },
                     },
                   }
                 : null,

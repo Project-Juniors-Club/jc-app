@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createQuiz, findQuiz, SerializedQuizQuestion } from '../../../lib/server/quiz';
 import { entityMessageCreator } from '../../../utils/api-messages';
 import { errorMessageHandler } from '../../../utils/error-message-handler';
-import validateQuestions from './quizGameValidator';
+import validateQuestions from '../../../utils/quizGameValidator';
 
 const entityMessageObj = entityMessageCreator('quizGame');
 
