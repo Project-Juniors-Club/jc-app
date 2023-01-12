@@ -1,54 +1,71 @@
 import React, { useState } from 'react';
-import { Accordion, AccordionItem, AccordionButton, AccordionIcon, Box, AccordionPanel, Center } from '@chakra-ui/react';
+import { Accordion, AccordionItem, AccordionButton, AccordionIcon, Box, AccordionPanel, Center, Divider } from '@chakra-ui/react';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, Button, Text } from '@chakra-ui/react';
 import { Editable, EditableInput, EditableTextarea, EditablePreview } from '@chakra-ui/react';
 import { v4 as uuidv4 } from 'uuid';
 import MyTable from './MyTable';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-const MyAccordion = props => {
-  const [items, setItems] = useState([
+type AccordionProps = {
+  isChapterSelected: boolean;
+  selectedId: string;
+};
+
+const MyAccordion = ({ isChapterSelected, selectedId }: AccordionProps) => {
+  const router = useRouter();
+  const [chapters, setChapters] = useState([
     {
-      uuid: uuidv4(),
-      title: <Link href={'../chapter/' + uuidv4()}>Chapter 1</Link>,
-      content: <MyTable />,
+      uuid: '123',
+      title: 'Chapter 1',
     },
     {
-      uuid: uuidv4(),
-      title: <Link href={'../chapter/' + uuidv4()}>Chapter 2</Link>,
-      content: <MyTable />,
+      uuid: '456',
+      title: 'Chapter 2',
     },
   ]);
 
+  // TODO: do backend call
   const addAccordion = () => {
     const newItem = {
       uuid: uuidv4(),
-      title: <Link href={'../chapter/' + uuidv4()}>New Chapter</Link>,
-      content: <MyTable />,
+      title: 'New Chapter',
     };
-    setItems([...items, newItem]);
+    setChapters([...chapters, newItem]);
   };
 
   return (
     <Accordion defaultIndex={[0]}>
-      {items.map(item => (
-        <AccordionItem key={item.uuid}>
-          <Box display='flex'>
-            <Button>
-              <b>{item.title}</b>
-            </Button>
-            <AccordionButton>
-              <Box>
-                <b>V</b>
-              </Box>
-            </AccordionButton>
-          </Box>
-          <AccordionPanel pb={4}>
-            <div>{item.content}</div>
-          </AccordionPanel>
-        </AccordionItem>
-      ))}
-      <AccordionItem>
+      {chapters.map(chapter => {
+        const bgColor = isChapterSelected && chapter.uuid === selectedId ? '#EBF8D3' : '#F2F2F2';
+
+        return (
+          <AccordionItem key={chapter.uuid} borderTop='0px'>
+            <Box display='flex' border='1px solid #C7C7C7'>
+              <Button
+                rounded='0'
+                w='100%'
+                bg={bgColor}
+                display='flex'
+                justifyContent='flex-start'
+                onClick={e => {
+                  e.preventDefault();
+                  router.push(`../chapter/${chapter.uuid}`);
+                }}
+              >
+                <Text fontWeight={600}>{chapter.title}</Text>
+              </Button>
+              <AccordionButton w='min-content' bg={bgColor} borderLeft='solid #C7C7C7 1px'>
+                <AccordionIcon />
+              </AccordionButton>
+            </Box>
+            <AccordionPanel p={0}>
+              <MyTable isPageSelected={!isChapterSelected} selectedId={selectedId} />
+            </AccordionPanel>
+          </AccordionItem>
+        );
+      })}
+      <AccordionItem border='dashed #C7C7C7 1px' borderTop='0'>
         <AccordionButton onClick={addAccordion}>+ Add Chapter</AccordionButton>
       </AccordionItem>
     </Accordion>

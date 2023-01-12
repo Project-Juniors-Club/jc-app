@@ -3,16 +3,22 @@ import { Accordion, AccordionItem, AccordionButton, AccordionIcon, Box, Accordio
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, Button } from '@chakra-ui/react';
 import { Editable, EditableInput, EditableTextarea, EditablePreview } from '@chakra-ui/react';
 import { v4 as uuidv4 } from 'uuid';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-const MyTable = () => {
+type TableProps = {
+  isPageSelected: boolean;
+  selectedId: string;
+};
+
+const MyTable = ({ isPageSelected, selectedId }: TableProps) => {
+  const router = useRouter();
   const [data, setData] = useState([
-    { uuid: uuidv4(), name: <Link href={'../page/' + uuidv4()}>Page 1</Link> },
-    { uuid: uuidv4(), name: <Link href={'../page/' + uuidv4()}>Page 2</Link> },
+    { uuid: '123', name: 'Page 1' },
+    { uuid: '456', name: 'Page 2' },
   ]);
 
   const addRow = () => {
-    setData([...data, { uuid: uuidv4(), name: <Link href={'../page/' + uuidv4()}>New Page</Link> }]);
+    setData([...data, { uuid: uuidv4(), name: 'Page3' }]);
   };
 
   const deleteRow = uuid => {
@@ -21,20 +27,31 @@ const MyTable = () => {
 
   return (
     <TableContainer id='myTable'>
-      <Table maxW='sm' variant='striped' colorScheme='green' size='sm'>
+      <Table size='sm' w='100%'>
         <Tbody>
-          {data.map(row => (
-            <Tr key={row.uuid}>
-              <Td w='100%'>
-                <b>{row.name}</b>
-              </Td>
-            </Tr>
-          ))}
+          {data.map(page => {
+            const bgColor = isPageSelected && page.uuid === selectedId ? '#EBF8D3' : '#FFFFFF';
+            return (
+              <Tr key={page.uuid}>
+                <Td
+                  w='100%'
+                  bg={bgColor}
+                  border='solid #C7C7C7 1px'
+                  borderTop='0'
+                  onClick={e => {
+                    e.preventDefault();
+                    router.push(`../page/${page.uuid}`);
+                  }}
+                >
+                  {page.name}
+                </Td>
+              </Tr>
+            );
+          })}
           <Tr>
-            <Td>
+            <Td border='dashed #C7C7C7 1px' borderTop='0'>
               <Text onClick={addRow}>+ Add Page</Text>
             </Td>
-            <Td></Td>
           </Tr>
         </Tbody>
       </Table>
