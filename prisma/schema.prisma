@@ -190,6 +190,7 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  SortingGameObject          SortingGameObject[]
 
   @@map("images")
 }
@@ -242,6 +243,36 @@ model MatchingGame {
 model SortingGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  correctPairs SortingGameObjectBucketPair[]
+}
+
+model SortingGameObjectBucketPair {
+  id String @id
+
+  object SortingGameObject[]
+
+  bucket SortingGameBucket?
+
+  SortingGame       SortingGame? @relation(fields: [sortingGameGameId], references: [gameId])
+  sortingGameGameId String?
+}
+
+model SortingGameObject {
+  id      String  @id
+  text    String?
+  image   Image?  @relation(fields: [imageId], references: [assetId], onDelete: Cascade)
+  imageId String?
+
+  bucketPair   SortingGameObjectBucketPair @relation(fields: [bucketPairId], references: [id])
+  bucketPairId String
+}
+
+model SortingGameBucket {
+  id String @id
+
+  bucketPair   SortingGameObjectBucketPair @relation(fields: [bucketPairId], references: [id])
+  bucketPairId String                      @unique
 }
 
 enum UserType {
