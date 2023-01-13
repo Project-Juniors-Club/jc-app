@@ -244,13 +244,15 @@ model SortingGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 
+  description String
+
   correctPairs SortingGameObjectBucketPair[]
 }
 
 model SortingGameObjectBucketPair {
-  id String @id
+  id String @id @default(cuid())
 
-  object SortingGameObject[]
+  objects SortingGameObject[]
 
   bucket SortingGameBucket?
 
@@ -258,8 +260,20 @@ model SortingGameObjectBucketPair {
   sortingGameGameId String?
 }
 
+model SortingGameBucket {
+  id String @id @default(cuid())
+
+  description String
+
+  bucketPair   SortingGameObjectBucketPair @relation(fields: [bucketPairId], references: [id])
+  bucketPairId String                      @unique
+}
+
 model SortingGameObject {
-  id      String  @id
+  id String @id @default(cuid())
+
+  objectType SortingGameObjectType
+
   text    String?
   image   Image?  @relation(fields: [imageId], references: [assetId], onDelete: Cascade)
   imageId String?
@@ -268,11 +282,9 @@ model SortingGameObject {
   bucketPairId String
 }
 
-model SortingGameBucket {
-  id String @id
-
-  bucketPair   SortingGameObjectBucketPair @relation(fields: [bucketPairId], references: [id])
-  bucketPairId String                      @unique
+enum SortingGameObjectType {
+  text
+  image
 }
 
 enum UserType {
