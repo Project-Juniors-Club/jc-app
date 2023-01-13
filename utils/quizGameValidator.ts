@@ -39,15 +39,18 @@ const validateQuestion = (question: SerializedQuizQuestion) => {
 const validateOption = (option: SerializedQuizOption) => {
   const { quizGameOptionType, optionText, optionImageId } = option;
 
-  if (quizGameOptionType == QuizGameOptionType.textAndImage && (optionImageId == null || optionText == null)) {
+  if (
+    quizGameOptionType == QuizGameOptionType.textAndImage &&
+    (optionImageId == null || optionImageId.length == 0 || optionText == null || optionText.length == 0)
+  ) {
     return { valid: false, message: 'Quiz option type of text and image should have non-null text and image.' };
   }
 
-  if (quizGameOptionType == QuizGameOptionType.image && optionImageId == null) {
+  if (quizGameOptionType == QuizGameOptionType.image && (optionImageId == null || optionImageId.length == 0)) {
     return { valid: false, message: 'Quiz option type of image should have non-null image.' };
   }
 
-  if (quizGameOptionType == QuizGameOptionType.text && optionText == null) {
+  if (quizGameOptionType == QuizGameOptionType.text && (optionText == null || optionText.length == 0)) {
     return { valid: false, message: 'Quiz option type of text should have non-null text.' };
   }
 
