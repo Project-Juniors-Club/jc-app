@@ -15,7 +15,11 @@ const validatePair = (pair: SerializedObjectBucketPair) => {
   const { objects, bucket } = pair;
 
   if (bucket == null) {
-    return { valid: false, message: 'There should be at least 1 option for each question.' };
+    return { valid: false, message: 'There should be at least 1 bucket for each bucket-object pair.' };
+  }
+
+  if (objects.length <= 0) {
+    return { valid: false, message: 'There should be at least 1 object in each bucket.' };
   }
 
   const validatedObjects = objects.map(object => validateObject(object));
