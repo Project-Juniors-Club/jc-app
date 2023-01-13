@@ -191,7 +191,7 @@ model Image {
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
   QuizGameQuestion           QuizGameQuestion[]
-  QuizGameImageOption        QuizGameOptionImage[]
+  QuizGameOption             QuizGameOption[]
 
   @@map("images")
 }
@@ -269,30 +269,13 @@ model QuizGameOption {
   isCorrectOption    Boolean
   quizGameOptionType QuizGameOptionType
 
-  quizGameOptionText  QuizGameOptionText?
-  quizGameOptionImage QuizGameOptionImage?
+  optionText String?
+
+  optionImage Image?  @relation(fields: [optionImageId], references: [assetId])
+  optionImageId     String?
 
   quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
   quizGameQuestionId String
-}
-
-model QuizGameOptionText {
-  id String @id @default(cuid())
-
-  optionText String
-
-  quizGameOption   QuizGameOption @relation(fields: [quizGameOptionId], references: [id], onDelete: Cascade)
-  quizGameOptionId String         @unique
-}
-
-model QuizGameOptionImage {
-  id String @id @default(cuid())
-
-  optionImage Image  @relation(fields: [imageId], references: [assetId])
-  imageId     String
-
-  quizGameOption   QuizGameOption @relation(fields: [quizGameOptionId], references: [id], onDelete: Cascade)
-  quizGameOptionId String         @unique
 }
 
 enum QuizGameOptionType {

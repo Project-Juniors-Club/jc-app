@@ -37,17 +37,17 @@ const validateQuestion = (question: SerializedQuizQuestion) => {
 };
 
 const validateOption = (option: SerializedQuizOption) => {
-  const { quizGameOptionType, quizGameOptionImage, quizGameOptionText } = option;
+  const { quizGameOptionType, optionText, optionImageId } = option;
 
-  if (quizGameOptionType == QuizGameOptionType.textAndImage && (quizGameOptionImage == null || quizGameOptionText == null)) {
+  if (quizGameOptionType == QuizGameOptionType.textAndImage && (optionImageId == null || optionText == null)) {
     return { valid: false, message: 'Quiz option type of text and image should have non-null text and image.' };
   }
 
-  if (quizGameOptionType == QuizGameOptionType.image && quizGameOptionImage == null) {
+  if (quizGameOptionType == QuizGameOptionType.image && optionImageId == null) {
     return { valid: false, message: 'Quiz option type of image should have non-null image.' };
   }
 
-  if (quizGameOptionType == QuizGameOptionType.text && quizGameOptionText == null) {
+  if (quizGameOptionType == QuizGameOptionType.text && optionText == null) {
     return { valid: false, message: 'Quiz option type of text should have non-null text.' };
   }
 

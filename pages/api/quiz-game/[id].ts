@@ -30,31 +30,24 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         {
           quizGameQuestions: {
             create: questions.map(question => ({
+              questionNumber: question.questionNumber,
               isMultipleResponse: question.isMultipleResponse,
               questionTitle: question.questionTitle,
-              image: {
+              image: question.imageId && {
                 connect: {
-                  assetId: question.imageId ?? undefined,
+                  assetId: question.imageId,
                 },
               },
               quizGameOptions: {
                 create: question.quizGameOptions.map(option => ({
                   isCorrectOption: option.isCorrectOption,
                   quizGameOptionType: option.quizGameOptionType,
-                  quizGameOptionText: option.quizGameOptionText
-                    ? {
-                        create: {
-                          optionText: option.quizGameOptionText.optionText,
-                        },
-                      }
-                    : null,
-                  quizGameOptionImage: option.quizGameOptionImage
-                    ? {
-                        create: {
-                          imageId: option.quizGameOptionImage.imageId,
-                        },
-                      }
-                    : null,
+                  optionText: option.optionText,
+                  optionImage: option.optionImageId && {
+                    connect: {
+                      assetId: option.optionImageId,
+                    },
+                  },
                 })),
               },
             })),

@@ -4,8 +4,8 @@ import prisma from '../prisma';
 export type SerializedQuizOption = {
   isCorrectOption: boolean;
   quizGameOptionType: QuizGameOptionType;
-  quizGameOptionText: { optionText: string } | null;
-  quizGameOptionImage: { imageId: string } | null;
+  optionText: string | null;
+  optionImageId: string | null;
 };
 
 export type SerializedQuizQuestion = {
@@ -43,24 +43,12 @@ export const createQuiz = async (questions: SerializedQuizQuestion[]) => {
             create: question.quizGameOptions.map(option => ({
               isCorrectOption: option.isCorrectOption,
               quizGameOptionType: option.quizGameOptionType,
-              quizGameOptionText: option.quizGameOptionText
-                ? {
-                    create: {
-                      optionText: option.quizGameOptionText.optionText,
-                    },
-                  }
-                : null,
-              quizGameOptionImage: option.quizGameOptionImage
-                ? {
-                    create: {
-                      optionImage: {
-                        connect: {
-                          imageId: option.quizGameOptionImage.imageId,
-                        },
-                      },
-                    },
-                  }
-                : null,
+              optionText: option.optionText,
+              optionImage: option.optionImageId && {
+                connect: {
+                  assetId: option.optionImageId,
+                },
+              },
             })),
           },
         })),
