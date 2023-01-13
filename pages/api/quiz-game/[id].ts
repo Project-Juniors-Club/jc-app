@@ -18,9 +18,9 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const deletedGame = await deleteQuiz({ gameId });
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deletedGame });
     } else if (httpMethod == 'PUT') {
-      const { questions }: { questions: SerializedQuizQuestion[] } = req.body;
+      const { quizGameQuestions }: { quizGameQuestions: SerializedQuizQuestion[] } = req.body;
 
-      const result = validateQuestions(questions);
+      const result = validateQuestions(quizGameQuestions);
       if (!result.valid) {
         return res.status(400).end(`The input is not valid. ${result.message}`);
       }
@@ -29,7 +29,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         { gameId },
         {
           quizGameQuestions: {
-            create: questions.map(question => ({
+            create: quizGameQuestions.map(question => ({
               questionNumber: question.questionNumber,
               isMultipleResponse: question.isMultipleResponse,
               questionTitle: question.questionTitle,

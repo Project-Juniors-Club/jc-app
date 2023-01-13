@@ -16,7 +16,7 @@ export type SerializedQuizQuestion = {
   quizGameOptions: SerializedQuizOption[];
 };
 
-export const createQuiz = async (questions: SerializedQuizQuestion[]) => {
+export const createQuiz = async (quizGameQuestions: SerializedQuizQuestion[]) => {
   return (await prisma.quizGame.create({
     data: {
       game: {
@@ -30,7 +30,7 @@ export const createQuiz = async (questions: SerializedQuizQuestion[]) => {
         },
       },
       quizGameQuestions: {
-        create: questions.map(question => ({
+        create: quizGameQuestions.map(question => ({
           questionNumber: question.questionNumber,
           isMultipleResponse: question.isMultipleResponse,
           questionTitle: question.questionTitle,
