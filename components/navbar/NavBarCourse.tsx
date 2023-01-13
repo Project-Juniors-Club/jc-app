@@ -5,11 +5,11 @@ import UserDropdown from './UserDropdown';
 
 const NavBarCart = () => {
   // TODO: ADD ASSET DROPDOWN
-  const assetItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];
+  const assetItems = [{ clickOption: 'To add' }, { clickOption: 'To add' }];
   const courseItems = [{ clickOption: 'Course Overview' }, { clickOption: 'Category Overview' }];
 
   return (
-    <Navbar expand='lg' className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-md'>
+    <Navbar expand='lg' className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
       <div className='flex h-[88px] flex-row'>
         <div className='logo flex h-[88px] flex-col items-center justify-center gap-2.5 p-4'>
           <Image src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />

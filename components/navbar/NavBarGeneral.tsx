@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 const NavbarGeneral = () => {
   return (
-    <Navbar className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-md'>
+    <Navbar className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
       <div className='h-[88px]flex-row flex'>
         <div className='logo flex h-[88px] flex-col items-center justify-center gap-2.5 p-4'>
           <Image src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
