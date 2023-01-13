@@ -15,10 +15,10 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (httpMethod == 'POST') {
       const { description, correctPairs }: { description: string; correctPairs: SerializedObjectBucketPair[] } = req.body;
 
-      // const result = validatePairs(correctPairs);
-      // if (!result.valid) {
-      //   return res.status(400).end(`The input is not valid. ${result.message}`);
-      // }
+      const result = validatePairs(correctPairs);
+      if (!result.valid) {
+        return res.status(400).end(`The input is not valid. ${result.message}`);
+      }
 
       const created = await createSorting(description, correctPairs);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });

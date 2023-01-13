@@ -274,7 +274,8 @@ model SortingGameObject {
 
   objectType SortingGameObjectType
 
-  text    String?
+  text String?
+
   image   Image?  @relation(fields: [imageId], references: [assetId], onDelete: Cascade)
   imageId String?
 

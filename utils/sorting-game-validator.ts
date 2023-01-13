@@ -1,58 +1,40 @@
 import { SortingGameObjectType } from '@prisma/client';
-import { SerializedObjectBucketPair } from '../lib/server/sorting';
+import { SerializedSortingGameObject, SerializedObjectBucketPair } from '../lib/server/sorting';
 
 export const validatePairs = (correctPairs: SerializedObjectBucketPair[]) => {
-  //   if (questions.length <= 0) {
-  //     return { valid: false, message: 'There should be at least 1 question for each quiz.' };
-  //   }
+  if (correctPairs.length <= 0) {
+    return { valid: false, message: 'There should be at least 1 bucket-object pair for each game.' };
+  }
 
-  //   const validatedQuestions = questions.map(question => validateQuestion(question));
-  //   const invalidResults = validatedQuestions.filter(result => !result.valid);
-  //   return invalidResults.length != 0 ? invalidResults.at(0) : { valid: true };
-  return { valid: true };
+  const validatedPairs = correctPairs.map(pair => validatePair(pair));
+  const invalidResults = validatedPairs.filter(result => !result.valid);
+  return invalidResults.length != 0 ? invalidResults.at(0) : { valid: true };
 };
 
-// const validateQuestion = (question: SerializedQuizQuestion) => {
-//   if (question.quizGameOptions.length <= 0) {
-//     return { valid: false, message: 'There should be at least 1 option for each question.' };
-//   }
+const validatePair = (pair: SerializedObjectBucketPair) => {
+  const { objects, bucket } = pair;
 
-//   const { isMultipleResponse, questionTitle, quizGameOptions } = question;
-//   const correctOptions = quizGameOptions.filter(option => option.isCorrectOption);
+  if (bucket == null) {
+    return { valid: false, message: 'There should be at least 1 option for each question.' };
+  }
 
-//   if (questionTitle.length == 0) {
-//     return { valid: false, message: 'Question should not be empty.' };
-//   }
+  const validatedObjects = objects.map(object => validateObject(object));
+  const invalidResults = validatedObjects.filter(result => !result.valid);
+  return invalidResults.length != 0 ? invalidResults.at(0) : { valid: true };
+};
 
-//   if (correctOptions.length <= 0) {
-//     return { valid: false, message: 'There should be at least 1 correct option for each question.' };
-//   }
+const validateObject = (object: SerializedSortingGameObject) => {
+  const { objectType, text, imageId } = object;
 
-//   if (!isMultipleResponse && correctOptions.length > 1) {
-//     return { valid: false, message: 'Only multiple response questions should have more than 1 correct option.' };
-//   }
+  if (objectType == SortingGameObjectType.text && (text == null || text.length == 0 || imageId != null)) {
+    return { valid: false, message: 'There should be text, and no image, for a sorting game text object.' };
+  }
 
-//   const validatedOptions = quizGameOptions.map(option => validateOption(option));
-//   const invalidResults = validatedOptions.filter(result => !result.valid);
-//   return invalidResults.length != 0 ? invalidResults.at(0) : { valid: true };
-// };
+  if (objectType == SortingGameObjectType.image && (imageId == null || imageId.length == 0 || text != null)) {
+    return { valid: false, message: 'There should be an image, and no text, for a sorting game text object.' };
+  }
 
-// const validateOption = (option: SerializedQuizOption) => {
-//   const { quizGameOptionType, quizGameOptionImage, quizGameOptionText } = option;
-
-//   if (quizGameOptionType == QuizGameOptionType.textAndImage && (quizGameOptionImage == null || quizGameOptionText == null)) {
-//     return { valid: false, message: 'Quiz option type of text and image should have non-null text and image.' };
-//   }
-
-//   if (quizGameOptionType == QuizGameOptionType.image && quizGameOptionImage == null) {
-//     return { valid: false, message: 'Quiz option type of image should have non-null image.' };
-//   }
-
-//   if (quizGameOptionType == QuizGameOptionType.text && quizGameOptionText == null) {
-//     return { valid: false, message: 'Quiz option type of text should have non-null text.' };
-//   }
-
-//   return { valid: true };
-// };
+  return { valid: true };
+};
 
 export default validatePairs;

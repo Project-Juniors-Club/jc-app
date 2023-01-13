@@ -1,12 +1,14 @@
 import { Prisma, GameType, AssetType, SortingGame, SortingGameObjectType } from '@prisma/client';
 import prisma from '../prisma';
 
+export type SerializedSortingGameObject = {
+  objectType: SortingGameObjectType;
+  text: string | null;
+  imageId: string | null;
+};
+
 export type SerializedObjectBucketPair = {
-  objects: {
-    objectType: SortingGameObjectType;
-    text: string | null;
-    imageId: string | null;
-  }[];
+  objects: SerializedSortingGameObject[];
   bucket: {
     description: string;
   };

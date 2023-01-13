@@ -20,10 +20,10 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (httpMethod == 'PUT') {
       const { description, correctPairs }: { description: string; correctPairs: SerializedObjectBucketPair[] } = req.body;
 
-      // const result = validatePairs(correctPairs);
-      // if (!result.valid) {
-      //   return res.status(400).end(`The input is not valid. ${result.message}`);
-      // }
+      const result = validatePairs(correctPairs);
+      if (!result.valid) {
+        return res.status(400).end(`The input is not valid. ${result.message}`);
+      }
 
       const updatedGame = await updateSorting(
         { gameId },
