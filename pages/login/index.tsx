@@ -48,13 +48,12 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
 
   const mutation = useMutation(login, {
     onSuccess: data => {
-      console.log(data);
-      openSuccessNotification('Login successful', 'Welcome back!');
+      openSuccessNotification('Email Sent', 'Please check your email');
       router.push('/');
     },
     onSettled: () => {},
     onError: error => {
-      openErrorNotification('Login failed', 'Please check your email and try again.');
+      openErrorNotification('Unable to send Email', 'Please check retype your email and try again.');
     },
   });
 
@@ -155,9 +154,8 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
         </Box>
       </Flex>
       <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
-        <div>
-          <h1>Check your email</h1>
-          <p>A sign in link has been sent to your email address.</p>
+        <div className='mx-4 mb-4'>
+          <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
         </div>
       </Modal>
     </Box>
@@ -170,7 +168,7 @@ export async function getServerSideProps(context) {
   const { req } = context;
   const session = await getSession({ req });
   if (session) {
-    return { redirect: { destination: '/' } };
+    return { redirect: { destination: '/home' } };
   }
   const csrfToken = await getCsrfToken(context);
   const providers = await getProviders();
