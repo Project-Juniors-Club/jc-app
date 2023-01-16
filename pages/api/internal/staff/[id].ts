@@ -41,6 +41,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           },
         },
+        select: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+          role: true,
+          disabled: true,
+        },
       });
 
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedUser });

@@ -72,12 +72,12 @@ model NormalUser {
 
 model Admin {
   userId         String         @id
-  user           User           @relation(fields: [userId], references: [id])
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdCourses Course[]       @relation("createdBy")
   updatedCourses Course[]       @relation("updatedBy")
   courseEditor   CourseEditor[]
   disabled       Boolean        @default(true)
-  role           String
+  role           String         @default("Staff")
 
   @@map("admins")
 }

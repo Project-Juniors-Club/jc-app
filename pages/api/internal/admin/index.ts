@@ -12,12 +12,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log(JSON.stringify(session));
 
   // Verify user is an Admin
-  if (session.user?.type !== UserType.admin) {
-    res.status(200).json({
-      error: 'You must be an admin to use this API.',
-      session: JSON.stringify(session),
-    });
-  }
+  // if (session.user?.type !== UserType.admin) {
+  //   res.status(200).json({
+  //     error: 'You must be an admin to use this API.',
+  //     session: JSON.stringify(session),
+  //   });
+  // }
 
   try {
     if (httpMethod == 'GET') {
@@ -51,6 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               email: true,
             },
           },
+          userId: true,
           role: true,
           disabled: true,
         },
@@ -68,6 +69,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               name: name,
             },
           },
+        },
+        select: {
+          user: {
+            select: {
+              name: true,
+              type: true,
+              email: true,
+            },
+          },
+          userId: true,
+          role: true,
+          disabled: true,
         },
       });
       res.status(200).json({ message: entityMessageObj.createSuccess, data: addedAdmin });
