@@ -14,6 +14,7 @@ import { URL } from '../../utils/links';
 import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
 import { Provider } from 'next-auth/providers';
 import Modal from '../../components/Modal';
+import NavBarGeneral from '../../components/navbar/NavBarGeneral';
 
 type Props = {
   csrfToken: string;
@@ -68,6 +69,8 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
   };
 
   return (
+  <>
+    <NavBarGeneral />
     <Box height='100vh' display='flex' justifyContent='center' alignItems='center' backgroundColor='#f6f6f6'>
       <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
         <Box
@@ -91,17 +94,12 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                   </FormLabel>
                   <Flex>
                     <Input
-                      id='email'
-                      type='email'
-                      placeholder='Enter your email address'
+                      id='OTP'
+                      placeholder='Enter your OTP'
                       borderColor='grey'
-                      color='#3D3D3D'
-                      {...register('email', {
+                      color='black'
+                      {...register('password', {
                         required: 'This is required.',
-                        pattern: {
-                          value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                          message: 'Please enter a valid email address.',
-                        },
                       })}
                     />
                   </Flex>
@@ -116,49 +114,57 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                     <Text as='u'>
                       <Link href='/signup'>Sign Up</Link>
                     </Text>
-                  </Text>
+                    </Text>
+                  </Box>
+                </form>
+                <Flex color={'#9E9E9E'}>
+                  <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
+                  <span className={'m-2'}>OR</span>
+                  <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
+                </Flex>
+
+                <Box width='full' textAlign='center' mt={5} mb={5}>
+                  <Text as='b'>Login with SSO</Text>
                 </Box>
-              </form>
-              <Flex color={'#9E9E9E'}>
-                <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
-                <span className={'m-2'}>OR</span>
-                <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
-              </Flex>
 
-              <Box width='full' textAlign='center' mt={5} mb={5}>
-                <Text as='b'>Login with SSO</Text>
+                <Flex justifyContent={'space-evenly'}>
+                  <div className='m-7 cursor-pointer' key='google'>
+                    <Image
+                      src={`/assets/googleLogin.svg`}
+                      width='50'
+                      height='50'
+                      alt='user'
+                      onClick={event => {
+                        event.preventDefault();
+                        signIn('google');
+                      }}
+                    />
+                  </div>
+    
+                  <div className='m-7 cursor-pointer' key='fb'>
+                    <Image
+                      src={`/assets/facebookLogin.svg`}
+                      width='50'
+                      height='50'
+                      alt='user'
+                      onClick={event => {
+                        event.preventDefault();
+                        signIn('facebook');
+                      }}
+                    />
+                  </div>
+                </Flex>
               </Box>
-
-              <Flex justifyContent={'space-evenly'}>
-                {Object.values(providers).map(provider =>
-                  provider.id === 'email' ? (
-                    <></>
-                  ) : (
-                    <div className='m-7 cursor-pointer' key={provider.name}>
-                      <Image
-                        src={`/assets/${provider.name}Login.svg`}
-                        width='45'
-                        height='45'
-                        alt='user'
-                        onClick={event => {
-                          event.preventDefault();
-                          signIn(provider.id);
-                        }}
-                      />
-                    </div>
-                  ),
-                )}
-              </Flex>
-            </Box>
-          </>
-        </Box>
-      </Flex>
-      <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
+            </>
+          </Box>
+        </Flex>
+        <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
         <div className='mx-4 mb-4'>
           <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
         </div>
       </Modal>
-    </Box>
+      </Box>
+    </>
   );
 };
 
