@@ -82,3 +82,26 @@ export const getCourseWithAuthorAndDate = async (id: string) => {
   };
   return result;
 };
+
+export const getCourseStructure = async (id: string) => {
+  return prisma.course.findUnique({
+    where: { id: id },
+    select: {
+      id: true,
+      chapters: {
+        select: {
+          name: true,
+          id: true,
+          pages: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export type CourseStructure = Prisma.PromiseReturnType<typeof getCourseStructure>;

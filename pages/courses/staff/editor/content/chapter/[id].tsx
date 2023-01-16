@@ -1,5 +1,5 @@
 import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { FieldValues, SubmitErrorHandler, SubmitHandler, UseFormRegister, useForm, useWatch } from 'react-hook-form';
 import {
@@ -10,6 +10,7 @@ import {
   Tr,
   Th,
   Td,
+  Text,
   TableCaption,
   TableContainer,
   Box,
@@ -28,7 +29,7 @@ import CategorySelect from '../../../../../../components/course/create/CategoryS
 import UploadButton from '../../../../../../components/course/create/UploadButton';
 import PriceInput from '../../../../../../components/course/create/PriceInput';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
@@ -44,18 +45,21 @@ import UploadImageButton from '../../../../../../components/course/content/edito
 import UploadVideoButton from '../../../../../../components/course/content/editor/UploadVideoButton';
 import QuizCreator from '../../../../../../components/quiz-editor/Creator';
 import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
+import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 
 type FormValues = {
-  title: string;
+  name: string;
   description: string;
+  courseId: string;
+  chapterNumber: number;
 };
 
 type Props = {
   id: string;
-  sess: Session;
+  courseStructure: CourseStructure;
 };
 
-const EditContentChapter = ({ id, sess }: Props) => {
+const EditContentChapter = ({ id, courseStructure }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -80,17 +84,18 @@ const EditContentChapter = ({ id, sess }: Props) => {
   const isDisabled = isSubmitting || isSubmitSuccessful;
 
   const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { title, description } = data;
+    const { name, description } = data;
 
     // returns id of course created
     return await axios
       .post('/api/chapter', {
-        title: title.trim(),
+        title: name.trim(),
         description: description.trim(),
-        creatorId: sess.user.id,
+        // creatorId: sess.user.id,
       })
       .then(resp => resp.data.data.id);
   };
+  const session = useSession();
 
   return (
     <div>
@@ -102,10 +107,17 @@ const EditContentChapter = ({ id, sess }: Props) => {
             <VStack spacing='20px'>
               <Center minH='max-content'>
                 <Box mt={4}>
-                  <MyAccordion isChapterSelected={true} selectedId={id} />
+                  <MyAccordion isChapterSelected={true} selectedId={id} courseStructure={courseStructure} />
                   <Box mt={4}>
                     <HStack>
-                      <Button background='#A9D357'>Save Course Content & Exit</Button>
+                      <Button
+                        background='#A9D357'
+                        onClick={() => {
+                          console.log(session);
+                        }}
+                      >
+                        Save Course Content & Exit
+                      </Button>
                       <Button background='#4D4D4D' color='white'>
                         Cancel
                       </Button>
@@ -122,12 +134,12 @@ const EditContentChapter = ({ id, sess }: Props) => {
             <VStack spacing='20px'>
               <form onSubmit={handleSubmit(data => console.log(data))}>
                 <Box mt={4}>
-                  <FormLabel htmlFor='title'>Chapter Title:</FormLabel>
+                  <FormLabel htmlFor='title'>Chapter Title*</FormLabel>
                   <Input w='600px' placeholder='Chapter Title Here' {...register('title')} />
                 </Box>
                 <Box mt={4}>
-                  <FormLabel htmlFor='desc'>Chapter Description:</FormLabel>
-                  <Input placeholder='Chapter Description Here' {...register('description')} />
+                  <FormLabel htmlFor='desc'>Chapter Description</FormLabel>
+                  <Textarea placeholder='Chapter Description Here' {...register('description')} />
                 </Box>
                 <Box mt={4}>
                   <HStack>
@@ -156,14 +168,23 @@ export const getServerSideProps: GetServerSideProps = async req => {
   // this is selected id
   const id = req.query.id as string;
 
+  // staff/editor/content/[courseId]/chapter/[chapterId]
+
+  const { courseId } = await prisma.chapter.findUnique({
+    where: {
+      id: id,
+    },
+    select: { courseId: true },
+  });
   // get course structure for accordion
   // const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
 
   // get chapter form content
   // const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
 
-  const sess = await getSession(req);
-  return { props: { id, sess } };
+  const courseStructure: CourseStructure = await getCourseStructure(courseId);
+
+  return { props: { id, courseStructure } };
 };
 
 export default EditContentChapter;
