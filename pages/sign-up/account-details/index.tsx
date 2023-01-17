@@ -10,12 +10,14 @@ import {
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { signUpDobState, signUpEmailState, signUpInfoState, signUpNameState, signUpTocState } from '../../../atoms/atoms';
+import { signUpDobState, signUpEmailState, signUpInfoState, signUpNameState, signUpTocState, userState } from '../../../atoms/atoms';
 
 import Layout from '../../../components/Layout';
+import { useUserQuery } from '../../../hooks/queries';
 
 type FormValues = {
   email: string;
@@ -24,7 +26,7 @@ type FormValues = {
   toc: boolean;
 };
 
-const AccountDetails = () => {
+const AccountDetails = ({ session }) => {
   const { email, name, dob, toc } = useRecoilValue(signUpInfoState);
   const setEmail = useSetRecoilState(signUpEmailState);
   const setName = useSetRecoilState(signUpNameState);
@@ -38,7 +40,15 @@ const AccountDetails = () => {
   } = useForm({ defaultValues: { email, name, dob, toc } });
   const watchToc = watch('toc');
   const router = useRouter();
-  //fetch user data first if it exists
+  console.log(session);
+  // if user exists, use user data instead
+  const userQuery = useUserQuery(session?.user?.id);
+
+  if (userQuery?.data) {
+    const { email, name } = userQuery.data;
+    setEmail(email);
+    setName(name);
+  }
 
   const onSubmit = (data: FormValues) => {
     setEmail(data.email);
@@ -118,3 +128,11 @@ const AccountDetails = () => {
 };
 
 export default AccountDetails;
+
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+  return {
+    props: { session },
+  };
+}

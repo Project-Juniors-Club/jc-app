@@ -72,3 +72,29 @@ export const signUpInfoState = selector({
     }
   },
 });
+
+export const idState = atom({
+  key: 'id',
+  default: '',
+});
+
+export const userState = selector({
+  key: 'user',
+  get: ({ get }) => {
+    //get values from individual atoms
+    const id = get(idState);
+    const name = get(nameState);
+    const email = get(emailState);
+    const role = get(roleState);
+
+    return { id, name, email, role };
+  },
+  set: ({ set }, value) => {
+    if (!(value instanceof DefaultValue)) {
+      set(idState, value.id);
+      set(nameState, value.name);
+      set(emailState, value.email);
+      set(roleState, value.role);
+    }
+  },
+});

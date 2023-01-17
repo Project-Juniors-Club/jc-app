@@ -54,6 +54,8 @@ model User {
   emailVerified DateTime?
   image         String?
   name          String?
+  age           Int?
+  pdpa          Boolean      @default(false)
   accounts      Account[]
   sessions      Session[]
   admin         Admin?
@@ -66,8 +68,6 @@ model User {
 
 model NormalUser {
   userId String @id
-  age    Int?
-  pdpa   Boolean @default(false)
   user   User   @relation(fields: [userId], references: [id])
 
   @@map("normalUsers")

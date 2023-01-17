@@ -27,6 +27,7 @@ import google from '../../public/assets/google_logo.svg';
 import apple from '../../public/assets/apple_logo_black.svg';
 import facebook from '../../public/assets/facebook_logo_blue.svg';
 import { signUpEmailState } from '../../atoms/atoms';
+import { FormEvent } from 'react';
 
 type FormValues = {
   email: string;
@@ -76,6 +77,11 @@ const SignUp = ({ csrfToken, providers }: Props) => {
   const onSubmit = (data: FormValues) => {
     setEmail(data.email);
     router.push('/sign-up/account-details');
+  };
+
+  const handleSignIn = (event: FormEvent, provider: Provider) => {
+    event.preventDefault();
+    signIn(provider.id);
   };
 
   return (
@@ -143,14 +149,7 @@ const SignUp = ({ csrfToken, providers }: Props) => {
                 const p = sso.find(p => p.name.toLowerCase() === provider.id.toLowerCase());
                 return (
                   <div key={provider.name}>
-                    <button
-                      onClick={event => {
-                        event.preventDefault();
-                        signIn(provider.id);
-                      }}
-                    >
-                      {p ? <p.icon /> : `Sign in with ${provider.name}`}
-                    </button>
+                    <button onClick={_ => handleSignIn(_, provider)}>{p ? <p.icon /> : `Sign in with ${provider.name}`}</button>
                   </div>
                 );
               }
