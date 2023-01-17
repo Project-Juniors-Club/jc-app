@@ -109,6 +109,11 @@ export const getAllCourses = async () => {
           name: true,
         },
       },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
     },
   });
   const result = courses.map(course => {

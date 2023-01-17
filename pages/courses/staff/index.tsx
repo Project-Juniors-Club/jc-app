@@ -5,23 +5,24 @@ import prisma from '../../../lib/prisma';
 import NavBarCart from '../../../components/navbar/NavBarCart';
 import { useRouter } from 'next/router';
 import { getAllCourses } from '../../../lib/server/course';
-import { Box, Heading, LinkBox, LinkOverlay } from '@chakra-ui/react';
+import { LinkBox, LinkOverlay, Image } from '@chakra-ui/react';
+import Layout from '../../../components/Layout';
 
 const CourseCard = ({ course }) => {
   const isFree = course.price <= 0;
+
   return (
     <LinkBox as='article' borderWidth='1px' rounded='md' className='m-1 p-2'>
-      <LinkOverlay href={`courses/staff/${course.id}`}>
+      <LinkOverlay href={`staff/${course.id}`}>
         <div className='flex w-full items-center gap-x-12 py-6'>
           <div>
-            {
-              // course.imageUrl ? (
-              //   <Image src={course.imageUrl} alt={`Thumbnail for ${course.name}`} />
-              // ) :
-              <div className='grid h-[148px] w-[259px] place-content-center rounded-2xl bg-[#C7C7C7]'>
+            <div className='grid h-[148px] w-[259px] place-content-center rounded-2xl bg-[#C7C7C7]'>
+              {course.coverImage?.url ? (
+                <Image src={course.coverImage.url} alt='testing' />
+              ) : (
                 <div className='h-min font-bold'>No Image Found</div>
-              </div>
-            }
+              )}
+            </div>
           </div>
           <div className='flex w-full flex-col gap-8'>
             <div className='flex flex-col gap-3'>
@@ -32,8 +33,8 @@ const CourseCard = ({ course }) => {
               </div>
             </div>
             <div className='flex h-8 w-full justify-between'>
-              <div className='w-max rounded-full px-4 py-1.5 text-sm font-bold text-[#3D3D3D] outline outline-2 outline-black'>
-                {course.category.name}
+              <div className={`w-max rounded-md px-4 py-1.5 text-sm text-white ${course.category ? 'bg-[#A9D357]' : 'bg-[#606060]'}`}>
+                {course.category ? course.category.name : 'Uncategorized'}
               </div>
               <div className={`flex w-max flex-row px-3 py-1 ${isFree ? 'bg-[#A9D357]' : 'bg-[#606060]'} rounded-md text-white`}>
                 {isFree ? 'FREE' : `S\$${Number(course.price).toFixed(2)}`}
@@ -116,18 +117,14 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
             })
             .filter(course => {
               const searchFieldLower = searchField.toLowerCase().trim();
-              return (
-                course.title.toString().toLowerCase().includes(searchFieldLower) ||
-                course.description.toString().toLowerCase().includes(searchFieldLower) ||
-                course.learningObjectives.toString().toLowerCase().includes(searchFieldLower)
-              );
+              return course.title.toString().toLowerCase().includes(searchFieldLower);
             })
         : courses,
     [searchField, sortCriteria, courses],
   );
 
   return (
-    <>
+    <Layout title={`${'Course Overview'} | Staff`}>
       <NavBarCart />
       <div className='px-36'>
         <div className='flex items-center justify-between py-16'>
@@ -137,7 +134,7 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
           </CustomButton>
         </div>
         <div className='flex gap-2 py-16'>
-          <div className='w-52 '>
+          <div className='w-52'>
             <SortAndFilterMenu categories={categories} setCategory={setCategory} setSortCriteria={setSortCriteria} />
           </div>
           <div className='flex w-full flex-col gap-9'>
@@ -151,7 +148,7 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
                   name='filterName'
                   id='filterName'
                   className='block w-full rounded-md border-gray-300 pr-12 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
-                  placeholder='Title, description, objectives...'
+                  placeholder='Search by title...'
                   onChange={e => {
                     setSearchField(e.target.value);
                   }}
@@ -168,7 +165,7 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 
