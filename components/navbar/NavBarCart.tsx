@@ -1,10 +1,9 @@
 import Image from 'next/image';
-import { Navbar } from 'react-bootstrap';
 import UserDropdown from './UserDropdown';
 
 const NavBarCart = () => {
   return (
-    <Navbar className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
+    <nav className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
       <div className='flex h-[88px] flex-row'>
         <div className='logo flex h-[88px] flex-col items-center justify-center gap-2.5 p-4'>
           {' '}
@@ -33,7 +32,7 @@ const NavBarCart = () => {
         </div>
         <UserDropdown />
       </div>
-    </Navbar>
+    </nav>
   );
 };
 
