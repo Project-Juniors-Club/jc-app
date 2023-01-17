@@ -3,7 +3,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.search-outline:has(> input:focus) {
-  outline: 1px solid black;
-}
