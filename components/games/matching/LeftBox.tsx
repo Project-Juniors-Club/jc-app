@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LeftBox = ({ name, selected }) => {
+const LeftBox = ({ id, name, selected }) => {
   // TO SUPPORT PICTURES
   const style = {
     width: '100px',
@@ -11,7 +11,7 @@ const LeftBox = ({ name, selected }) => {
   };
 
   return (
-    <button style={style} className='my-10 mx-20' data-name={name} data-column={'left'}>
+    <button style={style} data-id={id} className='my-10 mx-20' data-name={name} data-column={'left'}>
       {name}
     </button>
   );
