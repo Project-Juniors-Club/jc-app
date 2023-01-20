@@ -2,6 +2,7 @@ import cards from './Cards';
 import Grid from './Grid';
 import { useEffect, useState } from 'react';
 import Score from './Score';
+import Card from './Card';
 
 export interface CardObj {
   id: number;
@@ -17,7 +18,7 @@ const MemoryGame = () => {
   const [selectedCards, setSelectedCards] = useState<CardObj[]>([]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const randomiseCards = ({ cards }) => {
+  const randomiseCards = ({ cards }: { cards }) => {
     let randomOrderArr = [];
     let cardsArr = cards;
     for (let i = cardsArr.length; i > 0; i--) {

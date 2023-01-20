@@ -13,17 +13,31 @@ const pairs: Pair[] = [
   { id: 5, leftpart: 'eyes', rightpart: 'see' },
 ];
 
-const MARGIN_LEFT_OFFSET = 400;
+// const MARGIN_LEFT_OFFSET = 1500;
 const MARGIN_TOP_OFFSET = 40;
 
-const CANVAS_WIDTH = 520;
+const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 900;
 
 const MatchingGame = () => {
+  const canvasStyle = {
+    width: 'fit-content',
+    margin: 'auto',
+  };
+
+  const [marginLeft, setMarginLeft] = useState(0);
   const ref = useRef<HTMLCanvasElement>(null);
   const [solved, setSolved] = useState(0);
   const [leftSelected, setLeftSelected] = useState(0);
   const [leftCoordinates, setLeftCoordinates] = useState<{ x: number; y: number }>();
+
+  const retrieveMargin = (elm: Element | null) => {
+    if (elm != null) {
+      let styles = window.getComputedStyle(elm);
+      let ml = styles.getPropertyValue('margin-left');
+      setMarginLeft(Number.parseInt(ml.replace('px', '')));
+    }
+  };
 
   // to prevent double counting
   const [solvedIds, setSolvedIds] = useState<number[]>([]);
@@ -33,7 +47,8 @@ const MatchingGame = () => {
     if (e.target.dataset.column === 'left') {
       if (e.target.dataset.id == null) return;
       setLeftSelected(parseInt(e.target.dataset.id));
-      setLeftCoordinates({ x: e.clientX - MARGIN_LEFT_OFFSET, y: e.clientY - MARGIN_TOP_OFFSET });
+      if (marginLeft == null) return;
+      setLeftCoordinates({ x: e.clientX - marginLeft, y: e.clientY - MARGIN_TOP_OFFSET });
     } else if (e.target.dataset.column === 'right') {
       if (e.target.dataset.id == null) return;
       checkPair(e, parseInt(e.target.dataset.id));
@@ -49,7 +64,8 @@ const MatchingGame = () => {
     ctx.beginPath();
     if (leftCoordinates == null) return;
     ctx.moveTo(leftCoordinates.x, leftCoordinates.y);
-    ctx.lineTo(e.clientX - MARGIN_LEFT_OFFSET, e.clientY - MARGIN_TOP_OFFSET);
+    if (marginLeft == null) return;
+    ctx.lineTo(e.clientX - marginLeft, e.clientY - MARGIN_TOP_OFFSET);
     ctx.stroke();
   };
 
@@ -87,12 +103,20 @@ const MatchingGame = () => {
     <>
       <div>
         <p className='mt-4 text-center'> Draw lines between the pictures and the words that best go together.</p>
-        <div className='relative ml-[400px] flex flex-row' onClick={e => handleClick(e)} onMouseMove={e => handleMove(e)}>
+        {/* <div style={canvasStyle}> */}
+        <div
+          className='relative m-auto flex flex-row'
+          style={canvasStyle}
+          ref={retrieveMargin}
+          onClick={e => handleClick(e)}
+          onMouseMove={e => handleMove(e)}
+        >
           <canvas ref={ref} width={520} height={900} className='absolute -z-10 '></canvas>
           <ul>{leftRandom} </ul>
           <ul>{rightRandom} </ul>
         </div>
       </div>
+      {/* </div> */}
       <p className='mt-4 text-center'>{solved} solved</p>
     </>
   );
