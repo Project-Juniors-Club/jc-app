@@ -22,46 +22,50 @@ const CANVAS_HEIGHT = 900;
 const MatchingGame = () => {
   const ref = useRef<HTMLCanvasElement>(null);
   const [solved, setSolved] = useState(0);
-  const [leftSelected, setLeftSelected] = useState('');
+  const [leftSelected, setLeftSelected] = useState(0);
   const [leftCoordinates, setLeftCoordinates] = useState<{ x: number; y: number }>();
-  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
-  const handleClick = e => {
+  // to prevent double counting
+  const [solvedIds, setSolvedIds] = useState<number[]>([]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
     if (e.target.dataset.column === 'left') {
-      setLeftSelected(e.target.dataset.id);
+      if (e.target.dataset.id == null) return;
+      setLeftSelected(parseInt(e.target.dataset.id));
       setLeftCoordinates({ x: e.clientX - MARGIN_LEFT_OFFSET, y: e.clientY - MARGIN_TOP_OFFSET });
     } else if (e.target.dataset.column === 'right') {
-      checkPair(e, e.target.dataset.id);
-      setLeftSelected('');
+      if (e.target.dataset.id == null) return;
+      checkPair(e, parseInt(e.target.dataset.id));
+      setLeftSelected(-1);
     }
   };
   const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (leftSelected === '') return;
+    if (leftSelected === -1) return;
     if (ref == null || ref.current == null) return;
     const ctx = ref.current.getContext('2d');
     if (ctx == null) return;
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.beginPath();
+    if (leftCoordinates == null) return;
     ctx.moveTo(leftCoordinates.x, leftCoordinates.y);
     ctx.lineTo(e.clientX - MARGIN_LEFT_OFFSET, e.clientY - MARGIN_TOP_OFFSET);
-    if (e.target instanceof HTMLButtonElement && e.target.dataset.column === 'right') {
-      ctx.stroke();
-    }
+    ctx.stroke();
   };
 
   // CHECK IF PAIR IS SOLVED
-  const checkPair = (e, id) => {
+  const checkPair = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
     const rightChosen = id;
-    if (leftSelected == rightChosen.toString()) {
+    if (leftSelected == rightChosen && !solvedIds.includes(leftSelected)) {
       setSolved(solved + 1);
+      setSolvedIds([...solvedIds, leftSelected]);
     }
   };
 
   // TO RANDOMISE THE RIGHT SIDE
-  const [randomArray, setRandomArray] = useState([]);
+  const [randomArray, setRandomArray] = useState<Pair[]>([]);
   useEffect(() => {
-    const randomizeArray = [...pairs].sort(() => 0.5 - Math.random());
+    const randomizeArray: Pair[] = [...pairs].sort(() => 0.5 - Math.random());
     setRandomArray(randomizeArray.slice(0, NUM_OF_PAIRS));
   }, []);
 
