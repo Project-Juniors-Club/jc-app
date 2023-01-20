@@ -1,7 +1,8 @@
 import { Pair } from './Pair';
 import LeftBox from './LeftBox';
 import RightBox from './RightBox';
-import { HtmlHTMLAttributes, useEffect, useRef, useState } from 'react';
+import { HtmlHTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
+import { createTextChangeRange } from 'typescript';
 
 const NUM_OF_PAIRS = 5;
 
@@ -25,36 +26,43 @@ const MatchingGame = () => {
   const [leftSelected, setLeftSelected] = useState('');
   const [leftCoordinates, setLeftCoordinates] = useState<{ x: number; y: number }>();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  useEffect(() => {
+    if (ref == null || ref.current == null) return;
+    const ctx = ref.current.getContext('2d');
+    setContext(ctx);
+  }, []);
 
   const handleClick = e => {
     if (!(e.target instanceof HTMLButtonElement)) return;
     if (e.target.dataset.column === 'left') {
+      if (context == null) return;
       setLeftSelected(e.target.dataset.id);
       setLeftCoordinates({ x: e.clientX - MARGIN_LEFT_OFFSET, y: e.clientY - MARGIN_TOP_OFFSET });
+      context.save();
     } else if (e.target.dataset.column === 'right') {
       checkPair(e, e.target.dataset.id);
-      setLeftSelected('');
     }
   };
   const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (leftSelected === '') return;
-    if (ref == null || ref.current == null) return;
-    const ctx = ref.current.getContext('2d');
-    if (ctx == null) return;
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.beginPath();
-    ctx.moveTo(leftCoordinates.x, leftCoordinates.y);
-    ctx.lineTo(e.clientX - MARGIN_LEFT_OFFSET, e.clientY - MARGIN_TOP_OFFSET);
-    if (e.target instanceof HTMLButtonElement && e.target.dataset.column === 'right') {
-      ctx.stroke();
-    }
+    if (context == null) return;
+    context.restore();
+    context.save();
+    context.beginPath();
+    context.moveTo(leftCoordinates.x, leftCoordinates.y);
+    context.lineTo(e.clientX - MARGIN_LEFT_OFFSET, e.clientY - MARGIN_TOP_OFFSET);
+    context.stroke();
   };
 
   // CHECK IF PAIR IS SOLVED
   const checkPair = (e, id) => {
     const rightChosen = id;
-    if (leftSelected == rightChosen.toString()) {
+    if (leftSelected === rightChosen.toString()) {
       setSolved(solved + 1);
+      setLeftSelected('');
+    } else {
+      if (context == null) return;
+      context.restore();
     }
   };
 
