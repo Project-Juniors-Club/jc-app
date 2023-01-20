@@ -2,7 +2,6 @@ import { Pair } from './Pair';
 import LeftBox from './LeftBox';
 import RightBox from './RightBox';
 import { HtmlHTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
-import { createTextChangeRange } from 'typescript';
 
 const NUM_OF_PAIRS = 5;
 
@@ -23,7 +22,7 @@ const CANVAS_HEIGHT = 900;
 const MatchingGame = () => {
   const ref = useRef<HTMLCanvasElement>(null);
   const [solved, setSolved] = useState(0);
-  const [leftSelected, setLeftSelected] = useState('');
+  const [leftSelected, setLeftSelected] = useState(0);
   const [leftCoordinates, setLeftCoordinates] = useState<{ x: number; y: number }>();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   useEffect(() => {
@@ -32,20 +31,28 @@ const MatchingGame = () => {
     setContext(ctx);
   }, []);
 
-  const handleClick = e => {
+  // to prevent double counting
+  const [solvedIds, setSolvedIds] = useState<number[]>([]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
     if (e.target.dataset.column === 'left') {
       if (context == null) return;
+      if (e.target.dataset.id == null) return;
       setLeftSelected(e.target.dataset.id);
+      setLeftSelected(parseInt(e.target.dataset.id));
       setLeftCoordinates({ x: e.clientX - MARGIN_LEFT_OFFSET, y: e.clientY - MARGIN_TOP_OFFSET });
       context.save();
     } else if (e.target.dataset.column === 'right') {
-      checkPair(e, e.target.dataset.id);
+      if (e.target.dataset.id == null) return;
+      checkPair(e, parseInt(e.target.dataset.id));
+      setLeftSelected(-1);
     }
   };
   const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (leftSelected === '') return;
+    if (leftSelected === -1) return;
     if (context == null) return;
+    if (leftCoordinates == null) return;
     context.restore();
     context.save();
     context.beginPath();
@@ -55,10 +62,11 @@ const MatchingGame = () => {
   };
 
   // CHECK IF PAIR IS SOLVED
-  const checkPair = (e, id) => {
+  const checkPair = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
     const rightChosen = id;
-    if (leftSelected === rightChosen.toString()) {
+    if (leftSelected == rightChosen && !solvedIds.includes(leftSelected)) {
       setSolved(solved + 1);
+      setSolvedIds([...solvedIds, leftSelected]);
       setLeftSelected('');
     } else {
       if (context == null) return;
@@ -67,9 +75,9 @@ const MatchingGame = () => {
   };
 
   // TO RANDOMISE THE RIGHT SIDE
-  const [randomArray, setRandomArray] = useState([]);
+  const [randomArray, setRandomArray] = useState<Pair[]>([]);
   useEffect(() => {
-    const randomizeArray = [...pairs].sort(() => 0.5 - Math.random());
+    const randomizeArray: Pair[] = [...pairs].sort(() => 0.5 - Math.random());
     setRandomArray(randomizeArray.slice(0, NUM_OF_PAIRS));
   }, []);
 

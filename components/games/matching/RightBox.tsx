@@ -1,6 +1,6 @@
 import React from 'react';
 
-const RightBox = ({ id, name }) => {
+const RightBox = ({ id, name }: { id: number; name: string }) => {
   const style = {
     width: '100px',
     height: '100px',
