@@ -1,7 +1,7 @@
 import { Pair } from './Pair';
 import LeftBox from './LeftBox';
 import RightBox from './RightBox';
-import { useEffect, useRef, useState } from 'react';
+import { HtmlHTMLAttributes, useEffect, useRef, useState } from 'react';
 
 const NUM_OF_PAIRS = 5;
 
@@ -20,10 +20,11 @@ const CANVAS_WIDTH = 520;
 const CANVAS_HEIGHT = 900;
 
 const MatchingGame = () => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLCanvasElement>(null);
   const [solved, setSolved] = useState(0);
   const [leftSelected, setLeftSelected] = useState('');
-  const [leftCoordinates, setLeftCoordinates] = useState<{ x: any; y: any }>();
+  const [leftCoordinates, setLeftCoordinates] = useState<{ x: number; y: number }>();
+  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
   const handleClick = e => {
     if (!(e.target instanceof HTMLButtonElement)) return;
@@ -35,11 +36,11 @@ const MatchingGame = () => {
       setLeftSelected('');
     }
   };
-  const handleMove = e => {
+  const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (leftSelected === '') return;
+    if (ref == null || ref.current == null) return;
     const ctx = ref.current.getContext('2d');
-    ctx.width = CANVAS_WIDTH;
-    ctx.height = CANVAS_HEIGHT;
+    if (ctx == null) return;
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.beginPath();
     ctx.moveTo(leftCoordinates.x, leftCoordinates.y);
