@@ -19,7 +19,8 @@ const ViewCart = ({ courses }) => {
   const allChecked = checkedItems.every(Boolean);
 
   useEffect(() => {
-    const courseList = JSON.parse(localStorage.getItem('Cart' || '[]'));
+    const courseList = JSON.parse(localStorage.getItem('Cart') || '[]');
+    console.log(courseList);
     // dummy data
     // const courses = await prisma.course.findMany({
     //   where: {
