@@ -1,4 +1,4 @@
-import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
+import { Asset, AssetType, Category, Chapter, CourseStatus } from '@prisma/client';
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { FieldValues, SubmitErrorHandler, SubmitHandler, UseFormRegister, useForm, useWatch } from 'react-hook-form';
@@ -23,12 +23,6 @@ import {
 import { SimpleGrid, Center, Input, Select, Spacer, Flex, Stack, HStack, VStack, FormLabel, FormControl, Textarea } from '@chakra-ui/react';
 import CustomButton from '../../../../../../components/Button';
 import { useDisclosure } from '@chakra-ui/react';
-import TextInput from '../../../../../../components/course/create/TextInput';
-import TextAreaInput from '../../../../../../components/course/create/TextAreaInput';
-import CategorySelect from '../../../../../../components/course/create/CategorySelect';
-import UploadButton from '../../../../../../components/course/create/UploadButton';
-import PriceInput from '../../../../../../components/course/create/PriceInput';
-import CancelModal from '../../../../../../components/course/create/CancelModal';
 import { getSession, useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Session } from 'next-auth';
@@ -40,36 +34,29 @@ import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
 import uploadFile from '../../../../../../lib/upload';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
-import { setConstantValue } from 'typescript';
-import UploadImageButton from '../../../../../../components/course/content/editor/UploadImageButton';
-import UploadVideoButton from '../../../../../../components/course/content/editor/UploadVideoButton';
-import QuizCreator from '../../../../../../components/quiz-editor/Creator';
-import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
+import { useMutation } from '@tanstack/react-query';
 
 type FormValues = {
   name: string;
   description: string;
-  courseId: string;
-  chapterNumber: number;
 };
 
 type Props = {
   id: string;
   courseStructure: CourseStructure;
+  chapter: Chapter;
 };
 
-const EditContentChapter = ({ id, courseStructure }: Props) => {
+const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapter }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [courseStructure, setCourseStructure] = useState(initialCourseStructure);
 
   // TODO: fill this in with database value
   const useFormReturns = useForm({
-    defaultValues: {
-      title: '',
-      description: '',
-    },
+    defaultValues: { name: chapter.name, description: chapter.description },
   });
   const {
     register,
@@ -83,18 +70,20 @@ const EditContentChapter = ({ id, courseStructure }: Props) => {
 
   const isDisabled = isSubmitting || isSubmitSuccessful;
 
-  const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { name, description } = data;
-
-    // returns id of course created
-    return await axios
-      .post('/api/chapter', {
-        title: name.trim(),
-        description: description.trim(),
-        // creatorId: sess.user.id,
-      })
-      .then(resp => resp.data.data.id);
-  };
+  const mutation = useMutation(
+    (data: FormValues) => {
+      return axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+    },
+    {
+      onSuccess: ({ data }) => {
+        openSuccessNotification('Updated chapter successfully!');
+        courseStructure.chapters[chapter.chapterNumber - 1].name = data.data.name;
+      },
+      onError: () => {
+        openErrorNotification('Update failed', 'Please try again');
+      },
+    },
+  );
   const session = useSession();
 
   return (
@@ -132,10 +121,14 @@ const EditContentChapter = ({ id, courseStructure }: Props) => {
           </Center>
           <GridItem>
             <VStack spacing='20px'>
-              <form onSubmit={handleSubmit(data => console.log(data))}>
+              <form onSubmit={handleSubmit(data => mutation.mutate(data))}>
                 <Box mt={4}>
                   <FormLabel htmlFor='title'>Chapter Title*</FormLabel>
-                  <Input w='600px' placeholder='Chapter Title Here' {...register('title')} />
+                  <Input
+                    // w='600px'
+                    placeholder='Chapter Title Here'
+                    {...register('name', { required: true, setValueAs: name => name.trim() })}
+                  />
                 </Box>
                 <Box mt={4}>
                   <FormLabel htmlFor='desc'>Chapter Description</FormLabel>
@@ -165,26 +158,17 @@ const EditContentChapter = ({ id, courseStructure }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async req => {
-  // this is selected id
   const id = req.query.id as string;
 
-  // staff/editor/content/[courseId]/chapter/[chapterId]
-
-  const { courseId } = await prisma.chapter.findUnique({
+  const chapter = await prisma.chapter.findUnique({
     where: {
       id: id,
     },
-    select: { courseId: true },
   });
-  // get course structure for accordion
-  // const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
 
-  // get chapter form content
-  // const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
+  const courseStructure: CourseStructure = await getCourseStructure(chapter.courseId);
 
-  const courseStructure: CourseStructure = await getCourseStructure(courseId);
-
-  return { props: { id, courseStructure } };
+  return { props: { id, courseStructure, chapter, key: id } };
 };
 
 export default EditContentChapter;

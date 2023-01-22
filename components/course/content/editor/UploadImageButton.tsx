@@ -15,7 +15,6 @@ type Props = {
   imageFilename?: string;
 };
 
-// TODO: support multiple files, with different file types
 const UploadImageButton = ({
   label,
   register,

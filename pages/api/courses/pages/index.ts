@@ -10,16 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const httpMethod = req.method;
     if (httpMethod == 'POST') {
-      const {
-        chapterId,
-        name,
-        pageNumber,
-        description,
-        duration,
-        assetType,
-        userId,
-        courseId,
-      }: Page & { userId: string; courseId: string } = req.body;
+      const { chapterId, name, pageNumber, description, duration, userId, courseId }: Page & { userId: string; courseId: string } =
+        req.body;
       // CREATE PAGE
       const [newPage] = await prisma.$transaction([
         prisma.page.create({
@@ -28,10 +20,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             pageNumber,
             description,
             duration,
-            assetType,
-            Chapter: {
+            chapter: {
               connect: {
                 id: chapterId,
+              },
+            },
+            asset: {
+              create: {
+                assetType: 'article',
+                article: {
+                  create: {
+                    text: '',
+                  },
+                },
               },
             },
           },

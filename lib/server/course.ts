@@ -97,7 +97,13 @@ export const getCourseStructure = async (id: string) => {
               name: true,
               id: true,
             },
+            orderBy: {
+              pageNumber: 'asc',
+            },
           },
+        },
+        orderBy: {
+          chapterNumber: 'asc',
         },
       },
     },

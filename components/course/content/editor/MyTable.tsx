@@ -57,7 +57,7 @@ const MyTable = ({ isPageSelected, selectedId, courseId, chapter }: TableProps) 
                     display='flex'
                     onClick={e => {
                       e.preventDefault();
-                      router.push(`../page/${page.id}`);
+                      router.push(`/courses/staff/editor/content/page/${page.id}`);
                     }}
                     bg={bgColor}
                     rounded={0}

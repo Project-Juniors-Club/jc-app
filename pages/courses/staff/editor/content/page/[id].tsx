@@ -1,4 +1,4 @@
-import { Asset, AssetType, Category, CourseStatus } from '@prisma/client';
+import { Article, Asset, AssetType, Category, CourseStatus, Game, Page, Video, Image, GameType } from '@prisma/client';
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { FieldValues, SubmitErrorHandler, SubmitHandler, UseFormRegister, useForm, useWatch } from 'react-hook-form';
@@ -28,7 +28,7 @@ import CategorySelect from '../../../../../../components/course/create/CategoryS
 import UploadButton from '../../../../../../components/course/create/UploadButton';
 import PriceInput from '../../../../../../components/course/create/PriceInput';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
@@ -39,46 +39,61 @@ import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
 import uploadFile from '../../../../../../lib/upload';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
-import { setConstantValue } from 'typescript';
+import { setConstantValue, updateTypeAssertion } from 'typescript';
 import UploadImageButton from '../../../../../../components/course/content/editor/UploadImageButton';
 import UploadVideoButton from '../../../../../../components/course/content/editor/UploadVideoButton';
 import QuizCreator from '../../../../../../components/quiz-editor/Creator';
 import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
+import { useMutation } from '@tanstack/react-query';
+import { resolve } from 'path';
+import { createOrUpdateAsset } from '../../../../../../lib/editor';
 
-type FormValues = {
-  title: string;
-  learningObjectives: string;
-  description: string;
-  category: Category;
-  coverImage: File[];
-  isFree: string;
-  price: number;
+export type EditorPageFormValues = {
+  name: string;
+  description?: string;
+  duration: number;
+  assetType: AssetType;
+  interactiveType?: GameType;
+  text?: string;
+  image?: File[];
+  video?: File[];
 };
 
 type Props = {
   id: string;
   courseStructure: CourseStructure;
+  page: Page & {
+    chapter: {
+      courseId: string;
+    };
+    asset: Asset & {
+      image: Image;
+      video: Video;
+      article: Article;
+    };
+  };
 };
 
-const EditContentPage = ({ id, courseStructure }: Props) => {
+const constructPageFormValue = (page): EditorPageFormValues => {
+  return {
+    name: page.name,
+    duration: page.duration,
+    assetType: page.asset.assetType,
+    description: page?.description,
+    interactiveType: page?.asset?.game?.type,
+    text: page?.asset?.article?.text,
+  };
+};
+
+const EditContentPage = ({ id, courseStructure, page }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   // TODO: fill this in with database value
   const useFormReturns = useForm({
-    defaultValues: {
-      questions: [],
-      sortingGame: { text: null, buckets: [] },
-      pageType: '',
-      title: '',
-      duration: '',
-      interactiveType: '',
-      text: '',
-      imageDesc: '',
-      videoDesc: '',
-    },
+    defaultValues: { ...constructPageFormValue(page) }, // TODO: intergrate interactive type
   });
   const {
     register,
@@ -91,34 +106,27 @@ const EditContentPage = ({ id, courseStructure }: Props) => {
   } = useFormReturns;
 
   const isDisabled = isSubmitting || isSubmitSuccessful;
-  const interactiveType: string = useWatch({ name: 'interactiveType', defaultValue: '', control: control });
+  const interactiveType: string = useWatch({ name: 'interactiveType', control: control });
+  const pageContent: string = useWatch({ name: 'assetType', control: control });
 
-  const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { title, description, learningObjectives, isFree, category, coverImage } = data;
-
-    const coverImageAssetId = coverImage.length ? await uploadFile(coverImage[0]) : undefined;
-
-    // returns id of course created
-    // return await axios
-    //   .post('/api/courses', {
-    //     title: title.trim(),
-    //     description: description.trim(),
-    //     learningObjectives: learningObjectives.trim(),
-    //     coverImageAssetId: coverImageAssetId,
-    //     creatorId: sess.user.id,
-    //     price: +isFree ? 0 : data?.price,
-    //     categoryId: category?.id,
-    //     status: CourseStatus.DRAFT,
-    //   })
-    //   .then(resp => resp.data.data.id);
-  };
-
-  const [pageContent, setPageContent] = React.useState('');
-
-  const pageContentChange = event => {
-    setValue('pageType', event.target.value);
-    setPageContent(event.target.value);
-  };
+  const session = useSession();
+  const mutation = useMutation({
+    mutationFn: async (data: EditorPageFormValues) => {
+      const newAssetId = await createOrUpdateAsset(data);
+      return axios.put(`/api/courses/pages/${id}`, {
+        ...data,
+        newAssetId: newAssetId,
+        updaterId: session.data.user.id,
+        courseId: courseStructure.id,
+      });
+    },
+    onSuccess: data => {
+      openSuccessNotification('Updated page successfully!');
+    },
+    onError: () => {
+      openErrorNotification('Update failed', 'Please try again');
+    },
+  });
 
   return (
     <div>
@@ -148,28 +156,39 @@ const EditContentPage = ({ id, courseStructure }: Props) => {
           </Center>
           <GridItem>
             <VStack spacing='20px'>
-              <form onSubmit={handleSubmit(data => console.log(data))}>
+              <form
+                onSubmit={handleSubmit(data => {
+                  console.log(data);
+
+                  mutation.mutate(data);
+                })}
+              >
                 <Box mt={4}>
-                  <FormLabel htmlFor='title'>Page Title*</FormLabel>
-                  <Input w='600px' placeholder='Page Title Here' {...register('title')} />
+                  <FormLabel htmlFor='title'>Page Title *</FormLabel>
+                  <Input placeholder='Page Title Here' {...register('name', { required: true })} />
                 </Box>
                 <Box mt={4}>
-                  <FormLabel htmlFor='duration'>Page Duration*</FormLabel>
-                  <Input placeholder='Page Duration Here' {...register('duration')} />
+                  <FormLabel htmlFor='duration'>Page Duration *</FormLabel>
+                  <Input placeholder='Page Duration Here' {...register('duration', { valueAsNumber: true })} />
                 </Box>
                 <Box mt={4}>
-                  <FormLabel htmlFor='page-content-type'>Page Content Type*</FormLabel>
-                  <Select placeholder='Page Content Type' value={pageContent} onChange={pageContentChange}>
-                    <option value='text'>Text</option>
+                  <FormLabel htmlFor='page-content-type'>Page Content Type *</FormLabel>
+                  <Select placeholder='Page Content Type' {...register('assetType')}>
+                    <option value='article'>Text</option>
                     <option value='image'>Image</option>
                     <option value='video'>Video</option>
-                    <option value='interactive'>Interactive Component</option>
+                    <option value='games'>Interactive Component</option>
                   </Select>
                 </Box>
-                {pageContent === 'text' && (
+                {pageContent === 'article' && (
                   <Box mt={4}>
                     <FormLabel htmlFor='text'>Text*</FormLabel>
-                    <Textarea placeholder='Text' size='sm' resize='vertical' {...register('text')} />
+                    <Textarea
+                      placeholder='Text'
+                      size='sm'
+                      resize='vertical'
+                      {...register('text', { required: pageContent === 'article' })}
+                    />
                   </Box>
                 )}
                 {pageContent === 'image' && (
@@ -188,8 +207,8 @@ const EditContentPage = ({ id, courseStructure }: Props) => {
                 )}
                 {pageContent === 'image' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='image-desc'>Image Description*</FormLabel>
-                    <Textarea placeholder='Image Description' size='sm' resize='vertical' {...register('imageDesc')} />
+                    <FormLabel htmlFor='image-desc'>Page Description*</FormLabel>
+                    <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
                   </Box>
                 )}
                 {pageContent === 'video' && (
@@ -208,8 +227,8 @@ const EditContentPage = ({ id, courseStructure }: Props) => {
                 )}
                 {pageContent === 'video' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='video-desc'>Video Description*</FormLabel>
-                    <Textarea placeholder='Video Description' size='sm' resize='vertical' {...register('videoDesc')} />
+                    <FormLabel htmlFor='video-desc'>Page Description*</FormLabel>
+                    <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
                   </Box>
                 )}
                 {pageContent === 'interactive' && (
@@ -218,7 +237,7 @@ const EditContentPage = ({ id, courseStructure }: Props) => {
                     <Select
                       placeholder='Interactive Component Type'
                       onChange={event => {
-                        setValue('interactiveType', event.target.value);
+                        setValue('interactiveType', event.target.value as GameType);
                       }}
                       mb='6'
                     >
@@ -254,26 +273,32 @@ const EditContentPage = ({ id, courseStructure }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async req => {
-  // this is selected id
   const id = req.query.id as string;
 
-  const {
-    Chapter: { courseId },
-  } = await prisma.page.findUnique({
+  const page = await prisma.page.findUnique({
     where: {
       id: id,
     },
-    select: { Chapter: { select: { courseId: true } } },
+    include: {
+      chapter: {
+        select: {
+          courseId: true,
+        },
+      },
+      asset: {
+        include: {
+          article: true,
+          image: true,
+          video: true,
+          game: true,
+        },
+      },
+    },
   });
-  // get course structure for accordion
-  // const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
 
-  // get chapter form content
-  // const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
+  const courseStructure: CourseStructure = await getCourseStructure(page.chapter.courseId);
 
-  const courseStructure: CourseStructure = await getCourseStructure(courseId);
-
-  return { props: { id, courseStructure } };
+  return { props: { id, courseStructure, page, key: id } };
 };
 
 export default EditContentPage;
