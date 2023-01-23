@@ -8,22 +8,22 @@ import prisma from '../../../lib/prisma';
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    async signIn({ user }) {
-      try {
-        const u = await prisma.user.findUniqueOrThrow({
-          where: {
-            id: user.id,
-          },
-        });
-        if (!u.pdpa || !u.age || !u.name) {
-          return '/sign-up/account-details';
-        }
-        return true;
-      } catch (err: any) {
-        console.log(err);
-        return false;
-      }
-    },
+    // async signIn({ user }) {
+    //   try {
+    //     const u = await prisma.user.findUniqueOrThrow({
+    //       where: {
+    //         id: user.id,
+    //       },
+    //     });
+    //     if (u && (!u.pdpa || !u.age || !u.name)) {
+    //       return '/sign-up/account-details';
+    //     }
+    //     return true;
+    //   } catch (err: any) {
+    //     console.log(err);
+    //     return false;
+    //   }
+    // },
     jwt({ token, user }) {
       if (user) {
         token.role = user.role;

@@ -26,12 +26,20 @@ type FormValues = {
   toc: boolean;
 };
 
-const AccountDetails = ({ session }) => {
+const AccountDetails = ({ user }) => {
   const { email, name, dob, toc } = useRecoilValue(signUpInfoState);
   const setEmail = useSetRecoilState(signUpEmailState);
   const setName = useSetRecoilState(signUpNameState);
   const setDob = useSetRecoilState(signUpDobState);
   const setToc = useSetRecoilState(signUpTocState);
+  const userQuery = useUserQuery(user?.id);
+  // if user exists, use user data instead
+  if (userQuery?.data) {
+    const { email, name } = userQuery.data;
+    setEmail(email);
+    setName(name);
+  }
+
   const {
     register,
     watch,
@@ -40,15 +48,6 @@ const AccountDetails = ({ session }) => {
   } = useForm({ defaultValues: { email, name, dob, toc } });
   const watchToc = watch('toc');
   const router = useRouter();
-  console.log(session);
-  // if user exists, use user data instead
-  const userQuery = useUserQuery(session?.user?.id);
-
-  if (userQuery?.data) {
-    const { email, name } = userQuery.data;
-    setEmail(email);
-    setName(name);
-  }
 
   const onSubmit = (data: FormValues) => {
     setEmail(data.email);
@@ -132,7 +131,8 @@ export default AccountDetails;
 export async function getServerSideProps(context) {
   const { req } = context;
   const session = await getSession({ req });
+  console.log(session);
   return {
-    props: { session },
+    props: { user: session.user ?? undefined },
   };
 }
