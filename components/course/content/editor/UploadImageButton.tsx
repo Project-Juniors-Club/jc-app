@@ -42,6 +42,7 @@ const UploadImageButton = ({ useFormReturns: { control, setValue, resetField }, 
         }}
         onChange={e => {
           if (e.target.files.length) {
+            removeOriginal(true);
             setValue('image.uploadedFile', e.target.files[0]);
           }
           e.target.value = '';

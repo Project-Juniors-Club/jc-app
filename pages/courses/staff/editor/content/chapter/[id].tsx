@@ -1,38 +1,18 @@
-import { Asset, AssetType, Category, Chapter, CourseStatus } from '@prisma/client';
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import { Chapter } from '@prisma/client';
+import { GetServerSideProps } from 'next';
 import React from 'react';
-import { FieldValues, SubmitErrorHandler, SubmitHandler, UseFormRegister, useForm, useWatch } from 'react-hook-form';
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  Text,
-  TableCaption,
-  TableContainer,
-  Box,
-  Button,
-  Heading,
-  Grid,
-  GridItem,
-  Divider,
-} from '@chakra-ui/react';
-import { SimpleGrid, Center, Input, Select, Spacer, Flex, Stack, HStack, VStack, FormLabel, FormControl, Textarea } from '@chakra-ui/react';
-import CustomButton from '../../../../../../components/Button';
+import { useForm } from 'react-hook-form';
+import { Box, Button, Grid, GridItem, Divider } from '@chakra-ui/react';
+import { Center, Input, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
 import useSnackbar from '../../../../../../hooks/useSnackbar';
 import { useState } from 'react';
 import prisma from '../../../../../../lib/prisma';
 import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
-import uploadFile from '../../../../../../lib/upload';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 import { useMutation } from '@tanstack/react-query';
@@ -54,7 +34,6 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [courseStructure, setCourseStructure] = useState(initialCourseStructure);
 
-  // TODO: fill this in with database value
   const useFormReturns = useForm({
     defaultValues: { name: chapter.name, description: chapter.description },
   });

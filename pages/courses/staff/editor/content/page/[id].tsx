@@ -2,7 +2,7 @@ import { Article, Asset, AssetType, Page, Video, Image, GameType } from '@prisma
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Button, FormControl } from '@chakra-ui/react';
 import { Grid, GridItem, Divider, Center, Input, Select, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
@@ -74,13 +74,11 @@ const constructPageFormValue = (page): EditorPageFormValues => {
   };
 };
 
-//TODO: update description value
 const EditContentPage = ({ id, courseStructure, page }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  // TODO: fill this in with database value
   const useFormReturns = useForm({
     defaultValues: { ...constructPageFormValue(page) }, // TODO: intergrate interactive type
   });
@@ -94,7 +92,6 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
     setValue,
   } = useFormReturns;
 
-  const isDisabled = isSubmitting || isSubmitSuccessful;
   const interactiveType: string = useWatch({ name: 'interactiveType', control: control });
   const pageContent: string = useWatch({ name: 'assetType', control: control });
 
@@ -102,6 +99,9 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
   const mutation = useMutation({
     mutationFn: async (data: EditorPageFormValues) => {
       const newAssetId = await createOrUpdateAsset(data);
+      if (data.assetType != 'image' && data.assetType != 'video') {
+        data.description = '';
+      }
       return axios.put(`/api/courses/pages/${id}`, {
         ...data,
         newAssetId: newAssetId,
@@ -116,6 +116,8 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
       openErrorNotification('Update failed', 'Please try again');
     },
   });
+
+  const isDisabled = mutation.isLoading;
 
   return (
     <div>
@@ -147,107 +149,108 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
             <VStack spacing='20px'>
               <form
                 onSubmit={handleSubmit(data => {
-                  console.log(data);
-
                   mutation.mutate(data);
                 })}
               >
-                <Box mt={4}>
-                  <FormLabel htmlFor='title'>Page Title *</FormLabel>
-                  <Input placeholder='Page Title Here' {...register('name', { required: true })} />
-                </Box>
-                <Box mt={4}>
-                  <FormLabel htmlFor='duration'>Page Duration *</FormLabel>
-                  <Input placeholder='Page Duration Here' {...register('duration', { valueAsNumber: true })} />
-                </Box>
-                <Box mt={4}>
-                  <FormLabel htmlFor='page-content-type'>Page Content Type *</FormLabel>
-                  <Select placeholder='Page Content Type' {...register('assetType')}>
-                    <option value='article'>Text</option>
-                    <option value='image'>Image</option>
-                    <option value='video'>Video</option>
-                    <option value='games'>Interactive Component</option>
-                  </Select>
-                </Box>
-                {pageContent === 'article' && (
+                <FormControl isDisabled={mutation.isLoading}>
                   <Box mt={4}>
-                    <FormLabel htmlFor='text'>Text *</FormLabel>
-                    <Textarea
-                      placeholder='Text'
-                      size='sm'
-                      resize='vertical'
-                      {...register('text', { required: pageContent === 'article' })}
-                    />
+                    <FormLabel htmlFor='title'>Page Title *</FormLabel>
+                    <Input placeholder='Page Title Here' {...register('name', { required: true })} />
                   </Box>
-                )}
-                {pageContent === 'image' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='image'>Image Upload *</FormLabel>
-                    <UploadImageButton
-                      useFormReturns={useFormReturns}
-                      isDisabled={isDisabled}
-                      imageFilename={page?.asset?.image?.filename}
-                    />
+                    <FormLabel htmlFor='duration'>Page Duration *</FormLabel>
+                    <Input placeholder='Page Duration Here' {...register('duration', { valueAsNumber: true })} />
                   </Box>
-                )}
-                {pageContent === 'image' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='image-desc'>Page Description *</FormLabel>
-                    <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
-                  </Box>
-                )}
-                {pageContent === 'video' && (
-                  <Box mt={4}>
-                    <FormLabel htmlFor='video'>Video Upload *</FormLabel>
-                    <UploadVideoButton
-                      useFormReturns={useFormReturns}
-                      isDisabled={isDisabled}
-                      videoFilename={page?.asset?.video?.filename}
-                    />
-                  </Box>
-                )}
-                {pageContent === 'video' && (
-                  <Box mt={4}>
-                    <FormLabel htmlFor='video-desc'>Page Description *</FormLabel>
-                    <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
-                  </Box>
-                )}
-                {pageContent === 'interactive' && (
-                  <Box mt={4} minH='max-content'>
-                    <FormLabel htmlFor='interactive'>Interactive Component Type*</FormLabel>
-                    <Select
-                      placeholder='Interactive Component Type'
-                      onChange={event => {
-                        setValue('interactiveType', event.target.value as GameType);
-                      }}
-                      mb='6'
-                    >
-                      <option value='quiz'>Quiz</option>
-                      <option value='sort'>Sorting Game</option>
-                      <option value='tbc'>TBC</option>
+                    <FormLabel htmlFor='page-content-type'>Page Content Type *</FormLabel>
+                    <Select placeholder='Page Content Type' {...register('assetType')}>
+                      <option value='article'>Text</option>
+                      <option value='image'>Image</option>
+                      <option value='video'>Video</option>
+                      <option value='games'>Interactive Component</option>
                     </Select>
-                    {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} />}
-                    {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} />}
                   </Box>
-                )}
-                <Box mt={4}>
-                  <HStack>
-                    <Button background='#A9D357' type='submit' isLoading={isSubmitting}>
-                      Save Page
-                    </Button>
-                    <Button background='white' border='1px solid #000000'>
-                      Cancel
-                    </Button>
-                    <Button background='#4D4D4D' color='white'>
-                      Delete Page
-                    </Button>
-                  </HStack>
-                </Box>
+                  {pageContent === 'article' && (
+                    <Box mt={4}>
+                      <FormLabel htmlFor='text'>Text *</FormLabel>
+                      <Textarea
+                        placeholder='Text'
+                        size='sm'
+                        resize='vertical'
+                        {...register('text', { required: pageContent === 'article' })}
+                      />
+                    </Box>
+                  )}
+                  {pageContent === 'image' && (
+                    <Box mt={4}>
+                      <FormLabel htmlFor='image'>Image Upload *</FormLabel>
+                      <UploadImageButton
+                        useFormReturns={useFormReturns}
+                        isDisabled={isDisabled}
+                        imageFilename={page?.asset?.image?.filename}
+                      />
+                    </Box>
+                  )}
+                  {pageContent === 'image' && (
+                    <Box mt={4}>
+                      <FormLabel htmlFor='image-desc'>Page Description *</FormLabel>
+                      <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
+                    </Box>
+                  )}
+                  {pageContent === 'video' && (
+                    <Box mt={4}>
+                      <FormLabel htmlFor='video'>Video Upload *</FormLabel>
+                      <UploadVideoButton
+                        useFormReturns={useFormReturns}
+                        isDisabled={isDisabled}
+                        videoFilename={page?.asset?.video?.filename}
+                      />
+                    </Box>
+                  )}
+                  {pageContent === 'video' && (
+                    <Box mt={4}>
+                      <FormLabel htmlFor='video-desc'>Page Description *</FormLabel>
+                      <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
+                    </Box>
+                  )}
+                  {pageContent === 'interactive' && (
+                    <Box mt={4} minH='max-content'>
+                      <FormLabel htmlFor='interactive'>Interactive Component Type*</FormLabel>
+                      <Select
+                        placeholder='Interactive Component Type'
+                        onChange={event => {
+                          setValue('interactiveType', event.target.value as GameType);
+                        }}
+                        mb='6'
+                      >
+                        <option value='quiz'>Quiz</option>
+                        <option value='sort'>Sorting Game</option>
+                        <option value='tbc'>TBC</option>
+                      </Select>
+                      {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} />}
+                      {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} />}
+                    </Box>
+                  )}
+                  <Box mt={4}>
+                    <HStack>
+                      <Button background='#A9D357' type='submit' isLoading={isSubmitting}>
+                        Save Page
+                      </Button>
+                      <Button background='white' border='1px solid #000000'>
+                        Cancel
+                      </Button>
+                      <Button background='#4D4D4D' color='white'>
+                        Delete Page
+                      </Button>
+                    </HStack>
+                  </Box>
+                </FormControl>
               </form>
             </VStack>
           </GridItem>
         </Grid>
       </div>
+      <button onClick={() => console.log(isSubmitSuccessful)}>hello</button>
       <Footer />
     </div>
   );

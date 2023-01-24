@@ -41,6 +41,7 @@ const UploadVideoButton = ({ useFormReturns: { control, setValue, resetField }, 
         }}
         onChange={e => {
           if (e.target.files.length) {
+            removeOriginal(true);
             setValue('video.uploadedFile', e.target.files[0]);
           }
           e.target.value = '';

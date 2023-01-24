@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           },
         });
-        await deleteOldAsset(oldAssetId, oldAssetType, tx);
+        if (oldAssetId != newAssetId) await deleteOldAsset(oldAssetId, oldAssetType, tx);
         return updatedPage;
       });
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedPage });
