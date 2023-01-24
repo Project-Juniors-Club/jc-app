@@ -40,7 +40,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: page });
     } else if (httpMethod == 'PUT') {
       const { name, description, assetType, newAssetId, duration, updaterId } = req.body;
-      console.log(newAssetId);
       const updatedPage = await prisma.$transaction(async tx => {
         const {
           assetId: oldAssetId,

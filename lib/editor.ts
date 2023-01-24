@@ -9,9 +9,9 @@ export const createOrUpdateAsset = async (data: EditorPageFormValues) => {
     return result.data.data.assetId;
   }
   if (data.assetType === 'image') {
-    return await uploadFile(data.image[0]);
+    return data.image.uploadedFile ? await uploadFile(data.image.uploadedFile) : data.originalAssetId;
   }
   if (data.assetType === 'video') {
-    return await uploadFile(data.video[0]);
+    return data.video.uploadedFile ? await uploadFile(data.video.uploadedFile) : data.originalAssetId;
   }
 };

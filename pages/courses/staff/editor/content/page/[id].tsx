@@ -1,64 +1,25 @@
-import { Article, Asset, AssetType, Category, CourseStatus, Game, Page, Video, Image, GameType } from '@prisma/client';
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import { Article, Asset, AssetType, Page, Video, Image, GameType } from '@prisma/client';
+import { GetServerSideProps } from 'next';
 import React from 'react';
-import { FieldValues, SubmitErrorHandler, SubmitHandler, UseFormRegister, useForm, useWatch } from 'react-hook-form';
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer, Box, Button, Heading } from '@chakra-ui/react';
-import {
-  SimpleGrid,
-  Grid,
-  GridItem,
-  Divider,
-  Center,
-  Input,
-  Select,
-  Spacer,
-  Flex,
-  Stack,
-  HStack,
-  VStack,
-  FormLabel,
-  FormControl,
-  Textarea,
-} from '@chakra-ui/react';
-import CustomButton from '../../../../../../components/Button';
+import { useForm, useWatch } from 'react-hook-form';
+import { Box, Button } from '@chakra-ui/react';
+import { Grid, GridItem, Divider, Center, Input, Select, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
-import TextInput from '../../../../../../components/course/create/TextInput';
-import TextAreaInput from '../../../../../../components/course/create/TextAreaInput';
-import CategorySelect from '../../../../../../components/course/create/CategorySelect';
-import UploadButton from '../../../../../../components/course/create/UploadButton';
-import PriceInput from '../../../../../../components/course/create/PriceInput';
-import CancelModal from '../../../../../../components/course/create/CancelModal';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
 import useSnackbar from '../../../../../../hooks/useSnackbar';
-import { useState } from 'react';
 import prisma from '../../../../../../lib/prisma';
 import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
-import uploadFile from '../../../../../../lib/upload';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
-import { setConstantValue, updateTypeAssertion } from 'typescript';
 import UploadImageButton from '../../../../../../components/course/content/editor/UploadImageButton';
 import UploadVideoButton from '../../../../../../components/course/content/editor/UploadVideoButton';
 import QuizCreator from '../../../../../../components/quiz-editor/Creator';
 import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 import { useMutation } from '@tanstack/react-query';
-import { resolve } from 'path';
 import { createOrUpdateAsset } from '../../../../../../lib/editor';
-
-export type EditorPageFormValues = {
-  name: string;
-  description?: string;
-  duration: number;
-  assetType: AssetType;
-  interactiveType?: GameType;
-  text?: string;
-  image?: File[];
-  video?: File[];
-};
 
 type Props = {
   id: string;
@@ -75,6 +36,24 @@ type Props = {
   };
 };
 
+export type EditorPageFormValues = {
+  name: string;
+  description?: string;
+  duration: number;
+  assetType: AssetType;
+  interactiveType?: GameType;
+  originalAssetId: string;
+  text?: string;
+  image?: {
+    uploadedFile?: File;
+    removeOriginal: boolean;
+  };
+  video?: {
+    uploadedFile?: File;
+    removeOriginal: boolean;
+  };
+};
+
 const constructPageFormValue = (page): EditorPageFormValues => {
   return {
     name: page.name,
@@ -83,9 +62,19 @@ const constructPageFormValue = (page): EditorPageFormValues => {
     description: page?.description,
     interactiveType: page?.asset?.game?.type,
     text: page?.asset?.article?.text,
+    originalAssetId: page?.asset?.id,
+    image: {
+      uploadedFile: null,
+      removeOriginal: false,
+    },
+    video: {
+      uploadedFile: null,
+      removeOriginal: false,
+    },
   };
 };
 
+//TODO: update description value
 const EditContentPage = ({ id, courseStructure, page }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
@@ -182,7 +171,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                 </Box>
                 {pageContent === 'article' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='text'>Text*</FormLabel>
+                    <FormLabel htmlFor='text'>Text *</FormLabel>
                     <Textarea
                       placeholder='Text'
                       size='sm'
@@ -193,41 +182,33 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                 )}
                 {pageContent === 'image' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='image'>Image Upload*</FormLabel>
+                    <FormLabel htmlFor='image'>Image Upload *</FormLabel>
                     <UploadImageButton
-                      register={register}
-                      resetField={resetField}
-                      label={'image'}
-                      buttonText={'Upload Image'}
+                      useFormReturns={useFormReturns}
                       isDisabled={isDisabled}
-                      headerText=''
-                      watch={watch}
+                      imageFilename={page?.asset?.image?.filename}
                     />
                   </Box>
                 )}
                 {pageContent === 'image' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='image-desc'>Page Description*</FormLabel>
+                    <FormLabel htmlFor='image-desc'>Page Description *</FormLabel>
                     <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
                   </Box>
                 )}
                 {pageContent === 'video' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='video'>Video Upload*</FormLabel>
+                    <FormLabel htmlFor='video'>Video Upload *</FormLabel>
                     <UploadVideoButton
-                      register={register}
-                      resetField={resetField}
-                      label={'video'}
-                      buttonText={'Upload Video'}
+                      useFormReturns={useFormReturns}
                       isDisabled={isDisabled}
-                      headerText=''
-                      watch={watch}
+                      videoFilename={page?.asset?.video?.filename}
                     />
                   </Box>
                 )}
                 {pageContent === 'video' && (
                   <Box mt={4}>
-                    <FormLabel htmlFor='video-desc'>Page Description*</FormLabel>
+                    <FormLabel htmlFor='video-desc'>Page Description *</FormLabel>
                     <Textarea placeholder='Page Description' size='sm' resize='vertical' {...register('description')} />
                   </Box>
                 )}

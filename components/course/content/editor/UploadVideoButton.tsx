@@ -1,41 +1,35 @@
 import Image from 'next/image';
 import Button from '../../../Button';
-import { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
-import { FieldValues, UseFormRegister, UseFormRegisterReturn, UseFormResetField, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { useRef } from 'react';
+import { useController, Control, useWatch, UseFormReturn } from 'react-hook-form';
 
 type Props = {
-  label: string;
-  headerText: string;
-  buttonText: string;
-  register: UseFormRegister<any>;
-  resetField: UseFormResetField<FieldValues>;
+  useFormReturns: UseFormReturn<any>;
   isDisabled: boolean;
-  watch: UseFormWatch<any>;
-  removeVideoOnClick?: () => void;
-  videoFilename?: string;
+  videoFilename: string;
 };
 
-// TODO: support multiple files, with different file types
-const UploadVideoButton = ({
-  label,
-  register,
-  resetField,
-  headerText,
-  buttonText,
-  isDisabled,
-  watch,
-  removeVideoOnClick = () => {},
-  videoFilename,
-}: Props) => {
-  const { ref, onChange, ...rest } = register(label);
-  const fileWatch = watch(label, []) as FileList;
+const UploadVideoButton = ({ useFormReturns: { control, setValue, resetField }, isDisabled, videoFilename }: Props) => {
+  const {
+    field: { onChange: removeOriginal },
+  } = useController({ name: 'video.removeOriginal', control: control });
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const uploadedFile: File = useWatch({ name: 'video.uploadedFile', control: control });
+  const originalRemoved: boolean = useWatch({ name: 'video.removeOriginal', control: control });
+  const {
+    field: { ref },
+    fieldState: { error },
+    ...rest
+  } = useController({
+    name: 'video.uploadedFile',
+    control: control,
+    rules: {
+      required: { value: !uploadedFile && ((!!videoFilename && originalRemoved) || !videoFilename), message: 'This is required' },
+    },
+  });
 
   return (
     <div className='grid gap-y-2'>
-      <label htmlFor={label} className='inline font-bold text-[#3D3D3D]'>
-        {headerText}
-      </label>
       <input
         type='file'
         className='hidden'
@@ -46,8 +40,10 @@ const UploadVideoButton = ({
           inputRef.current = e;
         }}
         onChange={e => {
-          onChange(e);
-          removeVideoOnClick();
+          if (e.target.files.length) {
+            setValue('video.uploadedFile', e.target.files[0]);
+          }
+          e.target.value = '';
         }}
       />
       <Button
@@ -58,28 +54,29 @@ const UploadVideoButton = ({
         }}
         isDisabled={isDisabled}
       >
-        <div className='text-[#385600]'>{buttonText}</div>
+        <div className='text-[#385600]'>{'Upload Video'}</div>
       </Button>
-      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${fileWatch?.length ? '' : 'hidden'}`}>
+      <div className='text-[#C90707]'>{error?.message}</div>
+      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${uploadedFile ? '' : 'hidden'}`}>
         <div className={`flex`}>
-          <Image src={'/icons/Image.svg'} alt='Image' width={24} height={24} />
-          <div className='ml-3.5'>{fileWatch?.length ? fileWatch[0].name : ''}</div>
+          <Image src={'/icons/Image.svg'} alt='Video' width={24} height={24} />
+          <div className='ml-3.5'>{uploadedFile?.name}</div>
         </div>
         <div
           className='ml-9 hover:cursor-pointer'
           onClick={() => {
-            resetField(label, { defaultValue: [] });
+            resetField('video.uploadedFile');
           }}
         >
           <Image src={'/icons/Cross.svg'} alt='Cross' width={14} height={14} />
         </div>
       </div>
-      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${videoFilename ? '' : 'hidden'}`}>
+      <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${videoFilename && !originalRemoved ? '' : 'hidden'}`}>
         <div className={`flex`}>
-          <Image src={'/icons/Image.svg'} alt='Image' width={24} height={24} />
+          <Image src={'/icons/Image.svg'} alt='Video' width={24} height={24} />
           <div className='ml-3.5'>{videoFilename}</div>
         </div>
-        <div className='ml-9 hover:cursor-pointer' onClick={removeVideoOnClick}>
+        <div className='ml-9 hover:cursor-pointer' onClick={() => removeOriginal(true)}>
           <Image src={'/icons/Cross.svg'} alt='Cross' width={14} height={14} />
         </div>
       </div>
