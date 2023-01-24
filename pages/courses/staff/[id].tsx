@@ -8,8 +8,11 @@ import { getCourseWithAuthorAndDate } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
 import CustomButton from '../../../components/Button';
 import styles from '../../../components/Course.module.css';
+import { useRouter } from 'next/router';
 
-const courseStaffView = ({ course, category, creator, errors }) => {
+const CourseStaffView = ({ course, category, creator, errors }) => {
+  const router = useRouter();
+
   if (errors) {
     return (
       <Layout title='Error | Next.js + TypeScript Example'>
@@ -38,7 +41,7 @@ const courseStaffView = ({ course, category, creator, errors }) => {
             <Box className={styles.header} mb='15px'>
               {course.title}
             </Box>
-            <Box className={styles.category}>{category.name}</Box>
+            <Box className={styles.category}>{category?.name}</Box>
             <Flex>
               {/* buttons have placeholder emojis */}
               <CustomButton variant={'green-solid'}>
@@ -96,7 +99,11 @@ const courseStaffView = ({ course, category, creator, errors }) => {
                   {dummy.chapters} chapters | {dummy.duration}
                 </Box>
               </Box>
-              <CustomButton variant={'green-solid'} className={styles.editCourseContentButton}>
+              <CustomButton
+                variant={'green-solid'}
+                className={styles.editCourseContentButton}
+                onClick={() => router.push(`/courses/staff/editor/content/${course.id}`)}
+              >
                 <Flex className={styles.button}>
                   <Box color={'#000000'}>Edit Course Content</Box>
                   <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
@@ -151,11 +158,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const id = params?.id as string;
     const course = await getCourseWithAuthorAndDate(id);
-    const category = await prisma.category.findUnique({
-      where: {
-        id: course.categoryId,
-      },
-    });
+    const category =
+      course.categoryId &&
+      (await prisma.category.findUnique({
+        where: {
+          id: course.categoryId,
+        },
+      }));
     const creator = await prisma.user.findUnique({
       where: {
         id: course.creatorId,
@@ -172,4 +181,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { props: { errors: err.message } };
   }
 };
-export default courseStaffView;
+export default CourseStaffView;

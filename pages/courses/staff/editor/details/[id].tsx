@@ -105,7 +105,6 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
       throw err;
     }
   };
-  //   console.log(watch());
 
   return (
     <div>
