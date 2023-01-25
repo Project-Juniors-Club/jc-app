@@ -8,7 +8,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const httpMethod = _req.method;
   try {
     if (httpMethod == 'GET') {
-      const users = prisma.user.findMany();
+      const users = await prisma.user.findMany();
       res.status(200).json({ message: entityMessageObj.getAllSuccess, data: users });
     } else if (httpMethod == 'POST') {
       // INSERT CREATE USERS CODE HERE
