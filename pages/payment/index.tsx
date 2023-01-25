@@ -26,14 +26,14 @@ import {
 
 import { Frames, CardNumber, ExpiryDate, Cvv } from 'frames-react';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
+//import { Elements } from '@stripe/react-stripe-js';
 
 import React from 'react';
 
 import Layout from '../../components/Layout';
 import styles from './Payment.module.css';
 import CustomButton from '../../components/Button';
-import StripeCheckoutForm from './StripeCheckoutForm';
+//import StripeCheckoutForm from './StripeCheckoutForm';
 
 const stripePromise = loadStripe(
   'pk_test_51MOi34Aiw9D5AdICpzHtMTM5DFck7YVTGxSeJ0yx2E6XJ8NT5gTyGRWywWqS8EmdXiBk5RpW76bQolO3kGUJPdXr00c7zbejp3',
