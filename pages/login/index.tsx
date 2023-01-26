@@ -95,7 +95,7 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                   <Flex>
                     <Input
                       id='OTP'
-                      placeholder='Enter your OTP'
+                      placeholder='Enter your Email'
                       borderColor='grey'
                       color='black'
                       {...register('password', {
