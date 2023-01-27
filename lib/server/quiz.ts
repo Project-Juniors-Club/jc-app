@@ -1,18 +1,18 @@
-import { Prisma, GameType, AssetType, QuizGame, QuizGameOptionType } from '@prisma/client';
+import { Prisma, GameType, AssetType, QuizGame, QuizGameOptionType, Image } from '@prisma/client';
 import prisma from '../prisma';
 
 export type SerializedQuizOption = {
   isCorrectOption: boolean;
   quizGameOptionType: QuizGameOptionType;
   optionText: string | null;
-  optionImageId: string | null;
+  optionImage: Image | null;
 };
 
 export type SerializedQuizQuestion = {
   questionNumber: number;
   isMultipleResponse: boolean;
   questionTitle: string;
-  imageId: string | null;
+  image: Image | null;
   quizGameOptions: SerializedQuizOption[];
 };
 
@@ -34,9 +34,9 @@ export const createQuiz = async (quizGameQuestions: SerializedQuizQuestion[]) =>
           questionNumber: question.questionNumber,
           isMultipleResponse: question.isMultipleResponse,
           questionTitle: question.questionTitle,
-          image: question.imageId && {
+          image: question.image && {
             connect: {
-              assetId: question.imageId,
+              assetId: question.image.assetId,
             },
           },
           quizGameOptions: {
@@ -44,9 +44,9 @@ export const createQuiz = async (quizGameQuestions: SerializedQuizQuestion[]) =>
               isCorrectOption: option.isCorrectOption,
               quizGameOptionType: option.quizGameOptionType,
               optionText: option.optionText,
-              optionImage: option.optionImageId && {
+              optionImage: option.optionImage && {
                 connect: {
-                  assetId: option.optionImageId,
+                  assetId: option.optionImage.assetId,
                 },
               },
             })),

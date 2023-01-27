@@ -33,9 +33,9 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               questionNumber: question.questionNumber,
               isMultipleResponse: question.isMultipleResponse,
               questionTitle: question.questionTitle,
-              image: question.imageId && {
+              image: question.image && {
                 connect: {
-                  assetId: question.imageId,
+                  assetId: question.image.assetId,
                 },
               },
               quizGameOptions: {
@@ -43,9 +43,9 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   isCorrectOption: option.isCorrectOption,
                   quizGameOptionType: option.quizGameOptionType,
                   optionText: option.optionText,
-                  optionImage: option.optionImageId && {
+                  optionImage: option.optionImage && {
                     connect: {
-                      assetId: option.optionImageId,
+                      assetId: option.optionImage.assetId,
                     },
                   },
                 })),
