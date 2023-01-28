@@ -186,6 +186,8 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  QuizGameQuestion           QuizGameQuestion[]
+  QuizGameOption             QuizGameOption[]
 
   @@map("images")
 }
@@ -213,8 +215,8 @@ model Game {
   assetId               String                 @id
   asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
   matchingGame          MatchingGame?
-  sortingGame           SortingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
+  QuizGame              QuizGame?
 
   @@map("games")
 }
@@ -235,9 +237,47 @@ model MatchingGame {
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
-model SortingGame {
+model QuizGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  quizGameQuestions QuizGameQuestion[]
+}
+
+model QuizGameQuestion {
+  id String @id @default(cuid())
+
+  questionNumber     Int
+  isMultipleResponse Boolean
+  questionTitle      String
+
+  image   Image?  @relation(fields: [imageId], references: [assetId])
+  imageId String?
+
+  quizGameOptions QuizGameOption[]
+
+  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+  quizGameId String
+}
+
+model QuizGameOption {
+  id                 String             @id @default(cuid())
+  isCorrectOption    Boolean
+  quizGameOptionType QuizGameOptionType
+
+  optionText String?
+
+  optionImage Image?  @relation(fields: [optionImageId], references: [assetId])
+  optionImageId     String?
+
+  quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
+  quizGameQuestionId String
+}
+
+enum QuizGameOptionType {
+  text
+  image
+  textAndImage
 }
 
 enum UserType {
@@ -264,4 +304,5 @@ enum GameType {
   spotTheDifferenceGame
   matchingGame
   sortingGame
+  quizGame
 }
