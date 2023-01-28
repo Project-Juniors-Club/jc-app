@@ -2,7 +2,7 @@ import { Chapter } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Center, Input, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
@@ -77,13 +77,19 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
           </Box>
           <Box w='100%' ml='2.25rem' pl='3.5rem' borderLeft='1px' borderLeftColor='#C7C7C7'>
             <form onSubmit={handleSubmit(data => mutation.mutate(data))}>
-              <Box mt={4}>
-                <FormLabel htmlFor='title'>Chapter Title *</FormLabel>
-                <Input placeholder='Chapter Title Here' {...register('name', { required: true, setValueAs: name => name.trim() })} />
-              </Box>
+              <FormControl isInvalid={!!errors.name}>
+                <Box mt={4}>
+                  <FormLabel htmlFor='title'>Chapter Title *</FormLabel>
+                  <Input
+                    placeholder='Chapter Title'
+                    {...register('name', { required: { value: true, message: 'Enter Chapter Title' }, setValueAs: name => name.trim() })}
+                  />
+                  <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
+                </Box>
+              </FormControl>
               <Box mt={4}>
                 <FormLabel htmlFor='desc'>Chapter Description</FormLabel>
-                <Textarea placeholder='Chapter Description Here' {...register('description')} />
+                <Textarea placeholder='Chapter Description' {...register('description')} />
               </Box>
               <Flex mt={4} justifyContent={'space-between'}>
                 <HStack>
