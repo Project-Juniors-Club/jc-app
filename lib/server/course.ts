@@ -83,6 +83,33 @@ export const getCourseWithAuthorAndDate = async (id: string) => {
   return result;
 };
 
+export const getCourseStructure = async (id: string) => {
+  return prisma.course.findUnique({
+    where: { id: id },
+    select: {
+      id: true,
+      chapters: {
+        select: {
+          name: true,
+          id: true,
+          pages: {
+            select: {
+              name: true,
+              id: true,
+            },
+            orderBy: {
+              pageNumber: 'asc',
+            },
+          },
+        },
+        orderBy: {
+          chapterNumber: 'asc',
+        },
+      },
+    },
+  });
+};
+
 export const getAllCourses = async () => {
   const courses = await prisma.course.findMany({
     include: {
@@ -126,3 +153,5 @@ export const getAllCourses = async () => {
   });
   return result;
 };
+
+export type CourseStructure = Prisma.PromiseReturnType<typeof getCourseStructure>;
