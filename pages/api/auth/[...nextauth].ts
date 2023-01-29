@@ -1,11 +1,11 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '../../../lib/prisma';
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     // async signIn({ user }) {
@@ -26,14 +26,14 @@ export default NextAuth({
     // },
     jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.type = user.type;
         token.id = user.id;
       }
       return token;
     },
     session({ session, token, user }) {
       if (session.user) {
-        session.user.role = token.role;
+        session.user.type = token.type;
         session.user.id = token.id;
       }
       return session;
@@ -75,4 +75,6 @@ export default NextAuth({
   session: {
     strategy: 'jwt',
   },
-});
+};
+
+export default NextAuth(authOptions);

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Text, Box, Button, Flex, FormControl, FormLabel, FormErrorMessage, Heading, Input, SimpleGrid } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import CustomButton from '../../components/Button';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
@@ -14,11 +13,16 @@ import useSnackbar from '../../hooks/useSnackbar';
 import { URL } from '../../utils/links';
 import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
 import { Provider } from 'next-auth/providers';
+import Modal from '../../components/Modal';
 import NavBarGeneral from '../../components/navbar/NavBarGeneral';
 
 type Props = {
   csrfToken: string;
   providers: Provider[];
+};
+
+type FormData = {
+  email: string;
 };
 
 const LoginPage = ({ csrfToken, providers }: Props) => {
@@ -28,24 +32,40 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
     formState: { errors },
   } = useForm({ mode: 'onChange' });
   const router = useRouter();
+
+  const [isPendingLogin, setPendingLogin] = useState(false);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>(null);
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const login = (data: FormData) => {
-    return axios.post(URL, data);
+    let newTimeout = setTimeout(() => {
+      setPendingLogin(false);
+      setTimeoutId(null);
+      return Promise.reject('new Error Request timed out, try inputting email again');
+    }, 100000);
+    setTimeoutId(newTimeout);
+    return signIn('email', { email: data.email, redirect: false });
   };
 
   const mutation = useMutation(login, {
-    onSuccess: () => {
-      openSuccessNotification('Login successful', 'Welcome back!');
+    onSuccess: data => {
+      openSuccessNotification('Email Sent', 'Please check your email');
       router.push('/');
     },
+    onSettled: () => {},
     onError: error => {
-      openErrorNotification('Login failed', 'Please recheck your email and password.');
+      openErrorNotification('Unable to send Email', 'Please check retype your email and try again.');
     },
   });
 
   const onSubmit = (data: FormData) => {
+    setPendingLogin(true);
     mutation.mutate(data);
+  };
+
+  const handleModalClosed = () => {
+    clearTimeout(timeoutId);
+    setPendingLogin(false);
   };
 
   return (
@@ -68,67 +88,29 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
               </Heading>
               <Box textAlign='left'>
                 <form onSubmit={handleSubmit(onSubmit)} color='black'>
-                  <FormControl isInvalid={Boolean(errors.email) || mutation.isError} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                  <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
                     <FormLabel htmlFor='email' color='#3D3D3D'>
                       Email
                     </FormLabel>
                     <Flex>
                       <Input
-                        id='email'
-                        type='email'
-                        placeholder='Enter your email address'
+                        id='OTP'
+                        placeholder='Enter your Email'
                         borderColor='grey'
-                        color='#3D3D3D'
-                        {...register('email', {
+                        color='black'
+                        {...register('password', {
                           required: 'This is required.',
-                          pattern: {
-                            value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                            message: 'Please enter a valid email address.',
-                          },
                         })}
                       />
-                      <CustomButton variant={'green-outline'} className='mr-4 ml-4 h-[40px] w-40 text-base'>
-                        <Text color={'#385600'} fontWeight={400}>
-                          Send OTP
-                        </Text>
-                      </CustomButton>
                     </Flex>
-
                     {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
                   </FormControl>
-                  <FormControl
-                    isInvalid={Boolean(errors.password) || mutation.isError}
-                    mt={4}
-                    width={{ sm: '80vw', md: '80vw', lg: '500px' }}
-                  >
-                    <FormLabel htmlFor='OTP' color='#3D3D3D'>
-                      OTP
-                    </FormLabel>
-                    <Input
-                      id='OTP'
-                      placeholder='Enter your OTP'
-                      borderColor='grey'
-                      color='black'
-                      {...register('password', {
-                        required: 'This is required.',
-                      })}
-                    />
-                    {(errors.password || mutation.isError) && <FormErrorMessage>Incorrect OTP</FormErrorMessage>}
-                  </FormControl>
-                  <Button
-                    type='submit'
-                    isLoading={mutation.isLoading}
-                    backgroundColor='#8EC12C'
-                    _dark={{ backgroundColor: '#78be20' }}
-                    color='black'
-                    mt={4}
-                    width='full'
-                  >
+                  <Button type='submit' backgroundColor='#8EC12C' _dark={{ backgroundColor: '#78be20' }} color='black' mt={4} width='full'>
                     Log In
                   </Button>
                   <Box width='full' textAlign='center' mt={5}>
                     Don&#39;t have an account?{' '}
-                    <Text as='b' color={'rgb(56, 86, 0)'}>
+                    <Text as='b'>
                       <Text as='u'>
                         <Link href='/signup'>Sign Up</Link>
                       </Text>
@@ -176,6 +158,11 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
             </>
           </Box>
         </Flex>
+        <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
+          <div className='mx-4 mb-4'>
+            <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
+          </div>
+        </Modal>
       </Box>
     </>
   );
@@ -187,7 +174,7 @@ export async function getServerSideProps(context) {
   const { req } = context;
   const session = await getSession({ req });
   if (session) {
-    return { redirect: { destination: '/' } };
+    return { redirect: { destination: '/home' } };
   }
   const csrfToken = await getCsrfToken(context);
   const providers = await getProviders();
