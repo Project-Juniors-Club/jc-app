@@ -5,9 +5,8 @@ import prisma from '../../../lib/prisma';
 import NavBarCart from '../../../components/navbar/NavBarCart';
 import { useRouter } from 'next/router';
 import { getAllCourses } from '../../../lib/server/course';
-import { LinkBox, LinkOverlay, Image } from '@chakra-ui/react';
 import Layout from '../../../components/Layout';
-import CourseCard from '../../../components/course/homepage/CourseCard';
+import InternalCourseCard from '../../../components/course/homepage/InternalCourseCard';
 
 const SortAndFilterMenu = ({ categories, setCategory, setSortCriteria }) => {
   return (
@@ -121,7 +120,7 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
             <div>
               <div className='text-bold text-right text-sm text-[#7B7B7B]/50'>{`${filteredData.length} results`}</div>
               {filteredData.map((course: Course, idx: number) => (
-                <CourseCard key={idx} course={course} />
+                <InternalCourseCard key={idx} course={course} />
               ))}
             </div>
           </div>
