@@ -19,9 +19,13 @@ const FilterButton = ({
     e.preventDefault();
     const appliedFilters: FilterTypes[] = [];
     filterList.forEach(filter => {
-      const x = { title: filter.title, options: [] };
+      const x = { title: filter.title, options: [] as string[] };
       filter.options.forEach(option => {
-        if (e.target[option].checked) x.options.push(option);
+        // cast option as Object since string cannot be used as index
+        const input = e.target[option as keyof Object] as HTMLInputElement;
+        if (input.checked) {
+          x.options.push(option);
+        }
       });
       appliedFilters.push(x);
     });
