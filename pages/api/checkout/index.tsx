@@ -3,7 +3,11 @@ import { Checkout } from 'checkout-sdk-node';
 import { NextApiRequest, NextApiResponse } from 'next';
 const CheckoutPageAPI = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.query.token;
-  const cko = new Checkout(process.env.CHECKOUT_SECRET_KEY, { pk: process.env.CHECKOUT_PUBLIC_KEY });
+  // check the keys in the .env file
+  const secretKey = process.env.CHECKOUT_SECRET_KEY || '';
+  const publicKey = process.env.CHECKOUT_PUBLIC_KEY || '';
+
+  const cko = new Checkout(secretKey, { pk: publicKey });
 
   try {
     const payment = await cko.payments.request({

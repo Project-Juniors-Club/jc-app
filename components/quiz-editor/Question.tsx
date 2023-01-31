@@ -8,7 +8,7 @@ import { AddIcon } from '@chakra-ui/icons';
 const MIN_NUM_OPTION = 2;
 const MAX_NUM_OPTION = 5;
 
-const AddOptionButton = ({ onClick, questionType }) => {
+const AddOptionButton = ({ onClick, questionType }: { onClick: React.MouseEventHandler<HTMLDivElement>; questionType: string }) => {
   // the decorative radio/checkbox is still focusable not sure why
   return (
     <Flex as={Button} onClick={onClick} bg='white' justifyContent='flex-start' p={0} mt={3.5}>

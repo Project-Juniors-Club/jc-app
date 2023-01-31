@@ -16,6 +16,10 @@ const TYPE_DISPLAY_TEXT = {
 const ItemTypeSelect = ({ registerLabel, defaultType = 'text', useFormReturns: { watch, register, setValue } }: ItemTypeSelectProp) => {
   register(registerLabel, { value: defaultType });
   const optionTypeWatch: string = watch(registerLabel, defaultType);
+  type OptionType = keyof typeof TYPE_DISPLAY_TEXT;
+  // since optionTypeWatch is a string, it can be used as an index to access the TYPE_DISPLAY_TEXT object
+  const optionTypeDisplay = TYPE_DISPLAY_TEXT[optionTypeWatch as OptionType] || '';
+
   return (
     <Menu>
       <MenuButton
@@ -30,7 +34,7 @@ const ItemTypeSelect = ({ registerLabel, defaultType = 'text', useFormReturns: {
         textAlign='left'
         px={2}
       >
-        {TYPE_DISPLAY_TEXT[optionTypeWatch]}
+        {optionTypeDisplay}
       </MenuButton>
       <MenuList>
         <MenuOptionGroup defaultValue='text' type='radio' onChange={val => setValue(registerLabel, val)}>

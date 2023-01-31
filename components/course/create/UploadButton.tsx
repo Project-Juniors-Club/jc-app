@@ -54,6 +54,7 @@ const UploadButton = ({
         variant={'green-outline'}
         onClick={event => {
           event.preventDefault();
+          if (inputRef.current == null) return;
           inputRef.current.click();
         }}
         isDisabled={isDisabled}

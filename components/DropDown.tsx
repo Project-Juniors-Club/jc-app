@@ -2,7 +2,8 @@ import React from 'react';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
-const DropDown = ({ buttonName, dropdownItems }) => {
+// This is a reusable dropdown component
+const DropDown = ({ buttonName, dropdownItems }: { buttonName: string; dropdownItems: any[] }) => {
   let arr = dropdownItems;
   return (
     <Menu as='div'>

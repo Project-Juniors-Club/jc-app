@@ -14,28 +14,33 @@ const Quiz = ({
   triggerNext: boolean;
 }) => {
   const [errorMessage, setErrorMessage] = useState('');
-  const [selectedChoices, setSelectedChoices] = useState([]);
-  const handleForm = e => {
+  const [selectedChoices, setSelectedChoices] = useState<(string | null)[]>([]);
+
+  const handleForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (selectedChoices.length === 0) {
       setErrorMessage('Please select at least one option');
       return;
     }
     setErrorMessage('');
-    const correct = selectedChoices.length === answer.length && selectedChoices.every(choice => answer.includes(choice));
+    const correct = selectedChoices.length === answer.length && selectedChoices.every(choice => choice && answer.includes(choice));
     handleSubmitQuiz(correct);
   };
-  const handleClick = e => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (triggerNext) return;
     setSelectedChoices(selected => {
-      if (type === 'mcq') return [e.target.textContent];
-      if (e.target.attributes['aria-checked'].value === 'false') {
-        return [...selected, e.target.textContent];
+      const currentTarget = e.currentTarget;
+      if (type === 'mcq') return [currentTarget.textContent];
+      // getNamedItem returns null if the attribute is not found
+      const ariaChecked = currentTarget.attributes.getNamedItem('aria-checked');
+      if (ariaChecked && ariaChecked.value === 'false') {
+        return [...selected, currentTarget.textContent];
       } else {
-        return selected.filter(choice => choice !== e.target.textContent);
+        return selected.filter(choice => choice !== currentTarget.textContent);
       }
     });
   };
+
   return (
     <div>
       <h1 className='mx-auto mt-24 h-48 w-2/3 text-6xl font-bold'>

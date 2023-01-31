@@ -14,6 +14,7 @@ const Item = ({ children, id }: { children: React.ReactNode; id: string }) => {
   };
 
   return (
+    // not sure why it still throws an error when transform is checked to be non null
     <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
       {children}
     </button>

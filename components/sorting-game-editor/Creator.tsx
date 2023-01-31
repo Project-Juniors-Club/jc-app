@@ -16,11 +16,12 @@ const MIN_NUM_BUCKET = 2;
 const MAX_NUM_BUCKET = 3;
 
 const DEFAULT_BUCKET: Bucket = {
-  text: null,
+  // text type is a string
+  text: '',
   items: [{ type: 'text', text: null }],
 };
 
-const AddBucketButton = ({ onClick }) => {
+const AddBucketButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) => {
   return (
     <Flex as={Button} onClick={onClick} bg='white' justifyContent='flex-start' p={0} w='100%'>
       <AddIcon color='#9E9E9E' ml={5} />

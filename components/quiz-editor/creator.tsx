@@ -11,7 +11,7 @@ type QuizCreatorProp = {
 const MIN_NUM_QUESTION = 1;
 
 const DEFAULT_QUESTION = {
-  text: null,
+  text: '',
   type: 'mcq',
   previewImageUrl: null,
   options: [

@@ -13,9 +13,9 @@ const CategorySelect = ({
   categories,
   disabled,
   defaultCategory = {
-    id: undefined,
-    name: undefined,
-    description: undefined,
+    id: '',
+    name: '',
+    description: '',
   },
   ...rest
 }: Props & UseControllerProps) => {

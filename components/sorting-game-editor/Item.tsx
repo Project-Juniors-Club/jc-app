@@ -29,16 +29,18 @@ export const Item = ({
 }: ItemProp) => {
   const itemTypeLabel = `${registerLabel}.type`;
   const itemType: 'text' | 'image' = useWatch({ name: itemTypeLabel, defaultValue: item.type, control: control });
+  const itemText = item.text ?? '';
+
   return (
     <Flex gap={4}>
       <ItemTypeSelect registerLabel={itemTypeLabel} useFormReturns={useFormReturns} />
       <VStack gap={0.5} alignItems='start' w='100%'>
         {itemType === 'text' && (
           <Input
-            {...register(`${registerLabel}.text`, { value: item.text, required: itemType === 'text' })}
+            {...register(`${registerLabel}.text`, { value: itemText, required: itemType === 'text' })}
             fontSize={14}
             placeholder='Item'
-            defaultValue={item.text}
+            defaultValue={itemText}
             isInvalid={!!errors?.text}
             borderColor='#9E9E9E'
           />

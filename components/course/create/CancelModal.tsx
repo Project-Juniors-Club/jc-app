@@ -6,7 +6,7 @@ import { useController, UseControllerProps } from 'react-hook-form';
 import CustomButton from '../../Button';
 import Modal from '../../Modal';
 
-const CancelModal = ({ isOpen, onClose, isCentered }) => {
+const CancelModal = ({ isOpen, onClose, isCentered }: { isOpen: boolean; onClose: () => void; isCentered: boolean }) => {
   return (
     <Modal title='' onClose={onClose} isOpen={isOpen} isCentered={isCentered} size='xl'>
       <ModalBody>

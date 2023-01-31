@@ -8,10 +8,17 @@ type OptionTypeSelectProp = {
   useFormReturns: UseFormReturn;
 };
 
-const TYPE_DISPLAY_TEXT = {
+type TypeDisplayText = {
+  text: string;
+  image: string;
+  both: string;
+};
+
+// record has a string index signature
+const TYPE_DISPLAY_TEXT: Record<string, string> = {
   text: 'Text',
   image: 'Image',
-  both: 'Text & Image',
+  both: 'Both',
 };
 
 const OptionTypeSelect = ({ registerLabel, defaultType = 'text', useFormReturns: { watch, register, setValue } }: OptionTypeSelectProp) => {

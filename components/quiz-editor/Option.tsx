@@ -34,6 +34,7 @@ export const Option = ({
 }: OptionProp) => {
   const optionTypeLabel = `${registerLabel}.type`;
   const optionType = useWatch({ name: optionTypeLabel, defaultValue: option.type, control: control }) as 'text' | 'image' | 'both';
+  const textValue = option.text || '';
   return (
     <Flex gap={4}>
       <Box py={3}>
@@ -51,7 +52,8 @@ export const Option = ({
             {...register(`${registerLabel}.text`, { value: option.text, required: optionType === 'text' })}
             fontSize={14}
             placeholder='Option'
-            defaultValue={option.text}
+            // check if option.text is null and replace it with an empty string if it is null
+            defaultValue={textValue}
             isInvalid={!!errors?.text}
             borderColor='#9E9E9E'
           />

@@ -7,7 +7,7 @@ import { SortingGame } from './Creator';
 const MIN_NUM_ITEM = 1;
 const MAX_NUM_ITEM = 5;
 
-const AddItemButton = ({ onClick }) => {
+const AddItemButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) => {
   // the decorative radio/checkbox is still focusable not sure why
   return (
     <Flex as={Button} onClick={onClick} bg='white' justifyContent='flex-start' p={0} mt={3.5}>
