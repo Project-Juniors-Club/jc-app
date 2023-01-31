@@ -1,20 +1,18 @@
-import { Prisma, GameType, AssetType, SortingGame, SortingGameObjectType } from '@prisma/client';
+import { Prisma, GameType, AssetType, SortingGame, SortingGameObjectType, Image } from '@prisma/client';
 import prisma from '../prisma';
 
 export type SerializedSortingGameObject = {
   objectType: SortingGameObjectType;
   text: string | null;
-  imageId: string | null;
+  image: Image | null;
 };
 
-export type SerializedObjectBucketPair = {
-  objects: SerializedSortingGameObject[];
-  bucket: {
-    description: string;
-  };
+export type SerializedBucket = {
+  description: string;
+  sortingGameObjects: SerializedSortingGameObject[];
 };
 
-export const createSorting = async (description: string, correctPairs: SerializedObjectBucketPair[]) => {
+export const createSorting = async (description: string, sortingGameBuckets: SerializedBucket[]) => {
   return (await prisma.sortingGame.create({
     data: {
       game: {
@@ -28,26 +26,20 @@ export const createSorting = async (description: string, correctPairs: Serialize
         },
       },
       description,
-      correctPairs: {
-        create: correctPairs.map(pair => ({
-          objects: {
-            create: pair.objects.map(object => ({
+      sortingGameBuckets: {
+        create: sortingGameBuckets.map(bucket => ({
+          description: bucket.description,
+          sortingGameObjects: {
+            create: bucket.sortingGameObjects.map(object => ({
               objectType: object.objectType,
               text: object.text,
-              image: object.imageId && {
+              image: object.image && {
                 connect: {
-                  assetId: object.imageId,
+                  assetId: object.image.assetId,
                 },
               },
             })),
           },
-          bucket: pair.bucket
-            ? {
-                create: {
-                  description: pair.bucket.description,
-                },
-              }
-            : null,
         })),
       },
     },

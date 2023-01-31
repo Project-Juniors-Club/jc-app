@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { deleteSorting, findUniqueSorting, updateSorting, SerializedObjectBucketPair } from '../../../lib/server/sorting';
+import { deleteSorting, findUniqueSorting, updateSorting, SerializedBucket } from '../../../lib/server/sorting';
 import { entityMessageCreator } from '../../../utils/api-messages';
 import { errorMessageHandler } from '../../../utils/error-message-handler';
-import validatePairs from '../../../utils/sorting-game-validator';
+import validateBuckets from '../../../utils/sorting-game-validator';
 
 const entityMessageObj = entityMessageCreator('sortingGame');
 
@@ -18,9 +18,9 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const deletedGame = await deleteSorting({ gameId });
       res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deletedGame });
     } else if (httpMethod == 'PUT') {
-      const { description, correctPairs }: { description: string; correctPairs: SerializedObjectBucketPair[] } = req.body;
+      const { description, sortingGameBuckets }: { description: string; sortingGameBuckets: SerializedBucket[] } = req.body;
 
-      const result = validatePairs(correctPairs);
+      const result = validateBuckets(sortingGameBuckets);
       if (!result.valid) {
         return res.status(400).end(`The input is not valid. ${result.message}`);
       }
@@ -29,26 +29,20 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         { gameId },
         {
           description,
-          correctPairs: {
-            create: correctPairs.map(pair => ({
-              objects: {
-                create: pair.objects.map(object => ({
+          sortingGameBuckets: {
+            create: sortingGameBuckets.map(bucket => ({
+              description: bucket.description,
+              sortingGameObjects: {
+                create: bucket.sortingGameObjects.map(object => ({
                   objectType: object.objectType,
                   text: object.text,
-                  image: object.imageId && {
+                  image: object.image && {
                     connect: {
-                      assetId: object.imageId,
+                      assetId: object.image.assetId,
                     },
                   },
                 })),
               },
-              bucket: pair.bucket
-                ? {
-                    create: {
-                      description: pair.bucket.description,
-                    },
-                  }
-                : null,
             })),
           },
         },
