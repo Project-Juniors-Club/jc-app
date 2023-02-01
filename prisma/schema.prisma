@@ -218,6 +218,7 @@ model Game {
   matchingGame          MatchingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
   QuizGame              QuizGame?
+  SortingGame           SortingGame?
 
   @@map("games")
 }
@@ -241,7 +242,7 @@ model MatchingGame {
 model QuizGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
-  
+
   quizGameQuestions QuizGameQuestion[]
 }
 
@@ -268,8 +269,8 @@ model QuizGameOption {
 
   optionText String?
 
-  optionImage Image?  @relation(fields: [optionImageId], references: [assetId])
-  optionImageId     String?
+  optionImage   Image?  @relation(fields: [optionImageId], references: [assetId])
+  optionImageId String?
 
   quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
   quizGameQuestionId String
