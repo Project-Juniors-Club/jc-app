@@ -110,4 +110,48 @@ export const getCourseStructure = async (id: string) => {
   });
 };
 
+export const getAllCourses = async () => {
+  const courses = await prisma.course.findMany({
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  const result = courses.map(course => {
+    return {
+      ...course,
+      price: course.price.toNumber(),
+      createDate: course.createDate.toLocaleDateString(),
+      lastUpdatedDate: course.createDate.toLocaleDateString(),
+    };
+  });
+  return result;
+};
+
 export type CourseStructure = Prisma.PromiseReturnType<typeof getCourseStructure>;
