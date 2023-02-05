@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Box, Text, Checkbox } from '@chakra-ui/react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -7,28 +7,18 @@ import Image from 'next/image';
 import Layout from '../../components/Layout';
 import styles from './ViewCart.module.css';
 import Button from '../../components/Button';
-import { Course } from '../../interfaces/index';
 import NavBarCart from '../../components/navbar/NavBarCart';
-import prisma from '../../lib/prisma';
 
 const ViewCart = ({ courses }) => {
   const router = useRouter();
 
   const [cartCourses, setCartCourses] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
-  const allChecked = checkedItems.every(Boolean);
+  const allChecked = useMemo(() => (checkedItems.length > 0 ? checkedItems.every(Boolean) : false), [checkedItems]);
 
   useEffect(() => {
     const courseList = JSON.parse(localStorage.getItem('Cart') || '[]');
     console.log(courseList);
-    // dummy data
-    // const courses = await prisma.course.findMany({
-    //   where: {
-    //     id: {
-    //       in: courseList.map(course => course.id),
-    //     }
-    //   }
-    // });
 
     // dummy data
     const courses = [
@@ -39,6 +29,7 @@ const ViewCart = ({ courses }) => {
         stars: 5,
         adminId: '1',
         price: 4.95,
+        selected: false,
       },
       {
         id: '2',
@@ -47,11 +38,12 @@ const ViewCart = ({ courses }) => {
         stars: 4,
         adminId: '2',
         price: 10.0,
+        selected: false,
       },
     ];
 
     setCartCourses(courses);
-    setCheckedItems(courseList.map(course => course.selected));
+    setCheckedItems(courses.map(course => course.selected ?? false));
   }, []);
 
   const handleRemove = index => {
@@ -70,7 +62,7 @@ const ViewCart = ({ courses }) => {
   };
 
   return (
-    <Layout title='View Cart'>
+    <>
       <NavBarCart />
       <Box>
         <Text className={styles.header} pb='55px' pt='35px' pl='160px'>
@@ -92,7 +84,7 @@ const ViewCart = ({ courses }) => {
       ) : (
         <EmptyCart />
       )}
-    </Layout>
+    </>
   );
 };
 
