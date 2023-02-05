@@ -2,7 +2,7 @@ import Image from 'next/image';
 import DropDown from './DropDown';
 import UserDropdown from './UserDropdown';
 
-const NavBarCart = () => {
+const NavBarCourse = () => {
   // TODO: ADD ASSET DROPDOWN
   const assetItems = [{ clickOption: 'To add' }, { clickOption: 'To add' }];
   const courseItems = [{ clickOption: 'Course Overview' }, { clickOption: 'Category Overview' }];
@@ -30,4 +30,4 @@ const NavBarCart = () => {
   );
 };
 
-export default NavBarCart;
+export default NavBarCourse;

@@ -28,6 +28,8 @@ import apple from '../../public/assets/apple_logo_black.svg';
 import facebook from '../../public/assets/facebook_logo_blue.svg';
 import { signUpEmailState } from '../../atoms/atoms';
 import { FormEvent } from 'react';
+import Navbar from '../../components/navbar/NavBar';
+import { SSOSignUp } from '../login';
 
 type FormValues = {
   email: string;
@@ -85,48 +87,67 @@ const SignUp = ({ csrfToken, providers }: Props) => {
   };
 
   return (
-    <Layout title='Sign Up | Project Juniors Club'>
+    <>
+      <Navbar />
+      <Box height='100vh' display='flex' justifyContent='center' alignItems='center' backgroundColor='#f6f6f6'>
+        <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
+          <Box
+            marginBlock={[2, 0, 0, 0]}
+            boxShadow='none'
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='center'
+            width='full'
+          >
+            <>
+              <Heading color='black' fontWeight={700} className={'text-[2.25rem]'}>
+                Sign Up
+              </Heading>
+              <Box textAlign='left'>
+                <form onSubmit={handleSubmit(onSubmit)} color='black'>
+                  <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                    <FormLabel htmlFor='email' color='#3D3D3D'>
+                      Email
+                    </FormLabel>
+                    <Flex>
+                      <Input
+                        id='email'
+                        type='email'
+                        placeholder='Enter your email address'
+                        _placeholder={{ color: 'gray.500' }}
+                        focusBorderColor='#8EC12C'
+                        {...register('email', {
+                          required: 'This is required.',
+                          pattern: {
+                            value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                            message: 'Please enter a valid email address.',
+                          },
+                        })}
+                      />
+                    </Flex>
+                    {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                  </FormControl>
+                  <Button type='submit' backgroundColor='#8EC12C' _dark={{ backgroundColor: '#78be20' }} color='black' mt={4} width='full'>
+                    Sign up
+                  </Button>
+                  <Box width='full' textAlign='center' mt={5}>
+                    Already have an account?{' '}
+                    <Link href='/login'>
+                      <Text as='u' fontWeight='bold' color='#385600' _hover={{ cursor: 'pointer' }}>
+                        Log in
+                      </Text>
+                    </Link>
+                  </Box>
+                </form>
+                <SSOSignUp />
+              </Box>
+            </>
+          </Box>
+        </Flex>
+      </Box>
       <Flex justify='center'>
         <Stack spacing='48px' w='full' maxW='xl' bg={useColorModeValue('white', 'gray.700')} my='64px' textAlign='center'>
-          <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-            Sign Up
-          </Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing='48px'>
-              <FormControl id='email'>
-                <input name='csrfToken' type='hidden' defaultValue={csrfToken} />
-                <FormLabel textColor='gray.800'>Email</FormLabel>
-                <Input
-                  id='email'
-                  type='email'
-                  placeholder='Enter your email address'
-                  _placeholder={{ color: 'gray.500' }}
-                  focusBorderColor='#8EC12C'
-                  {...register('email', {
-                    required: 'This is required.',
-                    pattern: {
-                      value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                      message: 'Please enter a valid email address.',
-                    },
-                  })}
-                />
-                {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
-              </FormControl>
-              <Stack spacing={6}>
-                {/* <Link href='/sign-up/account-details'> */}
-                <Button
-                  type='submit'
-                  bg='#8EC12C'
-                  _hover={{
-                    bg: 'blue.500',
-                  }}
-                >
-                  Sign up
-                </Button>
-                {/* </Link> */}
-              </Stack>
-            </Stack>
-          </form>
           <Text>
             Already have an account?{' '}
             <Link href='/login'>
@@ -135,29 +156,10 @@ const SignUp = ({ csrfToken, providers }: Props) => {
               </Text>
             </Link>
           </Text>
-          <Flex align='center'>
-            <Divider />
-            <Text padding={2} color='gray.400' fontWeight='semibold'>
-              OR
-            </Text>
-            <Divider />
-          </Flex>
-          <Text fontWeight='semibold'>Sign Up with SSO</Text>
-          <HStack spacing='72px' justify='center'>
-            {Object.values(providers).map(provider => {
-              if (provider.id !== 'email') {
-                const p = sso.find(p => p.name.toLowerCase() === provider.id.toLowerCase());
-                return (
-                  <div key={provider.name}>
-                    <button onClick={_ => handleSignIn(_, provider)}>{p ? <p.icon /> : `Sign in with ${provider.name}`}</button>
-                  </div>
-                );
-              }
-            })}
-          </HStack>
+          <SSOSignUp />
         </Stack>
       </Flex>
-    </Layout>
+    </>
   );
 };
 

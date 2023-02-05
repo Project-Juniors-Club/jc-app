@@ -1,12 +1,12 @@
 import { Box, Center, Flex, HStack, VStack, Image, Text, Button, Stack } from '@chakra-ui/react';
 import CustomButton from '../../components/Button';
 import Footer from '../../components/Footer';
-import NavbarGeneral from '../../components/navbar/NavBarGeneral';
+import NavBar from '../../components/navbar/NavBar';
 
 const LandingPage = () => {
   return (
     <>
-      <NavbarGeneral />
+      <NavBar />
       <Box>
         <Flex direction={'column'}>
           <Box className='min-w-screen min-h-[50%] bg-white px-40 py-20'>
