@@ -8,6 +8,22 @@ import prisma from '../../../lib/prisma';
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
+    // async signIn({ user }) {
+    //   try {
+    //     const u = await prisma.user.findUniqueOrThrow({
+    //       where: {
+    //         id: user.id,
+    //       },
+    //     });
+    //     if (u && (!u.pdpa || !u.age || !u.name)) {
+    //       return '/sign-up/account-details';
+    //     }
+    //     return true;
+    //   } catch (err: any) {
+    //     console.log(err);
+    //     return false;
+    //   }
+    // },
     jwt({ token, user }) {
       if (user) {
         token.type = user.type;
@@ -25,6 +41,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/login',
+    newUser: '/sign-up',
   },
   providers: [
     EmailProvider({
