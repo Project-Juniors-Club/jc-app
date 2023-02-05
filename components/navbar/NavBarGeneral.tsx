@@ -3,15 +3,14 @@ import Image from 'next/image';
 import Button from '../Button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { JuniorsClubLogo } from './NavBarCourse';
 
 const NavbarGeneral = () => {
   const router = useRouter();
   return (
     <nav className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
-      <div className='h-[88px]flex-row flex'>
-        <Link href='/' className='logo flex h-[88px] flex-col items-center justify-center gap-2.5 p-4'>
-          <Image className='cursor-pointer' src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
-        </Link>
+      <div className='flex flex-row'>
+        <JuniorsClubLogo />
         <div className='main-nav-menu flex flex-row items-center gap-6 pr-8'>
           <a href='https://foodbank.sg/about/' className='menu-item ml-7 text-base'>
             About Us
