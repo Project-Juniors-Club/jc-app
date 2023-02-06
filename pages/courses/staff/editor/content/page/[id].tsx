@@ -21,6 +21,7 @@ import SortingGameCreator from '../../../../../../components/sorting-game-editor
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 import { useMutation } from '@tanstack/react-query';
 import { createOrUpdateAsset } from '../../../../../../lib/editor';
+import CancelModal from '../../../../../../components/course/create/CancelModal';
 
 type Props = {
   id: string;
@@ -96,20 +97,22 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
   const interactiveType: string = useWatch({ name: 'interactiveType', control: control });
   const pageContent: string = useWatch({ name: 'assetType', control: control });
 
+  const submitPageData = async (data: EditorPageFormValues) => {
+    const newAssetId = await createOrUpdateAsset(data);
+    if (data.assetType != 'image' && data.assetType != 'video') {
+      data.description = '';
+    }
+    return axios.put(`/api/courses/pages/${id}`, {
+      ...data,
+      newAssetId: newAssetId,
+      updaterId: session.data.user.id,
+      courseId: courseStructure.id,
+    });
+  };
+
   const session = useSession();
-  const mutation = useMutation({
-    mutationFn: async (data: EditorPageFormValues) => {
-      const newAssetId = await createOrUpdateAsset(data);
-      if (data.assetType != 'image' && data.assetType != 'video') {
-        data.description = '';
-      }
-      return axios.put(`/api/courses/pages/${id}`, {
-        ...data,
-        newAssetId: newAssetId,
-        updaterId: session.data.user.id,
-        courseId: courseStructure.id,
-      });
-    },
+  const mutateOnSave = useMutation({
+    mutationFn: submitPageData,
     onSuccess: data => {
       openSuccessNotification('Updated page successfully!');
     },
@@ -117,6 +120,17 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
       openErrorNotification('Update failed', 'Please try again');
     },
   });
+  const mutateOnExit = useMutation({
+    mutationFn: submitPageData,
+    onSuccess: data => {
+      openSuccessNotification('Saved page successfully', 'Redirecting to course page');
+      router.push(`/courses/staff/${courseStructure.id}`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to save page', 'Please try again');
+    },
+  });
+  const isDisabled = mutateOnSave.isLoading || mutateOnExit.isLoading || mutateOnExit.isSuccess;
 
   return (
     <div>
@@ -130,26 +144,27 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
           <Box w='100%' ml='2.25rem' pl='3.5rem' borderLeft='1px' borderLeftColor='#C7C7C7'>
             <form
               onSubmit={handleSubmit(data => {
-                mutation.mutate(data);
+                mutateOnSave.mutate(data);
               })}
             >
-              <FormControl mt={4} isInvalid={!!errors.name} isDisabled={mutation.isLoading}>
+              <FormControl mt={4} isInvalid={!!errors.name} isDisabled={isDisabled}>
                 <FormLabel htmlFor='title'>Page Title *</FormLabel>
                 <Input placeholder='Page Title Here' {...register('name', { required: { value: true, message: 'Enter Page Title' } })} />
                 <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
               </FormControl>
-              <FormControl mt={4} isInvalid={!!errors.duration} isDisabled={mutation.isLoading}>
+              <FormControl mt={4} isInvalid={!!errors.duration} isDisabled={isDisabled}>
                 <FormLabel htmlFor='duration'>Page Duration (in minutes) *</FormLabel>
                 <Input
                   placeholder='Page Duration Here'
                   {...register('duration', {
                     required: { value: true, message: 'Enter Page Duration' },
                     pattern: { value: /^\d+$/, message: 'Enter an integer value' },
+                    valueAsNumber: true,
                   })}
                 />
                 <FormErrorMessage>{errors?.duration?.message}</FormErrorMessage>
               </FormControl>
-              <FormControl mt={4} isDisabled={mutation.isLoading}>
+              <FormControl mt={4} isDisabled={isDisabled}>
                 <FormLabel htmlFor='page-content-type'>Page Content Type *</FormLabel>
                 <Select {...register('assetType')}>
                   <option value='article'>Text</option>
@@ -159,7 +174,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                 </Select>
               </FormControl>
               {pageContent === 'article' && (
-                <FormControl mt={4} isDisabled={mutation.isLoading} isInvalid={!!errors.text}>
+                <FormControl mt={4} isDisabled={isDisabled} isInvalid={!!errors.text}>
                   <FormLabel htmlFor='text'>Text *</FormLabel>
                   <Textarea
                     placeholder='Text'
@@ -176,11 +191,11 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                     <FormLabel htmlFor='image'>Image Upload *</FormLabel>
                     <UploadImageButton
                       useFormReturns={useFormReturns}
-                      isDisabled={mutation.isLoading}
+                      isDisabled={isDisabled}
                       imageFilename={page?.asset?.image?.filename}
                     />
                   </FormControl>
-                  <FormControl mt={4} isDisabled={mutation.isLoading} isInvalid={!!errors?.description}>
+                  <FormControl mt={4} isDisabled={isDisabled} isInvalid={!!errors?.description}>
                     <FormLabel htmlFor='image-desc'>Page Description *</FormLabel>
                     <Textarea
                       placeholder='Page Description'
@@ -198,11 +213,11 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                     <FormLabel htmlFor='video'>Video Upload *</FormLabel>
                     <UploadVideoButton
                       useFormReturns={useFormReturns}
-                      isDisabled={mutation.isLoading}
+                      isDisabled={isDisabled}
                       videoFilename={page?.asset?.video?.filename}
                     />
                   </FormControl>
-                  <FormControl mt={4} isDisabled={mutation.isLoading} isInvalid={!!errors?.description}>
+                  <FormControl mt={4} isDisabled={isDisabled} isInvalid={!!errors?.description}>
                     <FormLabel htmlFor='video-desc'>Page Description *</FormLabel>
                     <Textarea
                       placeholder='Page Description'
@@ -214,7 +229,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                   </FormControl>
                 </>
               )}
-              {pageContent === 'interactive' && (
+              {pageContent === 'games' && (
                 <Box mt={4} minH='max-content'>
                   <FormLabel htmlFor='interactive'>Interactive Component Type*</FormLabel>
                   <Select
@@ -235,19 +250,42 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
               <Flex mt={4} justifyContent={'space-between'}>
                 <HStack>
                   <Button type='submit' isLoading={isSubmitting}>
-                    Save Chapter
+                    Save Page
                   </Button>
-                  <Button variant='black-outline'>Cancel</Button>
+                  <Button
+                    onClick={e => {
+                      e.preventDefault();
+                      onOpen();
+                    }}
+                    variant='black-outline'
+                    isDisabled={isDisabled}
+                  >
+                    Cancel
+                  </Button>
                 </HStack>
-                <Button variant='black-solid'>Delete Chapter</Button>
+                <Button variant='black-solid'>Delete Page</Button>
               </Flex>
             </form>
           </Box>
         </Flex>
         <HStack py='3.5rem'>
-          <Button>Save Course Content & Exit</Button>
-          <Button variant='black-outline'>Cancel</Button>
+          <Button onClick={handleSubmit(data => mutateOnExit.mutate(data))}>Save Course Content & Exit</Button>
+          <Button
+            variant='black-outline'
+            onClick={e => {
+              e.preventDefault();
+              onOpen();
+            }}
+          >
+            Cancel
+          </Button>
         </HStack>
+        <CancelModal
+          isOpen={isOpen}
+          onClose={onClose}
+          isCentered={true}
+          exitOnClick={() => router.push(`/courses/staff/${courseStructure.id}`)}
+        />
       </div>
       <Footer />
     </div>

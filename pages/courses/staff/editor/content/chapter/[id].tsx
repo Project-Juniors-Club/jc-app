@@ -17,6 +17,7 @@ import Button from '../../../../../../components/Button';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 import { useMutation } from '@tanstack/react-query';
+import CancelModal from '../../../../../../components/course/create/CancelModal';
 
 type FormValues = {
   name: string;
@@ -96,7 +97,15 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
                   <Button type='submit' isLoading={isSubmitting}>
                     Save Chapter
                   </Button>
-                  <Button variant='black-outline'>Cancel</Button>
+                  <Button
+                    variant='black-outline'
+                    onClick={e => {
+                      e.preventDefault();
+                      onOpen();
+                    }}
+                  >
+                    Cancel
+                  </Button>
                 </HStack>
                 <Button variant='black-solid'>Delete Chapter</Button>
               </Flex>
@@ -105,8 +114,22 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
         </Flex>
         <HStack py='3.5rem'>
           <Button>Save Course Content & Exit</Button>
-          <Button variant='black-outline'>Cancel</Button>
+          <Button
+            variant='black-outline'
+            onClick={e => {
+              e.preventDefault();
+              onOpen();
+            }}
+          >
+            Cancel
+          </Button>
         </HStack>
+        <CancelModal
+          isOpen={isOpen}
+          onClose={onClose}
+          isCentered={true}
+          exitOnClick={() => router.push(`/courses/staff/${courseStructure.id}`)}
+        />
       </div>
       <Footer />
     </div>

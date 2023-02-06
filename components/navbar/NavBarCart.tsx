@@ -10,19 +10,18 @@ const NavBarCart = () => {
         <JuniorsClubLogo />
 
         <div className='main-nav-menu ml-7 flex flex-row items-center gap-6 pr-8'>
-          {/* TO ADD HYPERLINKS FOR EACH HEADER */}
-          <a href='#' className='menu-item text-base'>
+          <Link href='/courses' className='menu-item text-base'>
             Explore Courses
-          </a>
+          </Link>
         </div>
       </div>
 
       <div className='nav-action-menu order-1 flex flex-row items-center gap-6 p-0'>
         <div className='flex flex-row items-center gap-2 p-0'>
           <Image src={'/assets/logos/course.svg'} width={24} height={24} alt='book' />
-          <a href='#' className='menu-item text-base'>
+          <Link href='/courses' className='menu-item text-base'>
             My Learning
-          </a>
+          </Link>
         </div>
         <div className='flex flex-row items-center gap-2 p-0'>
           <Image src={'/assets/logos/cart.svg'} width={24} height={24} alt='cart' />

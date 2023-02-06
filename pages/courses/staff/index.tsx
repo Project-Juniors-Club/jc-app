@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { getAllCourses } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
 import InternalCourseCard from '../../../components/course/homepage/InternalCourseCard';
+import Footer from '../../../components/Footer';
 
 const SortAndFilterMenu = ({ categories, setCategory, setSortCriteria }) => {
   return (
@@ -85,7 +86,7 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
   );
 
   return (
-    <Layout title={`${'Course Overview'} | Staff`}>
+    <>
       <NavBarCart />
       <div className='px-36'>
         <div className='flex items-center justify-between py-16'>
@@ -126,7 +127,8 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
           </div>
         </div>
       </div>
-    </Layout>
+      <Footer />
+    </>
   );
 };
 

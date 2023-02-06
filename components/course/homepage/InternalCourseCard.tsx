@@ -2,6 +2,15 @@ import { LinkBox, LinkOverlay, Image } from '@chakra-ui/react';
 import React from 'react';
 import { Course } from '../../../interfaces';
 
+export const DisplayedImage = (props: { url: string }) => {
+  const { url } = props;
+  return (
+    <div className='h-[170px] w-[315px] rounded-[16px] bg-[#ebf8d3]'>
+      {url ? <Image width='315px' height='170px' borderRadius='16px' src={url} alt='testing' /> : <>Image</>}
+    </div>
+  );
+};
+
 const InternalCourseCard = ({ course }: any) => {
   const isFree = course.price <= 0;
 
@@ -10,13 +19,7 @@ const InternalCourseCard = ({ course }: any) => {
       <LinkOverlay href={`staff/${course.id}`}>
         <div className='flex w-full items-center gap-x-12 py-6'>
           <div>
-            <div className='grid h-[148px] w-[259px] place-content-center rounded-2xl bg-[#C7C7C7]'>
-              {course.coverImage?.url ? (
-                <Image src={course.coverImage.url} alt='testing' />
-              ) : (
-                <div className='h-min font-bold'>No Image Found</div>
-              )}
-            </div>
+            <DisplayedImage url={course.coverImage.url} />
           </div>
           <div className='flex w-full flex-col gap-8'>
             <div className='flex flex-col gap-3'>

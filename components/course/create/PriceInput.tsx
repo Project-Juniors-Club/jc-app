@@ -20,35 +20,35 @@ const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) =
       </label>
       <div>
         <div className='flex gap-x-6 py-1.5'>
-          <div className='flex items-center'>
+          <div className='flex cursor-pointer items-center'>
             <input
               id='free'
               name='isFree'
               type='radio'
-              className='h-4 w-4 border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
+              className='h-4 w-4 cursor-pointer border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
               value={1}
               {...register('isFree')}
               onChange={() => setIsFree(true)}
               disabled={isDisabled}
               defaultChecked={defaultPrice === 0}
             />
-            <label htmlFor='free' className='ml-3 block'>
+            <label htmlFor='free' className='ml-3 block cursor-pointer'>
               Free
             </label>
           </div>
-          <div className='flex items-center'>
+          <div className='flex cursor-pointer items-center'>
             <input
               id='paid'
               name='isFree'
               type='radio'
-              className='h-4 w-4 border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
+              className='h-4 w-4 cursor-pointer border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
               value={0}
               {...register('isFree')}
               onChange={() => setIsFree(false)}
               disabled={isDisabled}
               defaultChecked={defaultPrice > 0}
             />
-            <label htmlFor='paid' className='ml-3 block'>
+            <label htmlFor='paid' className='ml-3 block cursor-pointer'>
               Paid
             </label>
           </div>

@@ -7,6 +7,7 @@ import { getCourseWithAuthorAndDate } from '../../lib/server/course';
 import Layout from '../../components/Layout';
 import CustomButton from '../../components/Button';
 import styles from '../../components/Course.module.css';
+import NavBar from '../../components/navbar/NavBar';
 
 const Course = ({ course, category, creator, errors }) => {
   if (errors) {
@@ -25,13 +26,14 @@ const Course = ({ course, category, creator, errors }) => {
   };
   return (
     <Layout>
+      <NavBar />
       <Flex justifyContent='space-around' mt='60px' mx='150px'>
         <Box>
           <Box className={styles.header} mb='15px'>
             {course.title}
           </Box>
           <CustomButton variant={'black-outline'}>
-            <Box color={'#000000'}>{category.name}</Box>
+            <Box color={'#000000'}>{category?.name || 'Uncategorised'}</Box>
           </CustomButton>
 
           <Box className={styles.description} mt='125px'>
@@ -97,28 +99,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  try {
-    const id = params?.id as string;
-    const course = await getCourseWithAuthorAndDate(id);
-    const category = await prisma.category.findUnique({
+  const id = params?.id as string;
+  const course = await getCourseWithAuthorAndDate(id);
+  const category =
+    course.categoryId &&
+    (await prisma.category.findUnique({
       where: {
         id: course.categoryId,
       },
-    });
-    const creator = await prisma.user.findUnique({
-      where: {
-        id: course.creatorId,
-      },
-    });
-    return {
-      props: {
-        course,
-        category,
-        creator,
-      },
-    };
-  } catch (err: any) {
-    return { props: { errors: err.message } };
-  }
+    }));
+  const creator = await prisma.user.findUnique({
+    where: {
+      id: course.creatorId,
+    },
+  });
+  return {
+    props: {
+      course,
+      category,
+      creator,
+    },
+  };
 };
 export default Course;
