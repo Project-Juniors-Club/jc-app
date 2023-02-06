@@ -51,7 +51,7 @@ const ApplyVouchers = ({ courses }) => {
   };
 
   const handleCheckout = () => {
-    router.push('/checkout');
+    router.push('/payment');
   };
 
   return (
