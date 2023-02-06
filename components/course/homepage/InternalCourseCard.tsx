@@ -19,7 +19,7 @@ const InternalCourseCard = ({ course }: any) => {
       <LinkOverlay href={`staff/${course.id}`}>
         <div className='flex w-full items-center gap-x-12 py-6'>
           <div>
-            <DisplayedImage url={course.coverImage.url} />
+            <DisplayedImage url={course.coverImage?.url} />
           </div>
           <div className='flex w-full flex-col gap-8'>
             <div className='flex flex-col gap-3'>

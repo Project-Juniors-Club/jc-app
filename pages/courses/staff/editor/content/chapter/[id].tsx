@@ -51,20 +51,29 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
 
   const isDisabled = isSubmitting || isSubmitSuccessful;
 
-  const mutation = useMutation(
-    (data: FormValues) => {
-      return axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+  const submitChapterData = (data: FormValues) =>
+    axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+
+  const mutateOnSave = useMutation({
+    mutationFn: submitChapterData,
+    onSuccess: data => {
+      openSuccessNotification('Updated chapter successfully!');
+      courseStructure.chapters[chapter.chapterNumber - 1].name = data.data.name;
     },
-    {
-      onSuccess: ({ data }) => {
-        openSuccessNotification('Updated chapter successfully!');
-        courseStructure.chapters[chapter.chapterNumber - 1].name = data.data.name;
-      },
-      onError: () => {
-        openErrorNotification('Update failed', 'Please try again');
-      },
+    onError: () => {
+      openErrorNotification('Update failed', 'Please try again');
     },
-  );
+  });
+  const mutateOnExit = useMutation({
+    mutationFn: submitChapterData,
+    onSuccess: data => {
+      openSuccessNotification('Saved chapter successfully', 'Redirecting to course page');
+      router.push(`/courses/staff/${courseStructure.id}`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to save chapter', 'Please try again');
+    },
+  });
   const session = useSession();
 
   return (
@@ -77,7 +86,7 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
             <MyAccordion isChapterSelected={true} selectedId={id} courseStructure={courseStructure} />
           </Box>
           <Box w='100%' ml='2.25rem' pl='3.5rem' borderLeft='1px' borderLeftColor='#C7C7C7'>
-            <form onSubmit={handleSubmit(data => mutation.mutate(data))}>
+            <form onSubmit={handleSubmit(data => mutateOnSave.mutate(data))}>
               <FormControl isInvalid={!!errors.name}>
                 <Box mt={4}>
                   <FormLabel htmlFor='title'>Chapter Title *</FormLabel>
@@ -113,7 +122,7 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
           </Box>
         </Flex>
         <HStack py='3.5rem'>
-          <Button>Save Course Content & Exit</Button>
+          <Button onClick={handleSubmit(data => mutateOnExit.mutate(data))}>Save Course Content & Exit</Button>
           <Button
             variant='black-outline'
             onClick={e => {
