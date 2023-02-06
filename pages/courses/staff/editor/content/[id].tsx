@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { Text, Box, Grid, GridItem, Divider, Flex } from '@chakra-ui/react';
+import { Text, Box, Grid, GridItem, Divider, Flex, useDisclosure } from '@chakra-ui/react';
 import { Center, HStack, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import NavBarCart from '../../../../../components/navbar/NavBarCart';
@@ -8,6 +8,8 @@ import MyAccordion from '../../../../../components/course/content/editor/MyAccor
 import Footer from '../../../../../components/Footer';
 import Button from '../../../../../components/Button';
 import { CourseStructure, getCourseStructure } from '../../../../../lib/server/course';
+import CancelModal from '../../../../../components/course/create/CancelModal';
+import { useRouter } from 'next/router';
 
 type Props = {
   id: string;
@@ -15,6 +17,8 @@ type Props = {
 };
 
 const EditContentChapter = ({ id, courseStructure }: Props) => {
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const router = useRouter();
   return (
     <div>
       <NavBarCart />
@@ -30,8 +34,22 @@ const EditContentChapter = ({ id, courseStructure }: Props) => {
         </Flex>
         <HStack py='3.5rem'>
           <Button>Save Course Content & Exit</Button>
-          <Button variant='black-outline'>Cancel</Button>
+          <Button
+            variant='black-outline'
+            onClick={e => {
+              e.preventDefault();
+              onOpen();
+            }}
+          >
+            Cancel
+          </Button>
         </HStack>
+        <CancelModal
+          isOpen={isOpen}
+          onClose={onClose}
+          isCentered={true}
+          exitOnClick={() => router.push(`/courses/staff/${courseStructure.id}`)}
+        />
       </div>
       <Footer />
     </div>

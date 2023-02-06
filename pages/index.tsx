@@ -1,11 +1,7 @@
-import Layout from '../components/Layout';
+import LandingPage from './home';
 
 const IndexPage = () => {
-  return (
-    <Layout title='Juniors Club Portal'>
-      <h1> Welcome to Juniors Club Portal! 👋</h1>
-    </Layout>
-  );
+  return <LandingPage />;
 };
 
 export default IndexPage;

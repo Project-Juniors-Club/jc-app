@@ -1,13 +1,15 @@
 import { Box, Center, Flex, HStack, VStack, Image, Text, Button, Stack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import CustomButton from '../../components/Button';
 import Footer from '../../components/Footer';
-import NavbarGeneral from '../../components/navbar/NavBarGeneral';
+import NavBar from '../../components/navbar/NavBar';
 
 const LandingPage = () => {
+  const router = useRouter();
   return (
     <>
-      <NavbarGeneral />
-      <Box>
+      <NavBar />
+      <Box className='mt-5'>
         <Flex direction={'column'}>
           <Box className='min-w-screen min-h-[50%] bg-white px-40 py-20'>
             <Center className='h-full w-full'>
@@ -75,7 +77,7 @@ const LandingPage = () => {
                 <Box alignContent={'start'}>
                   <VStack>{/* Put course cards here later */}</VStack>
                 </Box>
-                <CustomButton variant={'black-solid'}>
+                <CustomButton onClick={() => router.push('/courses')} variant={'black-solid'}>
                   <Text color={'#FFFFFF'}>View More Courses</Text>
                 </CustomButton>
               </VStack>

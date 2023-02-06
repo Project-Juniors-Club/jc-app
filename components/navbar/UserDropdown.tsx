@@ -1,9 +1,10 @@
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { signOut } from 'next-auth/react';
 import DropDown from './DropDown';
 
 const UserDropdown = () => {
-  const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out' }];
+  const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out', onClick: () => signOut() }];
   const { data: session } = useSession();
   let username: string;
   if (session) {

@@ -1,16 +1,35 @@
 import axios from 'axios';
-import { Image } from '@chakra-ui/react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Image, Text, Box, Flex, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel } from '@chakra-ui/react';
 import Link from 'next/link';
+import { Category } from '@prisma/client';
 import prisma from '../../../lib/prisma';
 import { GetStaticProps, GetStaticPaths } from 'next';
-import { getCourseWithAuthorAndDate } from '../../../lib/server/course';
+import { getCourseContentOverview, getCourseWithAuthorAndDate } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
 import CustomButton from '../../../components/Button';
 import styles from '../../../components/Course.module.css';
 import { useRouter } from 'next/router';
+import NavBarCourse from '../../../components/navbar/NavBarCourse';
+import { DisplayedImage } from '../../../components/course/homepage/InternalCourseCard';
 
-const CourseStaffView = ({ course, category, creator, errors }) => {
+type CourseStaffViewProp = {
+  course: any;
+  category: Category;
+  errors: any;
+  courseContentOverview: {
+    chapters: {
+      description: string;
+      name: string;
+      pages: {
+        name: string;
+        duration: number;
+      }[];
+    }[];
+  };
+};
+
+const CourseStaffView = ({ course, category, errors, courseContentOverview }: CourseStaffViewProp) => {
+  const { chapters } = courseContentOverview;
   const router = useRouter();
 
   if (errors) {
@@ -23,14 +42,9 @@ const CourseStaffView = ({ course, category, creator, errors }) => {
     );
   }
 
-  // dummy data for some fields temporarily
-  const dummy = {
-    duration: '10 hrs, 14 mins',
-    chapters: 5,
-  };
-
   return (
-    <Layout>
+    <Layout title={course.title}>
+      <NavBarCourse />
       <Box backgroundColor={'#DEF2B7'}>
         <Flex justifyContent='space-between' py={'40px'} mx={'150px'}>
           <Box>
@@ -41,10 +55,10 @@ const CourseStaffView = ({ course, category, creator, errors }) => {
             <Box className={styles.header} mb='15px'>
               {course.title}
             </Box>
-            <Box className={styles.category}>{category?.name}</Box>
+            <Box className={styles.category}>{category?.name || <Text fontStyle={'italic'}>Uncategorised</Text>}</Box>
             <Flex>
               {/* buttons have placeholder emojis */}
-              <CustomButton variant={'green-solid'}>
+              <CustomButton variant={'green-solid'} onClick={() => router.push(`/courses/staff/editor/details/${course.id}`)}>
                 <Flex>
                   <Box color={'#000000'}>Edit Course Details</Box>
                   <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
@@ -66,12 +80,8 @@ const CourseStaffView = ({ course, category, creator, errors }) => {
           </Box>
 
           <Box>
-            <Box className={styles.coverImage}>
-              {course.coverImage?.url ? (
-                <Image width='322px' height='184px' borderRadius='16px' src={course.coverImage.url} alt='testing' />
-              ) : (
-                <>Image</>
-              )}
+            <Box className='mt-32 ml-48 '>
+              <DisplayedImage url={course.coverImage?.url} />
             </Box>
           </Box>
         </Flex>
@@ -96,7 +106,8 @@ const CourseStaffView = ({ course, category, creator, errors }) => {
               <Box>
                 <Box className={styles.secondaryHeader}>Course Content</Box>
                 <Box className={styles.secondaryDescription}>
-                  {dummy.chapters} chapters | {dummy.duration}
+                  {chapters.length} chapters |{' '}
+                  {`${chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0)}min`}
                 </Box>
               </Box>
               <CustomButton
@@ -110,6 +121,48 @@ const CourseStaffView = ({ course, category, creator, errors }) => {
                 </Flex>
               </CustomButton>
             </Flex>
+            <Accordion allowToggle>
+              {chapters.map(chapter => {
+                return (
+                  <>
+                    <AccordionItem className='bg-[#F2F2F2]'>
+                      <h2>
+                        <AccordionButton border='1px solid #C7C7C7'>
+                          <Box flex='1' textAlign='left' flexDirection={'column'}>
+                            <Box as='span' flex='1' textAlign='left' className='text-lg font-bold'>
+                              {chapter.name}
+                            </Box>
+                            <Box flex='1' textAlign='left' className='color text-xs'>
+                              {`${chapter.pages.length} pages | ${chapter.pages.reduce((a, b) => a + b.duration, 0)}min`}
+                            </Box>
+                            <Box flex='1' textAlign='left' className='mt-2'>
+                              {chapter.description}
+                            </Box>
+                          </Box>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h2>
+                      {chapter.pages.map(page => {
+                        return (
+                          <>
+                            <AccordionPanel pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
+                              <Box flex='1' textAlign='left' flexDirection={'column'}>
+                                <Box as='span' flex='1' textAlign='left' className='text-sm'>
+                                  {page.name}
+                                </Box>
+                                <Box flex='1' textAlign='left' className='color text-xs'>
+                                  {`${page.duration}min`}
+                                </Box>
+                              </Box>
+                            </AccordionPanel>
+                          </>
+                        );
+                      })}
+                    </AccordionItem>
+                  </>
+                );
+              })}
+            </Accordion>
           </Box>
         </Box>
 
@@ -155,30 +208,24 @@ export const getStaticPaths: GetStaticPaths = async () => {
 // It won't be called on client-side, so you can even do
 // direct database queries.
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  try {
-    const id = params?.id as string;
-    const course = await getCourseWithAuthorAndDate(id);
-    const category =
-      course.categoryId &&
-      (await prisma.category.findUnique({
-        where: {
-          id: course.categoryId,
-        },
-      }));
-    const creator = await prisma.user.findUnique({
+  const id = params?.id as string;
+  console.log({ params });
+  const course = await getCourseWithAuthorAndDate(id);
+  const courseContentOverview = await getCourseContentOverview(id);
+  console.log({ course });
+  const category =
+    course.categoryId &&
+    (await prisma.category.findUnique({
       where: {
-        id: course.creatorId,
+        id: course.categoryId,
       },
-    });
-    return {
-      props: {
-        course,
-        category,
-        creator,
-      },
-    };
-  } catch (err: any) {
-    return { props: { errors: err.message } };
-  }
+    }));
+  return {
+    props: {
+      course,
+      category,
+      courseContentOverview,
+    },
+  };
 };
 export default CourseStaffView;
