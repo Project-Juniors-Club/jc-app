@@ -54,6 +54,9 @@ export type EditorPageFormValues = {
     uploadedFile?: File;
     removeOriginal: boolean;
   };
+  // TODO: intergrate games
+  questions: any[];
+  sortingGame: any;
 };
 
 const constructPageFormValue = (page): EditorPageFormValues => {
@@ -73,6 +76,8 @@ const constructPageFormValue = (page): EditorPageFormValues => {
       uploadedFile: null,
       removeOriginal: false,
     },
+    questions: [],
+    sortingGame: { buckets: [] },
   };
 };
 
