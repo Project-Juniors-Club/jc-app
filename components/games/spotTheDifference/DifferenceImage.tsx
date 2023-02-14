@@ -7,17 +7,17 @@ interface DifferenceImageProps {
   alt: string;
   src: string;
   coordinates: DifferenceBoxInfo[];
-  updateCoordinateVisibility: (id: number) => void;
-  showCoordinates: boolean[];
+  updateVisibility: (id: number) => void;
+  isShowDiffBoxes: boolean[];
 }
 
-const DifferenceImage = ({ alt, src, coordinates, updateCoordinateVisibility, showCoordinates }: DifferenceImageProps) => {
+const DifferenceImage = ({ alt, src, coordinates, updateVisibility, isShowDiffBoxes }: DifferenceImageProps) => {
   return (
     <div className='relative m-5 min-w-fit'>
       {coordinates.map((coord, id) => {
         return (
           <Box
-            onClick={() => updateCoordinateVisibility(id)}
+            onClick={() => updateVisibility(id)}
             key={id}
             w={`${coord.width}px`}
             h={`${coord.height}px`}
@@ -25,7 +25,7 @@ const DifferenceImage = ({ alt, src, coordinates, updateCoordinateVisibility, sh
             left={`${coord.x}px`}
             top={`${coord.y}px`}
             zIndex={2}
-            className={showCoordinates[id] ? `${styles.animate} rounded-md border-[3px] border-red-500` : ''}
+            className={isShowDiffBoxes[id] ? `${styles.animate} rounded-md border-[3px] border-red-500` : ''}
           />
         );
       })}

@@ -13,10 +13,10 @@ interface GameProps {
 const Game = ({ diffBoxes, leftImageSrc, rightImageSrc }: GameProps) => {
   const defaultShowCoordinates = new Array(diffBoxes.length).fill(false);
 
-  const [isshowDiffBoxes, setIsShowDiffBoxes] = useState(defaultShowCoordinates);
+  const [isShowDiffBoxes, setIsShowDiffBoxes] = useState(defaultShowCoordinates);
 
   const updateVisibility = (id: number) => {
-    const newIsShowDiffBoxes = [...isshowDiffBoxes];
+    const newIsShowDiffBoxes = [...isShowDiffBoxes];
     newIsShowDiffBoxes[id] = true;
     setIsShowDiffBoxes(newIsShowDiffBoxes);
   };
@@ -30,14 +30,14 @@ const Game = ({ diffBoxes, leftImageSrc, rightImageSrc }: GameProps) => {
         <DifferenceImage
           src={leftImageSrc}
           alt='leftImage'
-          showCoordinates={isshowDiffBoxes}
+          showCoordinates={isShowDiffBoxes}
           updateCoordinateVisibility={updateVisibility}
           coordinates={diffBoxes}
         />
         <DifferenceImage
           src={rightImageSrc}
           alt='rightImage'
-          showCoordinates={isshowDiffBoxes}
+          showCoordinates={isShowDiffBoxes}
           updateCoordinateVisibility={updateVisibility}
           coordinates={diffBoxes}
         />
@@ -46,7 +46,7 @@ const Game = ({ diffBoxes, leftImageSrc, rightImageSrc }: GameProps) => {
         {`Find ${diffBoxes.length} differences:`}
       </Text>
       <div className='flex'>
-        {isshowDiffBoxes.map((isShow, i) => {
+        {isShowDiffBoxes.map((isShow, i) => {
           return (
             <div
               key={i}
