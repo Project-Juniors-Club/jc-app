@@ -30,15 +30,15 @@ const Game = ({ diffBoxes, leftImageSrc, rightImageSrc }: GameProps) => {
         <DifferenceImage
           src={leftImageSrc}
           alt='leftImage'
-          showCoordinates={isShowDiffBoxes}
-          updateCoordinateVisibility={updateVisibility}
+          isShowDiffBoxes={isShowDiffBoxes}
+          updateVisibility={updateVisibility}
           coordinates={diffBoxes}
         />
         <DifferenceImage
           src={rightImageSrc}
           alt='rightImage'
-          showCoordinates={isShowDiffBoxes}
-          updateCoordinateVisibility={updateVisibility}
+          isShowDiffBoxes={isShowDiffBoxes}
+          updateVisibility={updateVisibility}
           coordinates={diffBoxes}
         />
       </div>
