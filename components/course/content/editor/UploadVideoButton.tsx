@@ -9,7 +9,7 @@ type Props = {
   videoFilename: string;
 };
 
-const UploadVideoButton = ({ useFormReturns: { control, setValue, resetField }, isDisabled, videoFilename }: Props) => {
+const UploadVideoButton = ({ useFormReturns: { control, setValue, resetField, clearErrors }, isDisabled, videoFilename }: Props) => {
   const {
     field: { onChange: removeOriginal },
   } = useController({ name: 'video.removeOriginal', control: control });
@@ -43,6 +43,7 @@ const UploadVideoButton = ({ useFormReturns: { control, setValue, resetField }, 
           if (e.target.files.length) {
             removeOriginal(true);
             setValue('video.uploadedFile', e.target.files[0]);
+            clearErrors('video.uploadedFile');
           }
           e.target.value = '';
         }}

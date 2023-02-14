@@ -15,7 +15,7 @@ const DropDown = ({ buttonName, dropdownItems }) => {
           return (
             <Menu.Item as='div' key={item.clickOption} className={`block py-4 px-6`}>
               {({ active }) => (
-                <a className={`${active}`} href='#'>
+                <a className={`${active}`} onClick={item.onClick} href='#'>
                   {item.clickOption}
                 </a>
               )}

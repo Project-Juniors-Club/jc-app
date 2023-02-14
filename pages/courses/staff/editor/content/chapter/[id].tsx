@@ -2,7 +2,7 @@ import { Chapter } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Button, Grid, GridItem, Divider } from '@chakra-ui/react';
+import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Center, Input, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
@@ -13,9 +13,11 @@ import { useState } from 'react';
 import prisma from '../../../../../../lib/prisma';
 import NavBarCart from '../../../../../../components/navbar/NavBarCourse';
 import Footer from '../../../../../../components/Footer';
+import Button from '../../../../../../components/Button';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 import { useMutation } from '@tanstack/react-query';
+import CancelModal from '../../../../../../components/course/create/CancelModal';
 
 type FormValues = {
   name: string;
@@ -49,20 +51,29 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
 
   const isDisabled = isSubmitting || isSubmitSuccessful;
 
-  const mutation = useMutation(
-    (data: FormValues) => {
-      return axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+  const submitChapterData = (data: FormValues) =>
+    axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+
+  const mutateOnSave = useMutation({
+    mutationFn: submitChapterData,
+    onSuccess: data => {
+      openSuccessNotification('Updated chapter successfully!');
+      courseStructure.chapters[chapter.chapterNumber - 1].name = data.data.name;
     },
-    {
-      onSuccess: ({ data }) => {
-        openSuccessNotification('Updated chapter successfully!');
-        courseStructure.chapters[chapter.chapterNumber - 1].name = data.data.name;
-      },
-      onError: () => {
-        openErrorNotification('Update failed', 'Please try again');
-      },
+    onError: () => {
+      openErrorNotification('Update failed', 'Please try again');
     },
-  );
+  });
+  const mutateOnExit = useMutation({
+    mutationFn: submitChapterData,
+    onSuccess: data => {
+      openSuccessNotification('Saved chapter successfully', 'Redirecting to course page');
+      router.push(`/courses/staff/${courseStructure.id}`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to save chapter', 'Please try again');
+    },
+  });
   const session = useSession();
 
   return (
@@ -70,66 +81,64 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
       <NavBarCart />
       <div className='min-h-max px-[9.375rem] font-open-sans'>
         <header className='py-16 text-5xl font-bold'>Edit Course Content</header>
-        <Grid templateColumns='repeat(5, 1fr)' gap={20} mb={20}>
-          <GridItem>
-            <VStack spacing='20px'>
-              <Center minH='max-content'>
+        <Flex>
+          <Box minW='393px'>
+            <MyAccordion isChapterSelected={true} selectedId={id} courseStructure={courseStructure} />
+          </Box>
+          <Box w='100%' ml='2.25rem' pl='3.5rem' borderLeft='1px' borderLeftColor='#C7C7C7'>
+            <form onSubmit={handleSubmit(data => mutateOnSave.mutate(data))}>
+              <FormControl isInvalid={!!errors.name}>
                 <Box mt={4}>
-                  <MyAccordion isChapterSelected={true} selectedId={id} courseStructure={courseStructure} />
-                  <Box mt={4}>
-                    <HStack>
-                      <Button
-                        background='#A9D357'
-                        onClick={() => {
-                          console.log(session);
-                        }}
-                      >
-                        Save Course Content & Exit
-                      </Button>
-                      <Button background='#4D4D4D' color='white'>
-                        Cancel
-                      </Button>
-                    </HStack>
-                  </Box>
-                </Box>
-              </Center>
-            </VStack>
-          </GridItem>
-          <Center>
-            <Divider orientation='vertical' />
-          </Center>
-          <GridItem>
-            <VStack spacing='20px'>
-              <form onSubmit={handleSubmit(data => mutation.mutate(data))}>
-                <Box mt={4}>
-                  <FormLabel htmlFor='title'>Chapter Title*</FormLabel>
+                  <FormLabel htmlFor='title'>Chapter Title *</FormLabel>
                   <Input
-                    // w='600px'
-                    placeholder='Chapter Title Here'
-                    {...register('name', { required: true, setValueAs: name => name.trim() })}
+                    placeholder='Chapter Title'
+                    {...register('name', { required: { value: true, message: 'Enter Chapter Title' }, setValueAs: name => name.trim() })}
                   />
+                  <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
                 </Box>
-                <Box mt={4}>
-                  <FormLabel htmlFor='desc'>Chapter Description</FormLabel>
-                  <Textarea placeholder='Chapter Description Here' {...register('description')} />
-                </Box>
-                <Box mt={4}>
-                  <HStack>
-                    <Button background='#A9D357' type='submit' isLoading={isSubmitting}>
-                      Save Chapter
-                    </Button>
-                    <Button background='white' border='1px solid #000000'>
-                      Cancel
-                    </Button>
-                    <Button background='#4D4D4D' color='white'>
-                      Delete Chapter
-                    </Button>
-                  </HStack>
-                </Box>
-              </form>
-            </VStack>
-          </GridItem>
-        </Grid>
+              </FormControl>
+              <Box mt={4}>
+                <FormLabel htmlFor='desc'>Chapter Description</FormLabel>
+                <Textarea placeholder='Chapter Description' {...register('description')} />
+              </Box>
+              <Flex mt={4} justifyContent={'space-between'}>
+                <HStack>
+                  <Button type='submit' isLoading={isSubmitting}>
+                    Save Chapter
+                  </Button>
+                  <Button
+                    variant='black-outline'
+                    onClick={e => {
+                      e.preventDefault();
+                      onOpen();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </HStack>
+                <Button variant='black-solid'>Delete Chapter</Button>
+              </Flex>
+            </form>
+          </Box>
+        </Flex>
+        <HStack py='3.5rem'>
+          <Button onClick={handleSubmit(data => mutateOnExit.mutate(data))}>Save Course Content & Exit</Button>
+          <Button
+            variant='black-outline'
+            onClick={e => {
+              e.preventDefault();
+              onOpen();
+            }}
+          >
+            Cancel
+          </Button>
+        </HStack>
+        <CancelModal
+          isOpen={isOpen}
+          onClose={onClose}
+          isCentered={true}
+          exitOnClick={() => router.push(`/courses/staff/${courseStructure.id}`)}
+        />
       </div>
       <Footer />
     </div>

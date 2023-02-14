@@ -2,32 +2,26 @@ import React from 'react';
 import CourseList from '../../components/course/homepage/CourseList';
 import UnfinishedCourseList from '../../components/course/homepage/UnfinishedCourseList';
 import WelcomeMessage from '../../components/course/homepage/WelcomeMessage';
+import NavBar from '../../components/navbar/NavBar';
 import { Course } from '../../interfaces';
+import prisma from '../../lib/prisma';
+import { getAllCourses } from '../../lib/server/course';
 
 const CourseHomePage = ({ courses }) => {
   return (
-    <div className='px-40 py-16'>
-      <WelcomeMessage isUnfinishedCoursesEmpty={false} />
-      <UnfinishedCourseList />
-      <CourseList courses={courses} />
-    </div>
+    <>
+      <NavBar />
+      <div className='px-40 py-16'>
+        <WelcomeMessage isUnfinishedCoursesEmpty={false} />
+        <UnfinishedCourseList />
+        <CourseList courses={courses} />
+      </div>
+    </>
   );
 };
 
 export async function getStaticProps() {
-  //   const courses = await prisma.course.findMany();
-  const courses: Course[] = [
-    { adminId: '1', description: 'test', id: '1', name: 'abc', price: 100, stars: 2.2 },
-    {
-      adminId: '1',
-      description: 'This is the course title which is pretty long but should not exceed more than three lines',
-      id: '2',
-      name: 'Course coordinator',
-      price: 23,
-      stars: 2.2,
-    },
-    { adminId: '1', description: 'test', id: '3', name: 'Hello world', price: 50, stars: 2.2 },
-  ];
+  const courses = await getAllCourses();
 
   return {
     props: { courses },

@@ -15,6 +15,7 @@ import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react'
 import { Provider } from 'next-auth/providers';
 import Modal from '../../components/Modal';
 import NavBarGeneral from '../../components/navbar/NavBarGeneral';
+import NavBar from '../../components/navbar/NavBar';
 
 type Props = {
   csrfToken: string;
@@ -23,6 +24,50 @@ type Props = {
 
 type FormData = {
   email: string;
+};
+
+export const SSOSignUp = () => {
+  return (
+    <>
+      <Flex className='mt-5' color={'#9E9E9E'}>
+        <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
+        <span className={'m-2'}>OR</span>
+        <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
+      </Flex>
+
+      <Box width='full' textAlign='center' mt={5} mb={5}>
+        <Text as='b'>Sign Up with SSO</Text>
+      </Box>
+
+      <Flex justifyContent={'space-evenly'}>
+        <div className='m-7 cursor-pointer' key='google'>
+          <Image
+            src={`/assets/googleLogin.svg`}
+            width='50'
+            height='50'
+            alt='user'
+            onClick={event => {
+              event.preventDefault();
+              signIn('google');
+            }}
+          />
+        </div>
+
+        <div className='m-7 cursor-pointer' key='fb'>
+          <Image
+            src={`/assets/facebookLogin.svg`}
+            width='50'
+            height='50'
+            alt='user'
+            onClick={event => {
+              event.preventDefault();
+              signIn('facebook');
+            }}
+          />
+        </div>
+      </Flex>
+    </>
+  );
 };
 
 const LoginPage = ({ csrfToken, providers }: Props) => {
@@ -69,100 +114,66 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
   };
 
   return (
-  <>
-    <NavBarGeneral />
-    <Box height='100vh' display='flex' justifyContent='center' alignItems='center' backgroundColor='#f6f6f6'>
-      <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
-        <Box
-          marginBlock={[2, 0, 0, 0]}
-          boxShadow='none'
-          display='flex'
-          flexDirection='column'
-          alignItems='center'
-          justifyContent='center'
-          width='full'
-        >
-          <>
-            <Heading color='black' fontWeight={700} className={'text-[2.25rem]'}>
-              Log In
-            </Heading>
-            <Box textAlign='left'>
-              <form onSubmit={handleSubmit(onSubmit)} color='black'>
-                <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
-                  <FormLabel htmlFor='email' color='#3D3D3D'>
-                    Email
-                  </FormLabel>
-                  <Flex>
-                    <Input
-                      id='OTP'
-                      placeholder='Enter your Email'
-                      borderColor='grey'
-                      color='black'
-                      {...register('password', {
-                        required: 'This is required.',
-                      })}
-                    />
-                  </Flex>
-                  {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
-                </FormControl>
-                <Button type='submit' backgroundColor='#8EC12C' _dark={{ backgroundColor: '#78be20' }} color='black' mt={4} width='full'>
-                  Log In
-                </Button>
-                <Box width='full' textAlign='center' mt={5}>
-                  Don&#39;t have an account?{' '}
-                  <Text as='b'>
-                    <Text as='u'>
-                      <Link href='/signup'>Sign Up</Link>
-                    </Text>
-                    </Text>
+    <>
+      <NavBar />
+      <Box height='100vh' display='flex' justifyContent='center' alignItems='center' backgroundColor='#f6f6f6'>
+        <Flex width='full' alignContent='center' justifyContent='center' height='100%'>
+          <Box
+            marginBlock={[2, 0, 0, 0]}
+            boxShadow='none'
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='center'
+            width='full'
+          >
+            <>
+              <Heading color='black' fontWeight={700} className={'text-[2.25rem]'}>
+                Log In
+              </Heading>
+              <Box textAlign='left'>
+                <form onSubmit={handleSubmit(onSubmit)} color='black'>
+                  <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                    <FormLabel htmlFor='email' color='#3D3D3D'>
+                      Email
+                    </FormLabel>
+                    <Flex>
+                      <Input
+                        id='OTP'
+                        placeholder='Enter your email address'
+                        _placeholder={{ color: 'gray.500' }}
+                        focusBorderColor='#8EC12C'
+                        borderColor='grey'
+                        color='black'
+                        {...register('password', {
+                          required: 'This is required.',
+                        })}
+                      />
+                    </Flex>
+                    {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                  </FormControl>
+                  <Button type='submit' backgroundColor='#8EC12C' _dark={{ backgroundColor: '#78be20' }} color='black' mt={4} width='full'>
+                    Log In
+                  </Button>
+                  <Box width='full' textAlign='center' mt={5}>
+                    Don&#39;t have an account?{' '}
+                    <Link href='/login'>
+                      <Text as='u' fontWeight='bold' color='#385600' _hover={{ cursor: 'pointer' }}>
+                        Log in
+                      </Text>
+                    </Link>
                   </Box>
                 </form>
-                <Flex color={'#9E9E9E'}>
-                  <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
-                  <span className={'m-2'}>OR</span>
-                  <div className={'border-[#9E9E9E]-[0.4] mt-5 h-0 w-1/2 border-[0.1px] border-solid'} />
-                </Flex>
-
-                <Box width='full' textAlign='center' mt={5} mb={5}>
-                  <Text as='b'>Login with SSO</Text>
-                </Box>
-
-                <Flex justifyContent={'space-evenly'}>
-                  <div className='m-7 cursor-pointer' key='google'>
-                    <Image
-                      src={`/assets/googleLogin.svg`}
-                      width='50'
-                      height='50'
-                      alt='user'
-                      onClick={event => {
-                        event.preventDefault();
-                        signIn('google');
-                      }}
-                    />
-                  </div>
-    
-                  <div className='m-7 cursor-pointer' key='fb'>
-                    <Image
-                      src={`/assets/facebookLogin.svg`}
-                      width='50'
-                      height='50'
-                      alt='user'
-                      onClick={event => {
-                        event.preventDefault();
-                        signIn('facebook');
-                      }}
-                    />
-                  </div>
-                </Flex>
+                <SSOSignUp />
               </Box>
             </>
           </Box>
         </Flex>
         <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
-        <div className='mx-4 mb-4'>
-          <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
-        </div>
-      </Modal>
+          <div className='mx-4 mb-4'>
+            <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
+          </div>
+        </Modal>
       </Box>
     </>
   );

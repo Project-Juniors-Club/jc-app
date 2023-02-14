@@ -14,6 +14,11 @@ export type SerializedCourse = {
   status: CourseStatus;
   categoryId: string;
   coverImageAssetId: string;
+  createdBy?: {
+    user: {
+      name: string;
+    };
+  };
 };
 
 export type SerializedCourseWithCoverImage = SerializedCourse & { coverImage?: Image };
@@ -83,6 +88,32 @@ export const getCourseWithAuthorAndDate = async (id: string) => {
   return result;
 };
 
+export const getCourseContentOverview = async (id: string) => {
+  return prisma.course.findUnique({
+    where: { id: id },
+    select: {
+      chapters: {
+        select: {
+          name: true,
+          description: true,
+          pages: {
+            select: {
+              name: true,
+              duration: true,
+            },
+            orderBy: {
+              pageNumber: 'asc',
+            },
+          },
+        },
+        orderBy: {
+          chapterNumber: 'asc',
+        },
+      },
+    },
+  });
+};
+
 export const getCourseStructure = async (id: string) => {
   return prisma.course.findUnique({
     where: { id: id },
@@ -108,6 +139,50 @@ export const getCourseStructure = async (id: string) => {
       },
     },
   });
+};
+
+export const getAllCourses = async (): Promise<SerializedCourse[]> => {
+  const courses = await prisma.course.findMany({
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  const result = courses.map(course => {
+    return {
+      ...course,
+      price: course.price.toNumber(),
+      createDate: course.createDate.toLocaleDateString(),
+      lastUpdatedDate: course.createDate.toLocaleDateString(),
+    };
+  });
+  return result;
 };
 
 export type CourseStructure = Prisma.PromiseReturnType<typeof getCourseStructure>;

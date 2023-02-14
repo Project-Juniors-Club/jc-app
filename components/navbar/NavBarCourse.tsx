@@ -1,18 +1,25 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import DropDown from './DropDown';
 import UserDropdown from './UserDropdown';
 
-const NavBarCart = () => {
+export const JuniorsClubLogo = () => {
+  return (
+    <Link href='/' className='logo flex flex-col items-center justify-center gap-2.5 p-4'>
+      <Image className='cursor-pointer' src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
+    </Link>
+  );
+};
+
+const NavBarCourse = () => {
   // TODO: ADD ASSET DROPDOWN
   const assetItems = [{ clickOption: 'To add' }, { clickOption: 'To add' }];
   const courseItems = [{ clickOption: 'Course Overview' }, { clickOption: 'Category Overview' }];
 
   return (
     <nav className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
-      <div className='flex h-[88px] flex-row'>
-        <div className='logo flex h-[88px] flex-col items-center justify-center gap-2.5 p-4'>
-          <Image src={'/logo/Juniors_Club_Logo.png'} width={92} height={72} alt='logo' />
-        </div>
+      <div className='flex flex-row'>
+        <JuniorsClubLogo />
         <div className='main-nav-menu flex flex-row items-center gap-6 pr-8'>{/* TO ADD SEARCH BAR */}</div>
       </div>
 
@@ -30,4 +37,4 @@ const NavBarCart = () => {
   );
 };
 
-export default NavBarCart;
+export default NavBarCourse;
