@@ -107,7 +107,7 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                 <Box className={styles.secondaryHeader}>Course Content</Box>
                 <Box className={styles.secondaryDescription}>
                   {chapters.length} chapters |{' '}
-                  {`${chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0)}min`}
+                  {`${chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0)} min`}
                 </Box>
               </Box>
               <CustomButton
@@ -121,7 +121,7 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                 </Flex>
               </CustomButton>
             </Flex>
-            <Accordion allowToggle>
+            <Accordion allowMultiple>
               {chapters.map(chapter => {
                 return (
                   <>
