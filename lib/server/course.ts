@@ -1,5 +1,6 @@
-import { Course, CourseStatus, Image, Prisma } from '@prisma/client';
+import { Course, CourseStatus, Image, Prisma, UserCourse } from '@prisma/client';
 import prisma from '../prisma';
+import set from 'date-fns/set';
 
 export type SerializedCourse = {
   price: number;
@@ -183,6 +184,151 @@ export const getAllCourses = async (): Promise<SerializedCourse[]> => {
     };
   });
   return result;
+};
+
+export const getRecentlyUsedCourse = async (id: string): Promise<SerializedCourse[]> => {
+  const coursesIds = await prisma.userCourse.findMany({
+    where: { userId: id },
+    select: {
+      courseId: true,
+    },
+    orderBy: {
+      lastSeenBy: 'desc',
+    },
+    take: 3,
+  });
+  let courses = [];
+  const course1 = await prisma.course.findUnique({
+    where: {
+      id: coursesIds[0].courseId,
+    },
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  const course2 = await prisma.course.findUnique({
+    where: {
+      id: coursesIds[1].courseId,
+    },
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  const course3 = await prisma.course.findUnique({
+    where: {
+      id: coursesIds[2].courseId,
+    },
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  courses.push(course1, course2, course3);
+  const result = courses.map(course => {
+    return {
+      ...course,
+      price: course.price.toNumber(),
+      createDate: course.createDate.toLocaleDateString(),
+      lastUpdatedDate: course.createDate.toLocaleDateString(),
+    };
+  });
+
+  return result;
+};
+
+export const updateLastSeen = async (user_id: string, course_id: string): Promise<UserCourse> => {
+  const update = await prisma.userCourse.update({
+    where: {
+      userId_courseId: {
+        userId: user_id,
+        courseId: course_id,
+      },
+    },
+    data: {
+      lastSeenBy: new Date(Date.now()),
+    },
+  });
+  return update;
 };
 
 export type CourseStructure = Prisma.PromiseReturnType<typeof getCourseStructure>;

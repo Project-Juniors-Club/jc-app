@@ -96,14 +96,15 @@ model CourseEditor {
 }
 
 model UserCourse {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   userId     String
   courseId   String
   progress   Int
   correctQns Int
   stars      Int
-  course     Course @relation(fields: [courseId], references: [id])
-  user       User   @relation(fields: [userId], references: [id])
+  course     Course   @relation(fields: [courseId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  lastSeenBy DateTime
 
   @@unique([userId, courseId])
   @@map("userCourses")
@@ -269,8 +270,8 @@ model QuizGameOption {
 
   optionText String?
 
-  optionImage Image?  @relation(fields: [optionImageId], references: [assetId])
-  optionImageId     String?
+  optionImage   Image?  @relation(fields: [optionImageId], references: [assetId])
+  optionImageId String?
 
   quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
   quizGameQuestionId String
