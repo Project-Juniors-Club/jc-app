@@ -16,9 +16,6 @@ const pairs: Pair[] = [
 // const MARGIN_LEFT_OFFSET = 1500;
 const MARGIN_TOP_OFFSET = 72;
 
-const CANVAS_WIDTH = 900;
-const CANVAS_HEIGHT = 900;
-
 const MatchingGame = () => {
   const canvasStyle = {
     width: 'fit-content',
@@ -56,7 +53,11 @@ const MatchingGame = () => {
       setLeftSelected(parseInt(e.target.dataset.id));
 
       if (marginLeft == null) return;
-      setLeftCoordinates({ x: e.clientX - marginLeft, y: e.clientY - MARGIN_TOP_OFFSET });
+      const nodeDetails = e.target.getBoundingClientRect();
+      setLeftCoordinates({
+        x: nodeDetails.left + window.scrollX - marginLeft + nodeDetails.width / 2,
+        y: nodeDetails.top - MARGIN_TOP_OFFSET + window.scrollY + nodeDetails.height / 2,
+      });
       context.save();
     } else if (e.target.dataset.column === 'right') {
       if (e.target.dataset.id == null) return;
@@ -74,7 +75,12 @@ const MatchingGame = () => {
       setLeftSelected(0);
       context.beginPath();
       context.moveTo(leftCoordinates.x, leftCoordinates.y);
-      context.lineTo(e.clientX - marginLeft, e.clientY - MARGIN_TOP_OFFSET);
+      const node = e.target as HTMLElement; // to remove ts error
+      const nodeDetails = node.getBoundingClientRect();
+      context.lineTo(
+        nodeDetails.left - marginLeft + window.scrollX + nodeDetails.width / 2,
+        nodeDetails.top - MARGIN_TOP_OFFSET + window.scrollY + nodeDetails.height / 2,
+      );
       context.stroke();
     } else {
       if (context == null) return;
@@ -114,7 +120,6 @@ const MatchingGame = () => {
           <ul>{rightRandom} </ul>
         </div>
       </div>
-      <p className='mt-4 text-center'>{solved} solved</p>
     </>
   );
 };
