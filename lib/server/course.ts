@@ -198,112 +198,44 @@ export const getRecentlyUsedCourse = async (id: string): Promise<SerializedCours
     take: 3,
   });
   let courses = [];
-  const course1 = await prisma.course.findUnique({
-    where: {
-      id: coursesIds[0].courseId,
-    },
-    include: {
-      createdBy: {
-        include: {
-          user: {
-            select: {
-              name: true,
+  for (const courseId of coursesIds) {
+    const course = await prisma.course.findUnique({
+      where: {
+        id: courseId.courseId,
+      },
+      include: {
+        createdBy: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
             },
           },
         },
-      },
-      lastUpdatedBy: {
-        include: {
-          user: {
-            select: {
-              name: true,
+        lastUpdatedBy: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
             },
           },
         },
-      },
-      category: {
-        select: {
-          name: true,
+        category: {
+          select: {
+            name: true,
+          },
         },
-      },
-      coverImage: {
-        select: {
-          url: true,
-        },
-      },
-    },
-  });
-  const course2 = await prisma.course.findUnique({
-    where: {
-      id: coursesIds[1].courseId,
-    },
-    include: {
-      createdBy: {
-        include: {
-          user: {
-            select: {
-              name: true,
-            },
+        coverImage: {
+          select: {
+            url: true,
           },
         },
       },
-      lastUpdatedBy: {
-        include: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-      category: {
-        select: {
-          name: true,
-        },
-      },
-      coverImage: {
-        select: {
-          url: true,
-        },
-      },
-    },
-  });
-  const course3 = await prisma.course.findUnique({
-    where: {
-      id: coursesIds[2].courseId,
-    },
-    include: {
-      createdBy: {
-        include: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-      lastUpdatedBy: {
-        include: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-      category: {
-        select: {
-          name: true,
-        },
-      },
-      coverImage: {
-        select: {
-          url: true,
-        },
-      },
-    },
-  });
-  courses.push(course1, course2, course3);
+    });
+    courses.push(course);
+  }
   const result = courses.map(course => {
     return {
       ...course,

@@ -10,8 +10,8 @@ const ViewedCourseList = ({ courses }: { courses: SerializedCourse[] }) => {
         Pick up where you left off:
       </h2>
       <div className='flex flex-wrap gap-8'>
-        {courses.map(value => (
-          <CourseCard key={courses[0].id} course={courses[0]} />
+        {courses.map((value, i) => (
+          <CourseCard key={courses[i].id} course={courses[i]} />
         ))}
       </div>
     </section>

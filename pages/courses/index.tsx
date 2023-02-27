@@ -4,7 +4,8 @@ import CourseList from '../../components/course/homepage/CourseList';
 import ViewedCourseList from '../../components/course/homepage/ViewedCourseList';
 import WelcomeMessage from '../../components/course/homepage/WelcomeMessage';
 import NavBar from '../../components/navbar/NavBar';
-import { getAllCourses, getRecentlyUsedCourse, SerializedCourse } from '../../lib/server/course';
+import { getRecentCourses } from '../../lib/courseRecent';
+import { getAllCourses, SerializedCourse } from '../../lib/server/course';
 
 const CourseHomePage = ({ courses }) => {
   const sess = useSession();
@@ -12,10 +13,13 @@ const CourseHomePage = ({ courses }) => {
   const [recentCourses, setRecentCourses] = useState<any[]>([]);
 
   useEffect(() => {
-    getRecentlyUsedCourse(sess.data.user.id).then((value: SerializedCourse[]) => {
+    if (!sess) {
+      return;
+    }
+    getRecentCourses(sess?.data.user.id).then((value: SerializedCourse[]) => {
       setRecentCourses(value);
     });
-  }, []);
+  }, [sess]);
 
   return (
     <>

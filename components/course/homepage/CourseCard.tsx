@@ -1,7 +1,8 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { SerializedCourse, updateLastSeen } from '../../../lib/server/course';
+import { updateLastSeen } from '../../../lib/courseRecent';
+import { SerializedCourse } from '../../../lib/server/course';
 
 const CourseCard = ({ course }: { course: SerializedCourse }) => {
   const router = useRouter();
@@ -10,7 +11,10 @@ const CourseCard = ({ course }: { course: SerializedCourse }) => {
     <article
       className='w-[22rem] cursor-pointer overflow-hidden rounded-2xl border border-solid border-[#c7c7c7]'
       onClick={() => {
-        updateLastSeen(sess.data.user.id, course.id);
+        if (!sess) {
+          return;
+        }
+        updateLastSeen(sess?.data.user.id, course.id);
         router.push('/courses/' + course.id);
       }}
     >
