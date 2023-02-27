@@ -1,6 +1,5 @@
 import { Course, CourseStatus, Image, Prisma, UserCourse } from '@prisma/client';
 import prisma from '../prisma';
-import set from 'date-fns/set';
 
 export type SerializedCourse = {
   price: number;
