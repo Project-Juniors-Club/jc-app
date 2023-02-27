@@ -14,7 +14,7 @@ const pairs: Pair[] = [
 ];
 
 // const MARGIN_LEFT_OFFSET = 1500;
-const MARGIN_TOP_OFFSET = 40;
+const MARGIN_TOP_OFFSET = 72;
 
 const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 900;
@@ -54,7 +54,6 @@ const MatchingGame = () => {
       if (context == null) return;
       if (e.target.dataset.id == null) return;
       setLeftSelected(parseInt(e.target.dataset.id));
-      setLeftSelected(parseInt(e.target.dataset.id));
 
       if (marginLeft == null) return;
       setLeftCoordinates({ x: e.clientX - marginLeft, y: e.clientY - MARGIN_TOP_OFFSET });
@@ -65,27 +64,18 @@ const MatchingGame = () => {
       setLeftSelected(-1);
     }
   };
-  const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (leftSelected === -1) return;
-    if (context == null) return;
-    if (leftCoordinates == null) return;
-
-    context.restore();
-    context.save();
-    context.beginPath();
-    context.moveTo(leftCoordinates.x, leftCoordinates.y);
-    if (marginLeft == null) return;
-    context.lineTo(e.clientX - marginLeft, e.clientY - MARGIN_TOP_OFFSET);
-    context.stroke();
-  };
 
   // CHECK IF PAIR IS SOLVED
   const checkPair = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
     const rightChosen = id;
-    if (leftSelected == rightChosen && !solvedIds.includes(leftSelected)) {
+    if (leftSelected === rightChosen && !solvedIds.includes(leftSelected)) {
       setSolved(solved + 1);
       setSolvedIds([...solvedIds, leftSelected]);
       setLeftSelected(0);
+      context.beginPath();
+      context.moveTo(leftCoordinates.x, leftCoordinates.y);
+      context.lineTo(e.clientX - marginLeft, e.clientY - MARGIN_TOP_OFFSET);
+      context.stroke();
     } else {
       if (context == null) return;
       context.restore();
@@ -116,14 +106,9 @@ const MatchingGame = () => {
   return (
     <>
       <div>
+        <h1 className='bold text-center text-2xl'>Correct: {solved}</h1>
         <p className='mt-4 text-center'> Draw lines between the pictures and the words that best go together.</p>
-        <div
-          className='relative m-auto flex flex-row'
-          style={canvasStyle}
-          ref={retrieveMargin}
-          onClick={e => handleClick(e)}
-          onMouseMove={e => handleMove(e)}
-        >
+        <div className='relative m-auto flex flex-row' style={canvasStyle} ref={retrieveMargin} onClick={e => handleClick(e)}>
           <canvas ref={ref} width={520} height={900} className='absolute -z-10 '></canvas>
           <ul>{leftRandom} </ul>
           <ul>{rightRandom} </ul>
