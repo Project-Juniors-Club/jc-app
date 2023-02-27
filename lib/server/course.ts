@@ -249,18 +249,22 @@ export const getRecentlyUsedCourse = async (id: string): Promise<SerializedCours
 };
 
 export const updateLastSeen = async (user_id: string, course_id: string): Promise<UserCourse> => {
-  const update = await prisma.userCourse.update({
-    where: {
-      userId_courseId: {
-        userId: user_id,
-        courseId: course_id,
+  try {
+    const update = await prisma.userCourse.update({
+      where: {
+        userId_courseId: {
+          userId: user_id,
+          courseId: course_id,
+        },
       },
-    },
-    data: {
-      lastSeenBy: new Date(Date.now()),
-    },
-  });
-  return update;
+      data: {
+        lastSeenBy: new Date(Date.now()),
+      },
+    });
+    return update;
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export type CourseStructure = Prisma.PromiseReturnType<typeof getCourseStructure>;

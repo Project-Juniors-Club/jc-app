@@ -25,7 +25,7 @@ const CourseHomePage = ({ courses }) => {
     <>
       <NavBar />
       <div className='px-40 py-16'>
-        <WelcomeMessage isUnfinishedCoursesEmpty={false} />
+        <WelcomeMessage isUnfinishedCoursesEmpty={recentCourses.length > 0} />
         <ViewedCourseList courses={recentCourses} />
         <CourseList courses={courses} />
       </div>
