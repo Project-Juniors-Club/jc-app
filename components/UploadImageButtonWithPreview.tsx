@@ -23,26 +23,33 @@ import CustomButton from './Button';
 import { ChangeEvent, useRef, useState } from 'react';
 import { setConstantValue } from 'typescript';
 import { register } from 'ts-node';
+import { Image as PrismaImage } from '@prisma/client';
+
+export type ImageWithUploadableFile = PrismaImage & { _uploadedFile?: File };
 
 type UploadImageButtonWithPreviewProps = {
   registerLabel: string;
   registerOptions?: RegisterOptions;
   useFormReturns: UseFormReturn;
-  selectedImageUrl?: string;
+  image: ImageWithUploadableFile;
 };
 
 const UploadImageButtonWithPreview = ({
   registerLabel,
   registerOptions,
-  useFormReturns: { register, watch, setValue, resetField },
-  selectedImageUrl,
+  useFormReturns: { register, watch, setValue, resetField, control },
+  image,
 }: UploadImageButtonWithPreviewProps) => {
-  const { ref, onChange, ...rest } = register(registerLabel, { value: [], ...registerOptions });
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const previewUrlRegisterLabel = `${registerLabel}.previewImageUrl`;
-  register(previewUrlRegisterLabel, { value: selectedImageUrl });
-  const previewImageUrl = watch(previewUrlRegisterLabel, selectedImageUrl) as string;
+  const previewImageUrl: string = useWatch({ name: `${registerLabel}.url`, defaultValue: image?.url, control: control });
+
+  const assetIdLabel = `${registerLabel}.assetId`;
+  const urlLabel = `${registerLabel}.url`;
+  const uploadedFileLabel = `${registerLabel}._uploadedFile`;
+  register(assetIdLabel, { value: image?.assetId });
+  register(urlLabel, { value: previewImageUrl });
+  register(uploadedFileLabel, { value: null, ...registerOptions });
 
   return (
     <Box>
@@ -52,14 +59,10 @@ const UploadImageButtonWithPreview = ({
             type='file'
             className='hidden'
             accept='.jpg,.png'
-            {...rest}
-            ref={e => {
-              ref(e);
-              inputRef.current = e;
-            }}
+            ref={inputRef}
             onChange={e => {
-              onChange(e);
-              setValue(previewUrlRegisterLabel, URL.createObjectURL(e.target.files[0]));
+              setValue(urlLabel, URL.createObjectURL(e.target.files[0]));
+              setValue(uploadedFileLabel, e.target.files[0]);
             }}
           />
           <Box display='flex' justifyContent={'flex-end'}>
@@ -86,8 +89,9 @@ const UploadImageButtonWithPreview = ({
             h='4'
             w='4'
             onClick={() => {
-              resetField(registerLabel);
-              resetField(previewUrlRegisterLabel);
+              resetField(urlLabel, { defaultValue: null });
+              resetField(uploadedFileLabel, { defaultValue: null });
+              resetField(assetIdLabel, { defaultValue: null });
             }}
             pos='absolute'
             zIndex={2}

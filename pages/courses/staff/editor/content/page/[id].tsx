@@ -1,7 +1,7 @@
-import { Article, Asset, AssetType, Page, Video, Image, GameType } from '@prisma/client';
+import { Article, Asset, AssetType, Page, Video, Image, GameType, Game } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Grid, GridItem, Divider, Center, Input, Select, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
@@ -22,72 +22,52 @@ import { CourseStructure, getCourseStructure } from '../../../../../../lib/serve
 import { useMutation } from '@tanstack/react-query';
 import { createOrUpdateAsset } from '../../../../../../lib/editor';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
+import { EditorSerializedQuizQuestion } from '../../../../../../components/quiz-editor/Question';
+import getPageEditorFormValue from '../../../../../../lib/server/page';
 
 type Props = {
   id: string;
   courseStructure: CourseStructure;
-  page: Page & {
-    chapter: {
-      courseId: string;
-    };
-    asset: Asset & {
-      image: Image;
-      video: Video;
-      article: Article;
-    };
-  };
+  formValues: EditorPageFormValues;
 };
 
+// this containts all value needed for the form
 export type EditorPageFormValues = {
+  originalAssetId: string;
+  originalAssetType: string;
+  originalInteractiveType?: string;
+  courseId: string;
+
   name: string;
   description?: string;
   duration: number;
   assetType: AssetType;
   interactiveType?: GameType;
-  originalAssetId: string;
   text?: string;
   image?: {
+    filename?: string;
     uploadedFile?: File;
     removeOriginal: boolean;
   };
   video?: {
+    filename?: string;
     uploadedFile?: File;
     removeOriginal: boolean;
   };
-  // TODO: intergrate games
-  questions: any[];
+  quizGame: {
+    questions: EditorSerializedQuizQuestion[];
+  };
+  // TODO: intergrate sorting game
   sortingGame: any;
 };
 
-const constructPageFormValue = (page): EditorPageFormValues => {
-  return {
-    name: page.name,
-    duration: page.duration,
-    assetType: page.asset.assetType,
-    description: page?.description,
-    interactiveType: page?.asset?.game?.type,
-    text: page?.asset?.article?.text,
-    originalAssetId: page?.asset?.id,
-    image: {
-      uploadedFile: null,
-      removeOriginal: false,
-    },
-    video: {
-      uploadedFile: null,
-      removeOriginal: false,
-    },
-    questions: [],
-    sortingGame: { buckets: [] },
-  };
-};
-
-const EditContentPage = ({ id, courseStructure, page }: Props) => {
+const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const useFormReturns = useForm({
-    defaultValues: { ...constructPageFormValue(page) }, // TODO: intergrate interactive type
+    defaultValues: formValues,
   });
   const {
     register,
@@ -152,6 +132,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                 mutateOnSave.mutate(data);
               })}
             >
+              {/* <>{`${JSON.stringify(errors, null, 2)}`}</> */}
               <FormControl mt={4} isInvalid={!!errors.name} isDisabled={isDisabled}>
                 <FormLabel htmlFor='title'>Page Title *</FormLabel>
                 <Input placeholder='Page Title Here' {...register('name', { required: { value: true, message: 'Enter Page Title' } })} />
@@ -175,7 +156,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                   <option value='article'>Text</option>
                   <option value='image'>Image</option>
                   <option value='video'>Video</option>
-                  <option value='games'>Interactive Component</option>
+                  <option value='game'>Interactive Component</option>
                 </Select>
               </FormControl>
               {pageContent === 'article' && (
@@ -194,11 +175,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                 <>
                   <FormControl mt={4}>
                     <FormLabel htmlFor='image'>Image Upload *</FormLabel>
-                    <UploadImageButton
-                      useFormReturns={useFormReturns}
-                      isDisabled={isDisabled}
-                      imageFilename={page?.asset?.image?.filename}
-                    />
+                    <UploadImageButton useFormReturns={useFormReturns} isDisabled={isDisabled} imageFilename={formValues.image.filename} />
                   </FormControl>
                   <FormControl mt={4} isDisabled={isDisabled} isInvalid={!!errors?.description}>
                     <FormLabel htmlFor='image-desc'>Page Description *</FormLabel>
@@ -216,11 +193,7 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                 <>
                   <FormControl mt={4}>
                     <FormLabel htmlFor='video'>Video Upload *</FormLabel>
-                    <UploadVideoButton
-                      useFormReturns={useFormReturns}
-                      isDisabled={isDisabled}
-                      videoFilename={page?.asset?.video?.filename}
-                    />
+                    <UploadVideoButton useFormReturns={useFormReturns} isDisabled={isDisabled} videoFilename={formValues.video.filename} />
                   </FormControl>
                   <FormControl mt={4} isDisabled={isDisabled} isInvalid={!!errors?.description}>
                     <FormLabel htmlFor='video-desc'>Page Description *</FormLabel>
@@ -234,22 +207,23 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
                   </FormControl>
                 </>
               )}
-              {pageContent === 'games' && (
+              {pageContent === 'game' && (
                 <Box mt={4} minH='max-content'>
                   <FormLabel htmlFor='interactive'>Interactive Component Type*</FormLabel>
                   <Select
                     placeholder='Interactive Component Type'
+                    defaultValue={formValues?.interactiveType}
                     onChange={event => {
                       setValue('interactiveType', event.target.value as GameType);
                     }}
                     mb='6'
                   >
-                    <option value='quiz'>Quiz</option>
-                    <option value='sort'>Sorting Game</option>
+                    <option value='quizGame'>Quiz</option>
+                    <option value='sortingGame'>Sorting Game</option>
                     <option value='tbc'>TBC</option>
                   </Select>
-                  {interactiveType === 'quiz' && <QuizCreator useFormReturns={useFormReturns} />}
-                  {interactiveType === 'sort' && <SortingGameCreator useFormReturns={useFormReturns} />}
+                  {interactiveType === 'quizGame' && <QuizCreator useFormReturns={useFormReturns} />}
+                  {interactiveType === 'sortGame' && <SortingGameCreator useFormReturns={useFormReturns} />}
                 </Box>
               )}
               <Flex mt={4} justifyContent={'space-between'}>
@@ -300,30 +274,10 @@ const EditContentPage = ({ id, courseStructure, page }: Props) => {
 export const getServerSideProps: GetServerSideProps = async req => {
   const id = req.query.id as string;
 
-  const page = await prisma.page.findUnique({
-    where: {
-      id: id,
-    },
-    include: {
-      chapter: {
-        select: {
-          courseId: true,
-        },
-      },
-      asset: {
-        include: {
-          article: true,
-          image: true,
-          video: true,
-          game: true,
-        },
-      },
-    },
-  });
+  const formValues = await getPageEditorFormValue(id);
+  const courseStructure: CourseStructure = await getCourseStructure(formValues.courseId);
 
-  const courseStructure: CourseStructure = await getCourseStructure(page.chapter.courseId);
-
-  return { props: { id, courseStructure, page, key: id } };
+  return { props: { id, courseStructure, formValues, key: id } };
 };
 
 export default EditContentPage;

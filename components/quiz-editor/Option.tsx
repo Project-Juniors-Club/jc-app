@@ -1,18 +1,15 @@
 import { UseFormReturn, useWatch } from 'react-hook-form';
-import UploadImageButtonWithPreview from '../UploadImageButtonWithPreview';
+import UploadImageButtonWithPreview, { ImageWithUploadableFile } from '../UploadImageButtonWithPreview';
 import { Checkbox, CloseButton, Flex, Input, Radio, VStack, Text, Box } from '@chakra-ui/react';
 import OptionTypeSelect from './OptionTypeSelect';
+import { SerializedQuizOption } from '../../lib/server/quiz';
+import { QuizGameOptionType } from '@prisma/client';
 
-// TODO: update with image
-export type Option = {
-  isCorrect: boolean;
-  type: 'text' | 'image';
-  text: string | null;
-};
+export type EditorSerializedQuizOption = Omit<SerializedQuizOption, 'image'> & { image: ImageWithUploadableFile };
 
 type OptionProp = {
   registerLabel: string;
-  option: Option;
+  option: EditorSerializedQuizOption;
   useFormReturns: UseFormReturn;
   questionType: 'mcq' | 'mrq';
   onDelete: () => void;
@@ -33,7 +30,7 @@ export const Option = ({
   errors,
 }: OptionProp) => {
   const optionTypeLabel = `${registerLabel}.type`;
-  const optionType = useWatch({ name: optionTypeLabel, defaultValue: option.type, control: control }) as 'text' | 'image' | 'both';
+  const optionType: QuizGameOptionType = useWatch({ name: optionTypeLabel, defaultValue: option.type, control: control });
   return (
     <Flex gap={4}>
       <Box py={3}>
@@ -46,9 +43,9 @@ export const Option = ({
 
       <OptionTypeSelect registerLabel={optionTypeLabel} useFormReturns={useFormReturns} />
       <VStack gap={0.5} alignItems='start' w='100%'>
-        {['text', 'both'].includes(optionType) && (
+        {['text', 'textAndImage'].includes(optionType) && (
           <Input
-            {...register(`${registerLabel}.text`, { value: option.text, required: optionType === 'text' })}
+            {...register(`${registerLabel}.text`, { value: option.text, required: optionType === 'text' || optionType === 'textAndImage' })}
             fontSize={14}
             placeholder='Option'
             defaultValue={option.text}
@@ -57,11 +54,12 @@ export const Option = ({
           />
         )}
 
-        {['image', 'both'].includes(optionType) && (
+        {['image', 'textAndImage'].includes(optionType) && (
           <UploadImageButtonWithPreview
             registerLabel={`${registerLabel}.image`}
             useFormReturns={useFormReturns}
-            registerOptions={{ required: optionType === 'image' }}
+            registerOptions={{ required: (optionType === 'image' || optionType === 'textAndImage') && !option?.image?.assetId }}
+            image={option.image}
           />
         )}
       </VStack>

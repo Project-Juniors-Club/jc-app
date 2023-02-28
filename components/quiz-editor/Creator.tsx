@@ -1,7 +1,9 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Box, Flex, Text, Button, VStack, Checkbox } from '@chakra-ui/react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
-import { Question } from './Question';
+import { useFieldArray, UseFormReturn, useWatch } from 'react-hook-form';
+import { EditorSerializedQuizQuestion, Question } from './Question';
+import { SerializedQuizQuestion } from '../../lib/server/quiz';
+import { EditorSerializedQuizOption } from './Option';
 
 type QuizCreatorProp = {
   useFormReturns: UseFormReturn<any>;
@@ -9,15 +11,28 @@ type QuizCreatorProp = {
 
 const MIN_NUM_QUESTION = 1;
 
-const DEFAULT_QUESTION = {
-  text: null,
-  type: 'mcq',
-  previewImageUrl: null,
-  options: [
-    { isCorrect: true, type: 'text', text: null },
-    { isCorrect: false, type: 'text', text: null },
-  ],
-} as Question;
+const constructDefaultQuestion = (questionNumber: number): EditorSerializedQuizQuestion => {
+  return {
+    questionNumber: questionNumber,
+    isMultipleResponse: false,
+    text: '',
+    image: null,
+    options: [
+      {
+        isCorrect: true,
+        type: 'text',
+        text: null,
+        image: null,
+      },
+      {
+        isCorrect: false,
+        type: 'text',
+        text: null,
+        image: null,
+      },
+    ],
+  };
+};
 
 const AddQuestionButton = ({ onClick }) => {
   return (
@@ -39,16 +54,24 @@ const QuizCreator = ({ useFormReturns }: QuizCreatorProp) => {
     formState: { errors },
     clearErrors,
     control,
-  } = useFormReturns;
+    unregister,
+  } = useFormReturns as UseFormReturn<{ quizGame: { questions: EditorSerializedQuizQuestion[] } }>;
+  const {
+    fields: questions,
+    remove,
+    append,
+  } = useFieldArray({
+    name: 'quizGame.questions',
+    control: control,
+    shouldUnregister: true,
+  });
   const handleOnQuestionDelete = (idx: number) => () => {
-    questions.splice(idx, 1);
-    setValue('questions', questions);
+    remove(idx);
     clearErrors();
   };
-  const questions = useWatch({ name: 'questions', control: control });
   return (
     <>
-      <Box fontSize={14} fontFamily='Open Sans' fontWeight={400} px='3rem' bg='#E6E6E6' borderRadius={16} width='660px' py={8}>
+      <Box fontSize={14} fontFamily='Open Sans' fontWeight={400} px='3rem' bg='#E6E6E6' borderRadius={16} width='100%' py={8}>
         <Text fontWeight={700} mb={5}>
           Quiz Questions
         </Text>
@@ -56,18 +79,18 @@ const QuizCreator = ({ useFormReturns }: QuizCreatorProp) => {
           {questions.map((question, idx) => (
             <Question
               useFormReturns={useFormReturns}
-              key={idx}
+              key={question.id}
               question={question}
-              registerLabel={`questions.${idx}`}
+              registerLabel={`quizGame.questions.${idx}`}
               onDelete={handleOnQuestionDelete(idx)}
               isDeletable={questions.length > MIN_NUM_QUESTION}
-              errors={errors?.questions?.[idx]}
+              errors={errors?.quizGame?.questions?.[idx]}
             />
           ))}
         </VStack>
         <AddQuestionButton
           onClick={() => {
-            setValue('questions', [...questions, DEFAULT_QUESTION]);
+            append(constructDefaultQuestion(questions.length + 1));
             clearErrors();
           }}
         />

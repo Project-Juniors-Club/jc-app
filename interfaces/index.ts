@@ -16,7 +16,7 @@ export const UserType: {
   courseEditor: 'courseEditor',
 };
 
-export type UserType = typeof UserType[keyof typeof UserType];
+export type UserType = (typeof UserType)[keyof typeof UserType];
 
 export type User = {
   id: string;
@@ -82,15 +82,6 @@ export type CourseItem = {
   course: {
     name: string;
   };
-};
-
-export type Image = {
-  id: string;
-  courseItemId: string | null;
-  url: string;
-  courseItem: {
-    name: string;
-  } | null;
 };
 
 export type Video = {
