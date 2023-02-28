@@ -1,23 +1,5 @@
-import { AddIcon, ChevronDownIcon, CloseIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Flex,
-  Image,
-  Textarea,
-  Text,
-  Menu,
-  MenuOptionGroup,
-  MenuItemOption,
-  MenuButton,
-  Button,
-  MenuList,
-  CloseButton,
-  Icon,
-  Radio,
-  Checkbox,
-  VStack,
-  Input,
-} from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
+import { Box, Image, Text, CloseButton } from '@chakra-ui/react';
 import { RegisterOptions, UseFormReturn, useWatch } from 'react-hook-form';
 import CustomButton from './Button';
 import { ChangeEvent, useRef, useState } from 'react';
@@ -32,6 +14,10 @@ type UploadImageButtonWithPreviewProps = {
   registerOptions?: RegisterOptions;
   useFormReturns: UseFormReturn;
   image: ImageWithUploadableFile;
+  selectedImageUrl?: string;
+  imageHeight?: string;
+  imageWidth?: string;
+  imagePadding?: number;
 };
 
 const UploadImageButtonWithPreview = ({
@@ -39,6 +25,10 @@ const UploadImageButtonWithPreview = ({
   registerOptions,
   useFormReturns: { register, watch, setValue, resetField, control },
   image,
+  selectedImageUrl,
+  imageHeight,
+  imageWidth,
+  imagePadding,
 }: UploadImageButtonWithPreviewProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -98,8 +88,14 @@ const UploadImageButtonWithPreview = ({
           >
             <CloseIcon h='1.5' />
           </CloseButton>
-          <Box p={1.5}>
-            <Image src={previewImageUrl} alt='Question Cover Image Preview' width='100%' height='100%' zIndex={1} />
+          <Box p={imagePadding ?? 1.5}>
+            <Image
+              src={previewImageUrl}
+              alt='Question Cover Image Preview'
+              width={imageWidth ?? '100%'}
+              height={imageHeight ?? '100%'}
+              zIndex={1}
+            />
           </Box>
         </Box>
       )}

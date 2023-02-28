@@ -1,19 +1,32 @@
-import React from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
 import CourseList from '../../components/course/homepage/CourseList';
-import UnfinishedCourseList from '../../components/course/homepage/UnfinishedCourseList';
+import ViewedCourseList from '../../components/course/homepage/ViewedCourseList';
 import WelcomeMessage from '../../components/course/homepage/WelcomeMessage';
 import NavBar from '../../components/navbar/NavBar';
-import { Course } from '../../interfaces';
-import prisma from '../../lib/prisma';
-import { getAllCourses } from '../../lib/server/course';
+import { getRecentCourses } from '../../lib/courseRecent';
+import { getAllCourses, SerializedCourse } from '../../lib/server/course';
 
 const CourseHomePage = ({ courses }) => {
+  const sess = useSession();
+
+  const [recentCourses, setRecentCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!sess) {
+      return;
+    }
+    getRecentCourses(sess?.data.user.id).then((value: SerializedCourse[]) => {
+      setRecentCourses(value);
+    });
+  }, [sess]);
+
   return (
     <>
       <NavBar />
       <div className='px-40 py-16'>
-        <WelcomeMessage isUnfinishedCoursesEmpty={false} />
-        <UnfinishedCourseList />
+        <WelcomeMessage isUnfinishedCoursesEmpty={recentCourses.length > 0} />
+        <ViewedCourseList courses={recentCourses} />
         <CourseList courses={courses} />
       </div>
     </>
@@ -28,4 +41,5 @@ export async function getStaticProps() {
     revalidate: 86400,
   };
 }
+
 export default CourseHomePage;
