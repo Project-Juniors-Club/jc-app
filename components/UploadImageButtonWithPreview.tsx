@@ -13,7 +13,7 @@ type UploadImageButtonWithPreviewProps = {
   registerLabel: string;
   registerOptions?: RegisterOptions;
   useFormReturns: UseFormReturn;
-  image: ImageWithUploadableFile;
+  image?: ImageWithUploadableFile;
   selectedImageUrl?: string;
   imageHeight?: string;
   imageWidth?: string;
