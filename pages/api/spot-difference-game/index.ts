@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { createSpotTheDiff, findSpotTheDiff } from '../../../lib/server/spotTheDifference';
+import { createSpotTheDifferenceGameWithDifferences, findSpotTheDiff } from '../../../lib/server/spotTheDifference';
 import validateDifferences from './spotTheDifferenceValidator';
 import { entityMessageCreator } from '../../../utils/api-messages';
 import { errorMessageHandler } from '../../../utils/error-message-handler';
@@ -19,7 +19,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).end(`The input is not valid. ${result.message}`);
       }
 
-      const created = await createSpotTheDiff(rightImageId, leftImageId, differences);
+      const created = await createSpotTheDifferenceGameWithDifferences(rightImageId, leftImageId, differences);
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {
       res.setHeader('Allow', ['GET', 'POST']);

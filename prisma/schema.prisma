@@ -232,7 +232,17 @@ model SpotTheDifferenceGame {
   leftImageId  String  @unique
   rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
   rightImageId String  @unique
-  differences  Float[]
+  differences  SpotTheDifference[]
+}
+
+model SpotTheDifference {
+  id           String    @id @default(cuid())
+  x            Float
+  y            Float
+  width        Float
+  height       Float
+  game         SpotTheDifferenceGame @relation(fields: [gameId], references: [gameId])
+  gameId       String
 }
 
 model MatchingGame {

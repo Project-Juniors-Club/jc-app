@@ -1,7 +1,7 @@
-import { Prisma, SpotTheDifferenceGame, GameType, AssetType } from '@prisma/client';
+import { Prisma, SpotTheDifferenceGame, GameType, AssetType, SpotTheDifference } from '@prisma/client';
 import prisma from '../prisma';
 
-export const createSpotTheDiff = async (rightImageId: string, leftImageId: string, differences: number[]) => {
+export const createSpotTheDiff = async (rightImageId: string, leftImageId: string) => {
   return (await prisma.spotTheDifferenceGame.create({
     data: {
       rightImage: {
@@ -24,10 +24,48 @@ export const createSpotTheDiff = async (rightImageId: string, leftImageId: strin
           },
         },
       },
-      differences,
     },
   })) as SpotTheDifferenceGame;
 };
+
+async function createDifferences(gameId: string, differences: SpotTheDifference[]) {
+  const differenceObjects = differences.map(difference => {
+    return {
+      x: difference.x,
+      y: difference.y,
+      width: difference.width,
+      height: difference.height,
+      game: {
+        connect: {
+          gameId,
+        },
+      },
+    };
+  });
+
+  const createdDifferences = differenceObjects.map(async difference => {
+    const createdDifference = await prisma.spotTheDifference.create({
+      data: difference,
+    });
+    return createdDifference;
+  });
+
+  return createdDifferences;
+}
+
+export async function createSpotTheDifferenceGameWithDifferences(
+  leftImageId: string,
+  rightImageId: string,
+  differences: SpotTheDifference[],
+) {
+  const spotTheDifferenceGame = await createSpotTheDiff(leftImageId, rightImageId);
+  const createdDifferences = await createDifferences(spotTheDifferenceGame.gameId, differences);
+
+  return {
+    spotTheDifferenceGame,
+    differences: createdDifferences,
+  };
+}
 
 export const findSpotTheDiff = async (
   where?: Partial<Prisma.SpotTheDifferenceGameWhereInput>,
