@@ -29,7 +29,7 @@ const MatchingGame = () => {
   const [leftCoordinates, setLeftCoordinates] = useState<{ x: number; y: number }>();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   useEffect(() => {
-    if (ref == null || ref.current == null) return;
+    if (ref === null || ref.current === null) return;
     const ctx = ref.current.getContext('2d');
     setContext(ctx);
   }, []);
