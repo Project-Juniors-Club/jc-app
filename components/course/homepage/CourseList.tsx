@@ -1,9 +1,9 @@
 import CourseCard from './CourseCard';
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { Course } from '../../../interfaces';
 import FilterButton from '../../buttons/FilterButton';
 import styles from './CourseList.module.css';
+import { SerializedCourse } from '../../../lib/server/course';
 
 type SortTypes = 'priceAscending' | 'priceDescending' | 'durationAscending' | 'durationDescending' | '';
 export type FilterTypes = {
@@ -15,7 +15,7 @@ const filterList: FilterTypes[] = [
   { title: 'Duration', options: ['0-5 hours', '5-10 hours', '10-15 hours', '>15 hours'] },
 ];
 
-const CourseList = ({ courses }: { courses: Course[] }) => {
+const CourseList = ({ courses }: { courses: SerializedCourse[] }) => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortTypes>('');
   const [filter, setFilter] = useState<FilterTypes[]>([
@@ -45,7 +45,8 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
   }, [sort, courses]);
   const filteredCourses = useMemo(() => {
     return sortedCourses.filter(
-      course => course.name.toLowerCase().includes(search.toLowerCase()) || course.description.toLowerCase().includes(search.toLowerCase()),
+      course =>
+        course.title.toLowerCase().includes(search.toLowerCase()) || course.description.toLowerCase().includes(search.toLowerCase()),
     );
   }, [search, sortedCourses]);
   const handleDelete = (title: string, option: string) => {

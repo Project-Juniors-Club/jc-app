@@ -105,7 +105,6 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
       throw err;
     }
   };
-  //   console.log(watch());
 
   return (
     <div>
@@ -197,7 +196,7 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
             </div>
           </div>
         </form>
-        <CancelModal isOpen={isOpen} onClose={onClose} isCentered={true} />
+        <CancelModal isOpen={isOpen} onClose={onClose} isCentered={true} exitOnClick={() => router.push(`/courses/staff/${course.id}`)} />
       </div>
       <Footer />
     </div>

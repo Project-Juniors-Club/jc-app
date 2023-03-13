@@ -2,7 +2,7 @@ import { Prisma, Video, AssetType } from '@prisma/client';
 import prisma from '../prisma';
 
 export const createVideo = async (url: string, assetId?: string, filename?: string, key?: string) => {
-  return (await prisma.image.create({
+  return (await prisma.video.create({
     data: {
       asset: {
         connectOrCreate: {
@@ -10,7 +10,7 @@ export const createVideo = async (url: string, assetId?: string, filename?: stri
             id: assetId,
           },
           create: {
-            assetType: AssetType.image,
+            assetType: AssetType.video,
           },
         },
       },
@@ -21,15 +21,15 @@ export const createVideo = async (url: string, assetId?: string, filename?: stri
   })) as Video;
 };
 
-export const findVideos = async (where?: Partial<Prisma.ImageWhereInput>, select?: Prisma.ImageSelect) => {
-  return (await prisma.image.findMany({
+export const findVideos = async (where?: Partial<Prisma.VideoWhereInput>, select?: Prisma.VideoSelect) => {
+  return (await prisma.video.findMany({
     where,
     select,
   })) as Video[];
 };
 
-export const findUniqueVideo = async (where: Prisma.ImageWhereUniqueInput, select?: Prisma.ImageSelect) => {
-  return (await prisma.image.findUnique({
+export const findUniqueVideo = async (where: Prisma.VideoWhereUniqueInput, select?: Prisma.VideoSelect) => {
+  return (await prisma.video.findUnique({
     where,
     select,
   })) as Video;
@@ -40,15 +40,15 @@ export const updateVideo = async (
   data: Prisma.VideoUpdateInput,
   select?: Prisma.VideoSelect,
 ) => {
-  return (await prisma.image.update({
+  return (await prisma.video.update({
     where,
     data,
     select,
   })) as Video;
 };
 
-export const deleteVideo = async (where: Partial<Prisma.ImageWhereUniqueInput>, select?: Prisma.ImageSelect) => {
-  return (await prisma.image.delete({
+export const deleteVideo = async (where: Partial<Prisma.VideoWhereUniqueInput>, select?: Prisma.VideoSelect) => {
+  return (await prisma.video.delete({
     where,
     select,
   })) as Video;

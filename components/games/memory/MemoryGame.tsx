@@ -59,7 +59,7 @@ const MemoryGame = () => {
         }, 1000);
       }
     }
-  }, [selectedCards]);
+  }, [selectedCards, randomCards, score, turns]);
 
   const handleClick = (cardIndex: number, card: CardObj) => {
     if (isPlaying && selectedCards.length < 2) {
