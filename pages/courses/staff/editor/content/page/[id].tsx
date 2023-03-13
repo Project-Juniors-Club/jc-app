@@ -19,8 +19,8 @@ import UploadVideoButton from '../../../../../../components/course/content/edito
 import QuizCreator from '../../../../../../components/quiz-editor/Creator';
 import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
-import { useMutation } from '@tanstack/react-query';
 import { createOrUpdateAsset, validatePageFormValues } from '../../../../../../lib/editor';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
 import { EditorSerializedQuizQuestion } from '../../../../../../components/quiz-editor/Question';
 import getPageEditorFormValue from '../../../../../../lib/server/page';
@@ -61,10 +61,19 @@ export type EditorPageFormValues = {
   sortingGame: any;
 };
 
-const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
+const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValues }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const queryClient = useQueryClient();
+  const { data: courseStructure } = useQuery<CourseStructure>({
+    queryKey: ['courseStructure'],
+    queryFn: async () => {
+      const res = await axios.get(`/api/courses/structure/${initialCourseStructure.id}`);
+      return res.data;
+    },
+    initialData: initialCourseStructure,
+  });
 
   const useFormReturns = useForm({
     defaultValues: formValues,
@@ -104,6 +113,7 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
     mutationFn: submitPageData,
     onSuccess: data => {
       openSuccessNotification('Updated page successfully!');
+      queryClient.invalidateQueries({ queryKey: ['courseStructure'] });
     },
     onError: () => {
       openErrorNotification('Update failed', 'Please try again');
@@ -120,6 +130,7 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
     },
   });
   const isDisabled = mutateOnSave.isLoading || mutateOnExit.isLoading || mutateOnExit.isSuccess;
+  console.log(errors);
 
   return (
     <div>
@@ -144,8 +155,8 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
               <FormControl mt={4} isInvalid={!!errors.duration} isDisabled={isDisabled}>
                 <FormLabel htmlFor='duration'>Page Duration (in minutes) *</FormLabel>
                 <Input
-                  placeholder='Page Duration Here'
                   type='number'
+                  placeholder='Page Duration Here'
                   {...register('duration', {
                     required: { value: true, message: 'Enter Page Duration' },
                     valueAsNumber: true,
@@ -212,7 +223,7 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
               )}
               {pageContent === 'game' && (
                 <Box mt={4} minH='max-content'>
-                  <FormLabel htmlFor='interactive'>Interactive Component Type*</FormLabel>
+                  <FormLabel htmlFor='interactive'>Interactive Component Type *</FormLabel>
                   <Select
                     placeholder='Interactive Component Type'
                     defaultValue={formValues?.interactiveType}
@@ -223,7 +234,6 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
                   >
                     <option value='quizGame'>Quiz</option>
                     <option value='sortingGame'>Sorting Game</option>
-                    <option value='tbc'>TBC</option>
                   </Select>
                   {interactiveType === 'quizGame' && <QuizCreator useFormReturns={useFormReturns} />}
                   {interactiveType === 'sortGame' && <SortingGameCreator useFormReturns={useFormReturns} />}

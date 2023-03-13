@@ -1,3 +1,4 @@
+import { constructDefaultQuestion } from '../../components/quiz-editor/Creator';
 import { EditorSerializedQuizQuestion } from '../../components/quiz-editor/Question';
 import { EditorPageFormValues } from '../../pages/courses/staff/editor/content/page/[id]';
 import prisma from '../prisma';
@@ -69,7 +70,7 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
   });
 
   const assetType = page.asset.assetType;
-  const interactiveType = page.asset?.game?.type || null;
+  const interactiveType = page.asset?.game?.type || 'quizGame';
 
   const result = {
     originalAssetId: page?.asset?.id,
@@ -103,7 +104,8 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
       assetType == 'game' && interactiveType == 'quizGame'
         ? await getEditorQuizGame(page.asset.game.assetId)
         : {
-            questions: [],
+            // By right, this won't be registered
+            questions: [constructDefaultQuestion(0)],
           },
 
     // TODO: fetch sortingGame data

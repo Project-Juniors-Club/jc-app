@@ -93,13 +93,13 @@ const validatePageDuration = ({ duration }: EditorPageFormValues) => {
 
 const validatePageImage = ({ assetType, image: { uploadedFile, filename, removeOriginal } }: EditorPageFormValues) => {
   return assetType === 'image' && !uploadedFile && ((!!filename && removeOriginal) || !filename)
-    ? { message: 'This is required', type: 'required' }
+    ? { uploadedFile: { message: 'This is required', type: 'required' } }
     : undefined;
 };
 
 const validatePageVideo = ({ assetType, video: { uploadedFile, filename, removeOriginal } }: EditorPageFormValues) => {
   return assetType === 'video' && !uploadedFile && ((!!filename && removeOriginal) || !filename)
-    ? { message: 'This is required', type: 'required' }
+    ? { uploadedFile: { message: 'This is required', type: 'required' } }
     : undefined;
 };
 
@@ -110,7 +110,7 @@ const validatePageDescription = ({ assetType, description }: EditorPageFormValue
 };
 
 const validateQuizGame = ({ assetType, interactiveType, quizGame }: EditorPageFormValues) => {
-  if (assetType !== 'game' && interactiveType !== 'quizGame') {
+  if (assetType !== 'game' || interactiveType !== 'quizGame') {
     return undefined;
   }
   console.log('trying to validate quiz', quizGame);

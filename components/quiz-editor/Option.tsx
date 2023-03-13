@@ -3,7 +3,7 @@ import UploadImageButtonWithPreview, { ImageWithUploadableFile } from '../Upload
 import { Checkbox, CloseButton, Flex, Input, Radio, VStack, Text, Box } from '@chakra-ui/react';
 import OptionTypeSelect from './OptionTypeSelect';
 import { SerializedQuizOption } from '../../lib/server/quiz';
-import { QuizGameOptionType } from '@prisma/client';
+import { QuizGameOption, QuizGameOptionType } from '@prisma/client';
 
 export type EditorSerializedQuizOption = Omit<SerializedQuizOption, 'image'> & { image: ImageWithUploadableFile };
 
@@ -22,13 +22,13 @@ export const Option = ({
   registerLabel,
   useFormReturns,
   useFormReturns: { watch, control, register },
-  option,
   questionType,
   onDelete,
   onSelectCorrect,
   isDeletable,
   errors,
 }: OptionProp) => {
+  const option: EditorSerializedQuizOption = useWatch({ name: registerLabel, control: control });
   const optionTypeLabel = `${registerLabel}.type`;
   const optionType: QuizGameOptionType = useWatch({ name: optionTypeLabel, defaultValue: option.type, control: control });
   return (
@@ -40,7 +40,6 @@ export const Option = ({
           <Checkbox isChecked={option.isCorrect} onChange={onSelectCorrect} />
         )}
       </Box>
-
       <OptionTypeSelect registerLabel={optionTypeLabel} useFormReturns={useFormReturns} />
       <VStack gap={0.5} alignItems='start' w='100%'>
         {['text', 'textAndImage'].includes(optionType) && (

@@ -123,10 +123,12 @@ export const getCourseStructure = async (id: string) => {
         select: {
           name: true,
           id: true,
+          chapterNumber: true,
           pages: {
             select: {
               name: true,
               id: true,
+              pageNumber: true,
             },
             orderBy: {
               pageNumber: 'asc',

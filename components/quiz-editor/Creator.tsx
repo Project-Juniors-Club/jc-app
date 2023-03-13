@@ -11,7 +11,7 @@ type QuizCreatorProp = {
 
 const MIN_NUM_QUESTION = 1;
 
-const constructDefaultQuestion = (questionNumber: number): EditorSerializedQuizQuestion => {
+export const constructDefaultQuestion = (questionNumber: number): EditorSerializedQuizQuestion => {
   return {
     questionNumber: questionNumber,
     isMultipleResponse: false,
