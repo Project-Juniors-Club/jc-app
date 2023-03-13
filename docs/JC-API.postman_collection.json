@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "43b252af-6dd0-4e01-b504-3e070b96723d",
+    "_postman_id": "953ed483-758b-4c71-9cc5-d1e778a2532c",
     "name": "JC-API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "17469210"
@@ -277,9 +277,9 @@
               }
             ],
             "url": {
-              "raw": "{{hostname}}/users/1",
+              "raw": "{{hostname}}/users/102",
               "host": ["{{hostname}}"],
-              "path": ["users", "1"]
+              "path": ["users", "102"]
             }
           },
           "response": []
@@ -745,6 +745,199 @@
               "raw": "{{hostname}}/youtube/",
               "host": ["{{hostname}}"],
               "path": ["youtube", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "internal",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Create 1 Staff",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"1yahoo.com\", \r\n    \"userType\": \"courseEditor\",\r\n    \"name\": \"new editor\",\r\n    \"role\": \"main editor\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{hostname}}/internal/admin",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "admin"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Staff",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{hostname}}/internal/admin",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "admin"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete 1 Staff",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{hostname}}/internal/admin/clcyrryqz0004lr0lq6cdxm91",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "admin", "clcyrryqz0004lr0lq6cdxm91"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get 1 Staff By Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{hostname}}/internal/admin/clco9vcm60003trpkw6ffm9oi",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "admin", "clco9vcm60003trpkw6ffm9oi"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update 1 Staff",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"role\": \"yahoocom\",\r\n    \"name\": \"たちぼく\",\r\n    \"disabled\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{hostname}}/internal/staff/clco9vcm60003trpkw6ffm9oi",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "staff", "clco9vcm60003trpkw6ffm9oi"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Staff",
+          "item": [
+            {
+              "name": "Get 1 Staff By Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{hostname}}/internal/staff/clcyrryqz0004lr0lq6cdxm91",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "staff", "clcyrryqz0004lr0lq6cdxm91"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update 1 Staff",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "x-auth-token",
+                    "value": "{{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"role\": \"yahoocom\",\r\n    \"name\": \"たちぼく\",\r\n    \"disabled\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{hostname}}/internal/staff/clco9vcm60003trpkw6ffm9oi",
+                  "host": ["{{hostname}}"],
+                  "path": ["internal", "staff", "clco9vcm60003trpkw6ffm9oi"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Error",
+      "item": [
+        {
+          "name": "Get Internal Error",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{hostname}}/error",
+              "host": ["{{hostname}}"],
+              "path": ["error"]
             }
           },
           "response": []

@@ -158,7 +158,12 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
           </div>
           <div className='flex w-full justify-between py-8'>
             <div className='flex gap-x-3'>
-              <CustomButton variant={'black-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseOverview)} isDisabled={isDisabled}>
+              <CustomButton
+                variant={'black-solid'}
+                onClick={handleSubmit(onSubmitAndRedirectCourseOverview)}
+                isDisabled={isDisabled}
+                isLoading={isDisabled}
+              >
                 <div className='text-[#FFFFFF]'>Save & Exit</div>
               </CustomButton>
               <CustomButton
@@ -168,16 +173,22 @@ const CourseCreatePage = ({ categories, sess }: Props) => {
                   onOpen();
                 }}
                 isDisabled={isDisabled}
+                isLoading={isDisabled}
               >
                 Cancel
               </CustomButton>
             </div>
-            <CustomButton variant={'green-solid'} onClick={handleSubmit(onSubmitAndRedirectCourseEditor)} isDisabled={isDisabled}>
+            <CustomButton
+              variant={'green-solid'}
+              onClick={handleSubmit(onSubmitAndRedirectCourseEditor)}
+              isDisabled={isDisabled}
+              isLoading={isDisabled}
+            >
               Next: Edit Course
             </CustomButton>
           </div>
         </form>
-        <CancelModal isOpen={isOpen} onClose={onClose} isCentered={true} />
+        <CancelModal isOpen={isOpen} onClose={onClose} isCentered={true} exitOnClick={() => router.push('/courses/staff')} />
       </div>
       <Footer />
     </div>

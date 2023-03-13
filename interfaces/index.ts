@@ -7,14 +7,16 @@
 export const UserType: {
   normalUser: 'normalUser';
   admin: 'admin';
-  superAdmin: 'superAdmin';
+  staff: 'staff';
+  courseEditor: 'courseEditor';
 } = {
   normalUser: 'normalUser',
   admin: 'admin',
-  superAdmin: 'superAdmin',
+  staff: 'staff',
+  courseEditor: 'courseEditor',
 };
 
-export type UserType = typeof UserType[keyof typeof UserType];
+export type UserType = (typeof UserType)[keyof typeof UserType];
 
 export type User = {
   id: string;
@@ -33,13 +35,6 @@ export type NormalUser = {
 };
 
 export type Admin = {
-  userId: string;
-  user: {
-    username: string;
-  };
-};
-
-export type SuperAdmin = {
   userId: string;
   user: {
     username: string;

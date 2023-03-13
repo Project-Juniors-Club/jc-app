@@ -11,12 +11,12 @@ const DropDown = ({ buttonName, dropdownItems }: { buttonName: string; dropdownI
         {buttonName}
         <ChevronDownIcon className='ml-2 -mr-1 h-5 w-5 text-[#434343]' aria-hidden='true' />
       </Menu.Button>
-      <Menu.Items className={`absolute mt-8 divide-y divide-gray-100 shadow`}>
+      <Menu.Items className={`absolute mt-6 divide-y divide-slate-600 rounded-lg bg-white shadow-lg`}>
         {arr.map(item => {
           return (
-            <Menu.Item as='div' key='item' className={`block py-2 px-4 hover:bg-gray-100`}>
+            <Menu.Item as='div' key={item.clickOption} className={`block py-4 px-6`}>
               {({ active }) => (
-                <a className={`${active}`} href='#'>
+                <a className={`${active}`} onClick={item.onClick} href='#'>
                   {item.clickOption}
                 </a>
               )}

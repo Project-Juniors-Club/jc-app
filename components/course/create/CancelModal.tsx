@@ -2,6 +2,7 @@ import { ButtonGroup, ModalBody, ModalFooter, Text, useDisclosure } from '@chakr
 import { Listbox } from '@headlessui/react';
 import { Category } from '@prisma/client';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useController, UseControllerProps } from 'react-hook-form';
 import CustomButton from '../../Button';
 import Modal from '../../Modal';
@@ -14,7 +15,7 @@ const CancelModal = ({ isOpen, onClose, isCentered }: { isOpen: boolean; onClose
           <Image src={'/icons/Alert.svg'} height={40} width={40} alt='Alert' />
           <div>
             <div className='text-lg font-medium'>Are you sure you want to exit without saving?</div>
-            <div className='text-sm text-[#7B7B7B]'>This course will be discarded</div>
+            <div className='text-sm text-[#7B7B7B]'>All changes will be discarded</div>
           </div>
         </div>
       </ModalBody>
@@ -23,7 +24,7 @@ const CancelModal = ({ isOpen, onClose, isCentered }: { isOpen: boolean; onClose
           <CustomButton onClick={onClose} variant='black-outline'>
             <Text>Cancel</Text>
           </CustomButton>
-          <CustomButton onClick={onClose} variant='black-solid'>
+          <CustomButton onClick={exitOnClick} variant='black-solid'>
             <Text color='#FFFFFF'>Exit</Text>
           </CustomButton>
         </ButtonGroup>

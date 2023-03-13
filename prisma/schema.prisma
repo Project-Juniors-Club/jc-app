@@ -54,11 +54,12 @@ model User {
   emailVerified DateTime?
   image         String?
   name          String?
+  age           Int?
+  pdpa          Boolean      @default(false)
   accounts      Account[]
   sessions      Session[]
   admin         Admin?
   normalUser    NormalUser?
-  superAdmin    SuperAdmin?
   userCourses   UserCourse[]
 
   @@map("users")
@@ -72,30 +73,38 @@ model NormalUser {
 }
 
 model Admin {
-  userId         String   @id
-  user           User     @relation(fields: [userId], references: [id])
-  createdCourses Course[] @relation("createdBy")
-  updatedCourses Course[] @relation("updatedBy")
+  userId         String         @id
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdCourses Course[]       @relation("createdBy")
+  updatedCourses Course[]       @relation("updatedBy")
+  courseEditor   CourseEditor[]
+  disabled       Boolean        @default(true)
+  role           String         @default("Staff")
 
   @@map("admins")
 }
 
-model SuperAdmin {
-  userId String @id
-  user   User   @relation(fields: [userId], references: [id])
+model CourseEditor {
+  id       String @id @default(cuid())
+  courseId String
+  adminId  String
+  course   Course @relation(fields: [courseId], references: [id])
+  admin    Admin  @relation(fields: [adminId], references: [userId])
 
-  @@map("superAdmins")
+  @@unique([adminId, courseId])
+  @@map("courseEditors")
 }
 
 model UserCourse {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   userId     String
   courseId   String
   progress   Int
   correctQns Int
   stars      Int
-  course     Course @relation(fields: [courseId], references: [id])
-  user       User   @relation(fields: [userId], references: [id])
+  course     Course   @relation(fields: [courseId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  lastSeenBy DateTime
 
   @@unique([userId, courseId])
   @@map("userCourses")
@@ -109,23 +118,24 @@ model Category {
 }
 
 model Course {
-  id                 String       @id @default(cuid())
+  id                 String         @id @default(cuid())
   title              String
   description        String
   learningObjectives String
-  price              Decimal      @db.Decimal(5, 2)
+  price              Decimal        @db.Decimal(5, 2)
   creatorId          String
-  createDate         DateTime     @default(now())
+  createDate         DateTime       @default(now())
   lastUpdatedUserId  String
-  lastUpdatedDate    DateTime     @updatedAt
-  coverImage         Image?       @relation(fields: [coverImageAssetId], references: [assetId])
-  status             CourseStatus @default(DRAFT)
+  lastUpdatedDate    DateTime       @updatedAt
+  coverImage         Image?         @relation(fields: [coverImageAssetId], references: [assetId])
+  status             CourseStatus   @default(DRAFT)
   categoryId         String?
-  createdBy          Admin        @relation("createdBy", fields: [creatorId], references: [userId])
-  lastUpdatedBy      Admin        @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
-  category           Category?    @relation(fields: [categoryId], references: [id])
+  createdBy          Admin          @relation("createdBy", fields: [creatorId], references: [userId])
+  lastUpdatedBy      Admin          @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
+  category           Category?      @relation(fields: [categoryId], references: [id])
   chapters           Chapter[]
   userCourses        UserCourse[]
+  courseEditor       CourseEditor[]
   coverImageAssetId  String?
 
   @@map("courses")
@@ -144,38 +154,27 @@ model Chapter {
 }
 
 model Page {
-  chapterId   String?
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   pageNumber  Int
-  description String
+  description String?
   duration    Int
-  assetType   AssetType
-  Chapter     Chapter?   @relation(fields: [chapterId], references: [id])
-  pageItems   PageItem[]
+  chapterId   String?
+  chapter     Chapter? @relation(fields: [chapterId], references: [id])
+  assetId     String   @unique
+  asset       Asset    @relation(fields: [assetId], references: [id])
 
   @@map("pages")
 }
 
-model PageItem {
-  id             String    @id @default(cuid())
-  pageId         String
-  pageItemNumber Int
-  assetType      AssetType
-  assetId        String
-  caption        String?
-  asset          Asset     @relation(fields: [assetId], references: [id])
-  page           Page      @relation(fields: [pageId], references: [id])
-}
-
 model Asset {
-  id        String     @id @default(cuid())
+  id        String    @id @default(cuid())
   assetType AssetType
-  pageItems PageItem[]
   article   Article?
   game      Game?
-  Image     Image?
+  image     Image?
   video     Video?
+  page      Page?
 
   @@map("assets")
 }
@@ -190,6 +189,8 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  QuizGameQuestion           QuizGameQuestion[]
+  QuizGameOption             QuizGameOption[]
 
   @@map("images")
 }
@@ -217,8 +218,8 @@ model Game {
   assetId               String                 @id
   asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
   matchingGame          MatchingGame?
-  sortingGame           SortingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
+  QuizGame              QuizGame?
 
   @@map("games")
 }
@@ -239,15 +240,54 @@ model MatchingGame {
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 }
 
-model SortingGame {
+model QuizGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  quizGameQuestions QuizGameQuestion[]
+}
+
+model QuizGameQuestion {
+  id String @id @default(cuid())
+
+  questionNumber     Int
+  isMultipleResponse Boolean
+  questionTitle      String
+
+  image   Image?  @relation(fields: [imageId], references: [assetId])
+  imageId String?
+
+  quizGameOptions QuizGameOption[]
+
+  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+  quizGameId String
+}
+
+model QuizGameOption {
+  id                 String             @id @default(cuid())
+  isCorrectOption    Boolean
+  quizGameOptionType QuizGameOptionType
+
+  optionText String?
+
+  optionImage   Image?  @relation(fields: [optionImageId], references: [assetId])
+  optionImageId String?
+
+  quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
+  quizGameQuestionId String
+}
+
+enum QuizGameOptionType {
+  text
+  image
+  textAndImage
 }
 
 enum UserType {
   normalUser
   admin
-  superAdmin
+  courseEditor
+  staff
 }
 
 enum CourseStatus {
@@ -267,4 +307,5 @@ enum GameType {
   spotTheDifferenceGame
   matchingGame
   sortingGame
+  quizGame
 }

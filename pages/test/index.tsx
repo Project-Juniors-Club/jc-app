@@ -9,11 +9,11 @@ const Test = () => {
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   return (
     <div>
-      <NavBarGeneral></NavBarGeneral>
-      <br />
-      <NavBarCart></NavBarCart>
-      <br />
-      <NavBarCourse></NavBarCourse>
+      <NavBarGeneral />
+
+      <NavBarCart />
+
+      <NavBarCourse />
       <Text fontSize={'4xl'}>UI Components are shown here.</Text>
 
       <Text fontSize={'lg'}>Buttons</Text>
