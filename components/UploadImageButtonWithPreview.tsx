@@ -1,11 +1,12 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Image, Text, CloseButton } from '@chakra-ui/react';
-import { RegisterOptions, UseFormReturn, useWatch } from 'react-hook-form';
+import { Box, Image, Text, CloseButton, FormErrorMessage, FormControl } from '@chakra-ui/react';
+import { RegisterOptions, UseFormReturn, useFormState, useWatch } from 'react-hook-form';
 import CustomButton from './Button';
 import { ChangeEvent, useRef, useState } from 'react';
 import { setConstantValue } from 'typescript';
 import { register } from 'ts-node';
-import { Image as PrismaImage } from '@prisma/client';
+import { Image as PrismaImage, QuizGame } from '@prisma/client';
+import { ErrorMessage } from '@hookform/error-message';
 
 export type ImageWithUploadableFile = PrismaImage & { _uploadedFile?: File };
 
@@ -31,6 +32,7 @@ const UploadImageButtonWithPreview = ({
   imagePadding,
 }: UploadImageButtonWithPreviewProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { errors } = useFormState({ control: control, name: registerLabel });
 
   const previewImageUrl: string = useWatch({ name: `${registerLabel}.url`, defaultValue: image?.url, control: control });
 
@@ -68,6 +70,17 @@ const UploadImageButtonWithPreview = ({
               </Text>
             </CustomButton>
           </Box>
+          <ErrorMessage
+            errors={errors}
+            name={registerLabel}
+            render={({ message }) => {
+              return (
+                <FormControl isInvalid={true}>
+                  <FormErrorMessage>{message}</FormErrorMessage>
+                </FormControl>
+              );
+            }}
+          />
         </Box>
       )}
 

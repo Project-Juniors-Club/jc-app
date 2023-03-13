@@ -34,11 +34,13 @@ export const createQuiz = async (quizGameQuestions: SerializedQuizQuestion[]) =>
           questionNumber: question.questionNumber,
           isMultipleResponse: question.isMultipleResponse,
           questionTitle: question.text,
-          image: question?.image?.assetId && {
-            connect: {
-              assetId: question.image.assetId,
-            },
-          },
+          image: question?.image?.assetId
+            ? {
+                connect: {
+                  assetId: question.image.assetId,
+                },
+              }
+            : undefined,
           quizGameOptions: {
             create: question.options.map(option => ({
               isCorrectOption: option.isCorrect,

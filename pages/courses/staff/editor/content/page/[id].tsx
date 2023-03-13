@@ -20,7 +20,7 @@ import QuizCreator from '../../../../../../components/quiz-editor/Creator';
 import SortingGameCreator from '../../../../../../components/sorting-game-editor/Creator';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
 import { useMutation } from '@tanstack/react-query';
-import { createOrUpdateAsset } from '../../../../../../lib/editor';
+import { createOrUpdateAsset, validatePageFormValues } from '../../../../../../lib/editor';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
 import { EditorSerializedQuizQuestion } from '../../../../../../components/quiz-editor/Question';
 import getPageEditorFormValue from '../../../../../../lib/server/page';
@@ -68,6 +68,10 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
 
   const useFormReturns = useForm({
     defaultValues: formValues,
+    resolver: values => {
+      // This page form is too complicated, centralise all validation here
+      return validatePageFormValues(values);
+    },
   });
   const {
     register,
@@ -132,7 +136,6 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
                 mutateOnSave.mutate(data);
               })}
             >
-              {/* <>{`${JSON.stringify(errors, null, 2)}`}</> */}
               <FormControl mt={4} isInvalid={!!errors.name} isDisabled={isDisabled}>
                 <FormLabel htmlFor='title'>Page Title *</FormLabel>
                 <Input placeholder='Page Title Here' {...register('name', { required: { value: true, message: 'Enter Page Title' } })} />
@@ -142,9 +145,9 @@ const EditContentPage = ({ id, courseStructure, formValues }: Props) => {
                 <FormLabel htmlFor='duration'>Page Duration (in minutes) *</FormLabel>
                 <Input
                   placeholder='Page Duration Here'
+                  type='number'
                   {...register('duration', {
                     required: { value: true, message: 'Enter Page Duration' },
-                    pattern: { value: /^\d+$/, message: 'Enter an integer value' },
                     valueAsNumber: true,
                   })}
                 />

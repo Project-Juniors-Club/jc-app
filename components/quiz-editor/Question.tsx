@@ -1,4 +1,4 @@
-import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton, FormControl } from '@chakra-ui/react';
+import { Button, Flex, Textarea, VStack, Text, Radio, Checkbox, CloseButton, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Image } from '@prisma/client';
 import { useFieldArray, UseFormReturn, useWatch } from 'react-hook-form';
 import QuestionTypeSelect from './QuestionTypeSelect';
@@ -57,12 +57,19 @@ export const Question = ({ registerLabel, question, useFormReturns, onDelete, is
   const { register, watch, setValue, handleSubmit, getValues, clearErrors, control, unregister } = useFormReturns as UseFormReturn<{
     quizGame: { questions: EditorSerializedQuizQuestion[] };
   }>;
-  const { fields: options, append, remove } = useFieldArray({ name: `${registerLabel}.options`, shouldUnregister: true, control });
+  const {
+    fields: options,
+    append,
+    remove,
+    update,
+    replace,
+  } = useFieldArray({ name: `${registerLabel}.options`, shouldUnregister: false, control });
   const isMultipleResponse: boolean = useWatch({ name: `${registerLabel}.isMultipleResponse`, control: control });
 
   const handleOnQuestionTypeChanged = () => {
-    setValue(
-      `${registerLabel}.options`,
+    // options from fields is not automatically updated with new values, have to refresh
+    const options = getValues(`${registerLabel}.options`);
+    replace(
       options.map(option => ({
         ...option,
         isCorrect: false,
@@ -75,16 +82,12 @@ export const Question = ({ registerLabel, question, useFormReturns, onDelete, is
   };
   const handleOnSelectCorrect = (idx: number) => () => {
     if (!isMultipleResponse) {
-      setValue(
-        `${registerLabel}.options`,
-        options.map((option, _idx) => ({ ...option, isCorrect: _idx == idx })),
-      );
+      const options = getValues(`${registerLabel}.options`);
+      replace(options.map((option, _idx) => ({ ...option, isCorrect: _idx == idx })));
     }
     if (isMultipleResponse) {
-      setValue(
-        `${registerLabel}.options`,
-        options.map((option, _idx) => ({ ...option, isCorrect: idx == _idx ? !option.isCorrect : option.isCorrect })),
-      );
+      const options = getValues(`${registerLabel}.options`);
+      replace(options.map((option, _idx) => ({ ...option, isCorrect: idx == _idx ? !option.isCorrect : option.isCorrect })));
     }
   };
   return (
@@ -127,6 +130,9 @@ export const Question = ({ registerLabel, question, useFormReturns, onDelete, is
           />
         ))}
       </VStack>
+      <FormControl isInvalid={!!errors?.atLeastOneCorrect}>
+        <FormErrorMessage>{errors?.atLeastOneCorrect?.message}</FormErrorMessage>
+      </FormControl>
       {options.length < MAX_NUM_OPTION && (
         <AddOptionButton
           onClick={() => {
