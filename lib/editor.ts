@@ -31,8 +31,6 @@ const handleGame = async (data: EditorPageFormValues) => {
       data.quizGame.questions.map(async (question, idx): Promise<SerializedQuizQuestion> => {
         if (!!question?.image) {
           question.image.assetId = question?.image?._uploadedFile ? await uploadFile(question.image._uploadedFile) : question.image.assetId;
-          console.log(idx);
-          console.log(question.image.assetId);
           question.questionNumber = idx;
         }
         question.options = await Promise.all(
@@ -73,12 +71,9 @@ export const validatePageFormValues = (data: EditorPageFormValues) => {
     return acc;
   }, {});
 
-  console.log('errors: ', errors);
   if (Object.keys(errors).length === 0) {
-    console.log('ok');
     return { values: data, errors: {} };
   } else {
-    console.log('failed');
     return { values: {}, errors: errors };
   }
 };
@@ -113,7 +108,6 @@ const validateQuizGame = ({ assetType, interactiveType, quizGame }: EditorPageFo
   if (assetType !== 'game' || interactiveType !== 'quizGame') {
     return undefined;
   }
-  console.log('trying to validate quiz', quizGame);
   const errors = quizGame.questions.map((question, _) => {
     const questionError = {};
     if (question.text.trim().length === 0) {

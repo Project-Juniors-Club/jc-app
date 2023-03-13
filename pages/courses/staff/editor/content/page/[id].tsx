@@ -130,7 +130,6 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
     },
   });
   const isDisabled = mutateOnSave.isLoading || mutateOnExit.isLoading || mutateOnExit.isSuccess;
-  console.log(errors);
 
   return (
     <div>

@@ -63,7 +63,6 @@ const QuizCreator = ({ useFormReturns }: QuizCreatorProp) => {
   } = useFieldArray({
     name: 'quizGame.questions',
     control: control,
-    shouldUnregister: true,
   });
   const handleOnQuestionDelete = (idx: number) => () => {
     remove(idx);

@@ -57,13 +57,7 @@ export const Question = ({ registerLabel, question, useFormReturns, onDelete, is
   const { register, watch, setValue, handleSubmit, getValues, clearErrors, control, unregister } = useFormReturns as UseFormReturn<{
     quizGame: { questions: EditorSerializedQuizQuestion[] };
   }>;
-  const {
-    fields: options,
-    append,
-    remove,
-    update,
-    replace,
-  } = useFieldArray({ name: `${registerLabel}.options`, shouldUnregister: false, control });
+  const { fields: options, append, remove, update, replace } = useFieldArray({ name: `${registerLabel}.options`, control });
   const isMultipleResponse: boolean = useWatch({ name: `${registerLabel}.isMultipleResponse`, control: control });
 
   const handleOnQuestionTypeChanged = () => {
