@@ -29,7 +29,6 @@ export const QuizOption = ({
 }: Props) => {
   let color = '#D9D9D9';
   let isSelected = currentSelected == index;
-  console.log(isSelected, index);
   if (isSelected && !isShow) {
     color = '#A5A6F6'; // Purple
   } else if (isSelected && isShow) {

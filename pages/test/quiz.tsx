@@ -7,7 +7,7 @@ import { QuizOption } from '../../components/course/quiz/QuizOption';
 const QuizPage = () => {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<boolean>(false);
-  const [startQuiz, setStartQuiz] = useState(false);
+  const [startQuiz, setStartQuiz] = useState(true);
   const [endQuiz, setEndQuiz] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number>(null);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
@@ -25,6 +25,10 @@ const QuizPage = () => {
     },
   ];
   const { question, choices, correctAnswer } = questions[activeQuestion];
+
+  const beginQuiz = () => {
+    setStartQuiz(false);
+  };
 
   const onClickNext = () => {
     setSelectedAnswerIndex(null);
@@ -53,22 +57,41 @@ const QuizPage = () => {
   const validateQuestion = () => {
     if (selectedAnswerIndex != null) {
       setShowAnswer(true);
-      setSelectedAnswer(false);
     }
   };
 
   return (
     <div className='quiz-container'>
-      {!endQuiz ? (
+      {startQuiz ? (
+        <div className='flex w-10/12 flex-col'>
+          <div className='mb-1 text-3xl font-bold'>Quiz</div>
+          <div className='text-m mb-5 font-light'>Pick an Option and submit</div>
+          <div className='flex justify-between'>
+            <p className='w-2/3'>
+              <span className='font-bold '>Quiz Description:</span>
+              1orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard
+              dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+              It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It
+              was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with
+              desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+            </p>
+            <Button className='align-right align-bottom' variant='green-solid' onClick={() => beginQuiz()}>
+              {'Start Quiz'}
+            </Button>
+          </div>
+        </div>
+      ) : !endQuiz ? (
         <div>
-          <div>
-            <ProgressBar progress={activeQuestion / questions.length} />
+          <div className='mt-3 flex justify-center'>
+            <div className='w-4/12'>
+              <ProgressBar progress={activeQuestion + 1 / questions.length} />
+            </div>
           </div>
           <div className='flex flex-col'>
             <div className='m-2 flex  w-10/12 p-2'>
               <h2 className='w-10/12 '>{question}</h2>
               <Button className='w-2/12' variant='green-outline' onClick={() => onClickNext()} disabled={!showAnswer && selectedAnswer}>
-                {showAnswer && selectedAnswer ? 'Redo Question' : 'Next Question'}
+                {showAnswer && !selectedAnswer ? 'Redo Question' : 'Next Question'}
               </Button>
             </div>
             {choices.map((answer, index) => (
@@ -80,7 +103,7 @@ const QuizPage = () => {
                 name={String(activeQuestion)}
                 currentSelected={selectedAnswerIndex}
                 index={index}
-                setSelected={setSelectedAnswerIndex}
+                setSelected={onAnswerSelected}
               >
                 {answer}
               </QuizOption>
@@ -93,11 +116,14 @@ const QuizPage = () => {
           </div>
         </div>
       ) : (
-        <div className='result'>
-          <h3>Congratulations!</h3>
-          <div className='flex'>
-            <p>To proceed to the next page, click &aposNext&apos</p>
-            <Button variant='green-outline'>{'Next'}</Button>
+        <div className='flex w-10/12 flex-col'>
+          <div className='mb-5 text-2xl font-bold'>Quiz Completed!</div>
+          <div className='text-l mb-3 font-bold'>Congratulations!</div>
+          <div className='flex justify-between'>
+            <p>To proceed to the next page, click &apos;Next&apos;</p>
+            <Button className='align-right' variant='green-solid'>
+              {'Next'}
+            </Button>
           </div>
         </div>
       )}
