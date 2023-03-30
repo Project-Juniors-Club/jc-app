@@ -34,7 +34,7 @@ export const Option = ({
   return (
     <Flex gap={4}>
       <Box py={3}>
-        {questionType == 'mcq' ? (
+        {questionType === 'mcq' ? (
           <Radio isChecked={option.isCorrect} onClick={onSelectCorrect} />
         ) : (
           <Checkbox isChecked={option.isCorrect} onChange={onSelectCorrect} />

@@ -224,7 +224,6 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
                 <Box mt={4} minH='max-content'>
                   <FormLabel htmlFor='interactive'>Interactive Component Type *</FormLabel>
                   <Select
-                    placeholder='Interactive Component Type'
                     defaultValue={formValues?.interactiveType}
                     onChange={event => {
                       setValue('interactiveType', event.target.value as GameType);

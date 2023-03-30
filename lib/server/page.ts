@@ -101,7 +101,7 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
     },
 
     quizGame:
-      assetType == 'game' && interactiveType == 'quizGame'
+      assetType === 'game' && interactiveType === 'quizGame'
         ? await getEditorQuizGame(page.asset.game.assetId)
         : {
             // By right, this won't be registered
