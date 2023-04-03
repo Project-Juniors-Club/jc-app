@@ -1,5 +1,5 @@
-import { SpotTheDifference } from '@prisma/client';
-export const validateDifferences = (differences: SpotTheDifference[]) => {
+import { SpotTheDifferenceRegion } from '@prisma/client';
+export const validateDifferences = (differences: SpotTheDifferenceRegion[]) => {
   for (const difference of differences) {
     if (difference.x < 0 || difference.y < 0 || difference.height < 0 || difference.width < 0) {
       return { valid: false, message: 'All values should be non-negative floats less than one.' };
