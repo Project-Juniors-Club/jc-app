@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const courses = await prisma.course.findMany();
       res.status(200).json({ message: entityMessageObj.getAllSuccess, data: courses });
     } else if (httpMethod == 'POST') {
-      const { title, description, learningObjectives, coverImageAssetId, creatorId, price, categoryId, status } = req.body;
+      const { title, description, learningObjectives, coverImageAssetId, creatorId, price, categoryId, editorId, status } = req.body;
       // CREATE COURSE
       const dataToCreate = {
         data: {
@@ -49,6 +49,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
       const created = await prisma.course.create(dataToCreate);
+
+      if (editorId) {
+        await prisma.courseEditor.create({
+          data: {
+            course: {
+              connect: {
+                id: created.id,
+              },
+            },
+            admin: {
+              connect: {
+                userId: editorId,
+              },
+            },
+          },
+        });
+      }
+
       res.status(200).json({ message: entityMessageObj.createSuccess, data: created });
     } else {
       res.setHeader('Allow', ['GET', 'POST']);
