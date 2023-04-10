@@ -84,7 +84,7 @@ const Payment = () => {
     <Layout title='Check out'>
       <Box>
         <Text className={styles.header} pb='55px' pt='35px' pl='160px'>
-          Check Out
+          Payment Successful!
         </Text>
       </Box>
 
@@ -97,54 +97,31 @@ const Payment = () => {
       </div> */}
 
       <Container maxW='container.xl'>
-        <Flex py={20}>
-          <VStack w='full' h='full' p={10} spacing={10} alignItems='flex-start' border='1px' borderRadius='8px' borderColor='#7FB519'>
-            <Heading fontSize={24}>Courses Ordered</Heading>
+        <Flex py={20} border='1px' borderRadius='8px' borderColor='#7FB519' margin={10}>
+          <VStack w='full' h='full' p={10} spacing={10} alignItems='flex-start'>
+            <Heading fontSize={24}>You purchased the following courses:</Heading>
             <TableContainer w='full'>
               <Table variant='simple'>
                 <Thead bg='#EBF8D3'>
                   <Tr>
                     <Th>Course Name</Th>
-                    <Th isNumeric>Price</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {cartCourses.map((course, index) => (
                     <Tr key={course.title} className={styles.tablebody}>
                       <Td>{course.title}</Td>
-                      <Td isNumeric>${course.price.toFixed(2)}</Td>
                     </Tr>
                   ))}
                 </Tbody>
               </Table>
             </TableContainer>
-            <Flex w='full'>
-              <Box borderStyle='solid' borderWidth='1px' borderColor='#E2E8F0' borderRadius='8px' p={5} w='100%'>
-                <TableContainer marginLeft='30%' p={0}>
-                  <Table variant='unstyled'>
-                    <Tbody>
-                      <Tr>
-                        <Td>Subtotal:</Td>
-                        <Td>${subtotal.toFixed(2)}</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Discount Applied:</Td>
-                        <Td>-${discountApplied.toFixed(2)}</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Total:</Td>
-                        <Td>${total.toFixed(2)}</Td>
-                      </Tr>
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              </Box>
-              <Box>
-                <PreviewPage />
-              </Box>
-            </Flex>
           </VStack>
           <Spacer p='2%' />
+          <VStack w='full' h='full' p={10} spacing={10} alignItems='flex-start'>
+            <Heading fontSize={24}>You purchased the following courses:</Heading>
+            <Text> Lets begin learning!</Text>
+          </VStack>
         </Flex>
       </Container>
     </Layout>
