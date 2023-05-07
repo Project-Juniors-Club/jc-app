@@ -24,6 +24,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
 import { EditorSerializedQuizQuestion } from '../../../../../../components/quiz-editor/Question';
 import getPageEditorFormValue from '../../../../../../lib/server/page';
+import MatchingGameCreator, { EditorSerializedMatchingGame } from '../../../../../../components/matching-game-editor/Creator';
+import { ImageWithUploadableFile } from '../../../../../../components/UploadImageButtonWithPreview';
+import { SerializedMatchingGame } from '../../../../../../lib/server/matchingGame';
 
 type Props = {
   id: string;
@@ -59,6 +62,7 @@ export type EditorPageFormValues = {
   };
   // TODO: intergrate sorting game
   sortingGame: any;
+  matchingGame: EditorSerializedMatchingGame;
 };
 
 const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValues }: Props) => {
@@ -232,9 +236,11 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
                   >
                     <option value='quizGame'>Quiz</option>
                     <option value='sortingGame'>Sorting Game</option>
+                    <option value='matchingGame'>Matching Game</option>
                   </Select>
                   {interactiveType === 'quizGame' && <QuizCreator useFormReturns={useFormReturns} />}
                   {interactiveType === 'sortGame' && <SortingGameCreator useFormReturns={useFormReturns} />}
+                  {interactiveType === 'matchingGame' && <MatchingGameCreator useFormReturns={useFormReturns} />}
                 </Box>
               )}
               <Flex mt={4} justifyContent={'space-between'}>

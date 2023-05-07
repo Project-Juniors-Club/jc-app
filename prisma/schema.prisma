@@ -191,6 +191,7 @@ model Image {
   Course                     Course[]
   QuizGameQuestion           QuizGameQuestion[]
   QuizGameOption             QuizGameOption[]
+  MatchingGameImage          MatchingGameImage?
 
   @@map("images")
 }
@@ -236,8 +237,22 @@ model SpotTheDifferenceGame {
 }
 
 model MatchingGame {
-  gameId String @id
-  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  gameId   String              @id
+  game     Game                @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  duration Float
+  images   MatchingGameImage[]
+}
+
+model MatchingGameImage {
+  id String @id @default(cuid())
+
+  index Int
+
+  image   Image  @relation(fields: [imageId], references: [assetId])
+  imageId String @unique
+
+  matchingGame   MatchingGame @relation(fields: [matchingGameId], references: [gameId], onDelete: Cascade)
+  matchingGameId String
 }
 
 model QuizGame {
