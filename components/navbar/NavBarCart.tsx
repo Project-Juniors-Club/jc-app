@@ -4,7 +4,7 @@ import { JuniorsClubLogo } from './NavBarCourse';
 import UserDropdown from './UserDropdown';
 
 const navBarItemStyle =
-  'menu-item my-auto flex h-full items-center text-center text-base hover:border-b-4 hover:border-b-[#A9D357] hover:font-bold';
+  'menu-item my-auto flex h-full items-center text-center text-base hover:border-b-4 hover:border-b-main-green hover:font-bold';
 
 const NavBarCart = () => {
   return (

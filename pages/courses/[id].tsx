@@ -82,7 +82,7 @@ const CourseView = ({ course, category, errors, courseContentOverview }: CourseV
             {chapters.map(chapter => {
               return (
                 <>
-                  <AccordionItem className='bg-[#ebf8d3]'>
+                  <AccordionItem className='bg-main-light-green'>
                     <h2>
                       <AccordionButton border='1px solid #C7C7C7'>
                         <Box flex='1' textAlign='left' flexDirection={'column'}>

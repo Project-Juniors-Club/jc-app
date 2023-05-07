@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { JuniorsClubLogo } from './NavBarCourse';
 
 const navBarItemStyle =
-  'menu-item my-auto flex h-full items-center text-center text-base hover:border-b-4 hover:border-b-[#A9D357] hover:font-bold';
+  'menu-item my-auto flex h-full items-center text-center text-base hover:border-b-4 hover:border-b-main-green hover:font-bold';
 
 const NavbarGeneral = () => {
   const router = useRouter();
@@ -42,7 +42,7 @@ const NavbarGeneral = () => {
         <Button onClick={() => router.push('/login')} className='w-28 border-[#4D4D4D] bg-[#4D4D4D] text-white hover:bg-[#797979]'>
           Log In
         </Button>
-        <Button onClick={() => router.push('/sign-up')} className='border-[#A9D357] bg-[#A9D357] text-black hover:bg-[#c0f062]'>
+        <Button onClick={() => router.push('/sign-up')} className='border-main-green bg-main-green text-black hover:bg-[#c0f062]'>
           Sign Up
         </Button>
       </div>

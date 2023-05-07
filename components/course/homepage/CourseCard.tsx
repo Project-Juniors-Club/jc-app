@@ -3,13 +3,14 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { updateLastSeen } from '../../../lib/courseRecent';
 import { SerializedCourse } from '../../../lib/server/course';
+import styles from './Course.module.css';
 
 const CourseCard = ({ course }: { course: SerializedCourse }) => {
   const router = useRouter();
   const sess = useSession();
   return (
     <article
-      className='w-[22rem] cursor-pointer overflow-hidden rounded-2xl border border-solid border-[#c7c7c7]'
+      className={`w-[22rem] cursor-pointer overflow-hidden rounded-2xl border border-solid border-[#c7c7c7] shadow-md ${styles.card}`}
       onClick={() => {
         if (!sess) {
           return;
@@ -18,7 +19,7 @@ const CourseCard = ({ course }: { course: SerializedCourse }) => {
         router.push('/courses/' + course.id);
       }}
     >
-      <div className='h-[10rem] bg-[#EBF8D3]'></div>
+      <div className='h-[10rem] bg-main-light-green'></div>
       {/* <img/> */}
       <div className='relative h-[10.5625rem] px-4'>
         <h3 className=' pt-6 pb-2 text-xl'>{course.title}</h3>

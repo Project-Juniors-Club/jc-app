@@ -50,7 +50,7 @@ const Game = ({ diffBoxes, leftImageSrc, rightImageSrc }: GameProps) => {
           return (
             <div
               key={i}
-              className={`mx-2 flex h-5 w-5 items-center justify-center ${isShow ? `${styles.animate} bg-[#A9D357]` : 'border-2'}`}
+              className={`mx-2 flex h-5 w-5 items-center justify-center ${isShow ? `${styles.animate} bg-main-green` : 'border-2'}`}
             >
               {isShow && <CheckIcon color='white' />}
             </div>
