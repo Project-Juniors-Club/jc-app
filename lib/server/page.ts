@@ -1,7 +1,9 @@
+import { EditorSerializedMatchingGame } from '../../components/matching-game-editor/Creator';
 import { constructDefaultQuestion } from '../../components/quiz-editor/Creator';
 import { EditorSerializedQuizQuestion } from '../../components/quiz-editor/Question';
 import { EditorPageFormValues } from '../../pages/courses/staff/editor/content/page/[id]';
 import prisma from '../prisma';
+import { findUniqueMatchingGame } from './matchingGame';
 import { findUniqueQuiz } from './quiz';
 import { findQuiz } from './quiz';
 
@@ -43,6 +45,14 @@ const getEditorQuizGame = async (gameId: string): Promise<{ questions: EditorSer
         }),
       };
     }),
+  };
+};
+
+const getEditorMatchingGame = async (gameId: string): Promise<EditorSerializedMatchingGame> => {
+  const matchingGame = await findUniqueMatchingGame(gameId);
+  return {
+    duration: matchingGame.duration,
+    images: matchingGame.images.map(image => image.image),
   };
 };
 
@@ -110,6 +120,14 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
 
     // TODO: fetch sortingGame data
     sortingGame: { buckets: [] },
+
+    matchingGame:
+      assetType === 'game' && interactiveType === 'matchingGame'
+        ? await getEditorMatchingGame(page.asset.game.assetId)
+        : {
+            duration: 0,
+            images: [],
+          },
   };
   return result;
 };

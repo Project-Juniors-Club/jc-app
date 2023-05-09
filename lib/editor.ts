@@ -3,6 +3,7 @@ import { EditorPageFormValues } from '../pages/courses/staff/editor/content/page
 import axios from 'axios';
 import uploadFile from './upload';
 import { SerializedQuizQuestion } from './server/quiz';
+import { NUM_MATCHING_IMAGES } from '../components/matching-game-editor/Creator';
 
 export const createOrUpdateAsset = async (data: EditorPageFormValues) => {
   // article, image, and video will require create new anyway, there is no need use the post endpoint
@@ -51,6 +52,23 @@ const handleGame = async (data: EditorPageFormValues) => {
       return (await axios.post(`/api/quiz-game`, { quizGameQuestions: data.quizGame.questions })).data.data.gameId;
     }
   }
+
+  if (data.interactiveType === 'matchingGame') {
+    // attempt to upload all images, this might not be a good idea. If something fails, it is hard to surface to the frontend individually which failed
+    // alternatively, we start uploading the moment the image is selected, but those does not have a good way to handle local changes (we risk uploading unused images to the cloud, without cleanup S3 will fill up)
+    data.matchingGame.images = await Promise.all(
+      data.matchingGame.images.map(async image => {
+        image.assetId = image._uploadedFile ? await uploadFile(image._uploadedFile) : image.assetId;
+        return image;
+      }),
+    );
+
+    if (data.originalAssetType === 'game' && data.originalInteractiveType === 'matchingGame') {
+      return (await axios.put(`/api/matching-game/${data.originalAssetId}`, { ...data.matchingGame })).data.data.gameId;
+    } else {
+      return (await axios.post(`/api/matching-game`, { ...data.matchingGame })).data.data.gameId;
+    }
+  }
 };
 
 export const validatePageFormValues = (data: EditorPageFormValues) => {
@@ -62,6 +80,7 @@ export const validatePageFormValues = (data: EditorPageFormValues) => {
     video: validatePageVideo(data),
     description: validatePageDescription(data),
     quizGame: validateQuizGame(data),
+    matchingGame: validateMatchingGame(data),
   };
 
   const errors = Object.entries(initialErrors).reduce((acc, [key, value]) => {
@@ -142,6 +161,30 @@ const validateQuizGame = ({ assetType, interactiveType, quizGame }: EditorPageFo
   return errors.filter(err => err != undefined).length !== 0
     ? {
         questions: errors,
+      }
+    : undefined;
+};
+
+const validateMatchingGame = ({ assetType, interactiveType, matchingGame }: EditorPageFormValues) => {
+  if (assetType !== 'game' || interactiveType !== 'matchingGame') {
+    return undefined;
+  }
+
+  let imagesErrors = [];
+  for (let i = 0; i < NUM_MATCHING_IMAGES; i++) {
+    if (matchingGame.images[i] === undefined || (!matchingGame.images[i].assetId && !matchingGame.images[i]._uploadedFile)) {
+      imagesErrors[i] = { message: 'Select an image', type: 'required' };
+    } else {
+      imagesErrors[i] = undefined;
+    }
+  }
+
+  const durationError = matchingGame?.duration >= 0 ? undefined : { message: 'Please enter valid duration', type: 'valid' };
+
+  return imagesErrors.filter(err => err != undefined).length !== 0 || durationError
+    ? {
+        images: imagesErrors,
+        duration: durationError,
       }
     : undefined;
 };
