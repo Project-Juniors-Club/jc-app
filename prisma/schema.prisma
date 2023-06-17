@@ -52,6 +52,7 @@ model User {
   email         String       @unique
   type          UserType     @default(normalUser)
   emailVerified DateTime?
+  password      String?
   image         String?
   name          String?
   age           Int?
