@@ -1,38 +1,39 @@
 import React from 'react';
-import Image from 'next/image';
 import Button from '../Button';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { JuniorsClubLogo } from './NavBarCourse';
+
+const navBarItemStyle =
+  'menu-item my-auto flex h-full items-center text-center text-base hover:border-b-4 hover:border-b-main-green hover:font-bold';
 
 const NavbarGeneral = () => {
   const router = useRouter();
   return (
-    <nav className='navbar mb-1.5 flex flex-row flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
-      <div className='flex flex-row'>
+    <nav className='navbar mb-1.5 flex h-20 flex-wrap items-center justify-between bg-white px-0 pr-12 pl-4 shadow-lg'>
+      <div className='flex h-full items-center'>
         <JuniorsClubLogo />
-        <div className='main-nav-menu flex flex-row items-center gap-6 pr-8'>
-          <a href='https://foodbank.sg/about/' className='menu-item ml-7 text-base'>
+        <div className='main-nav-menu flex h-full items-center gap-6 pr-8'>
+          <a href='https://foodbank.sg/about/' className={`ml-7 ${navBarItemStyle}`}>
             About Us
           </a>
 
-          <a href='https://foodbank.sg/advocacy/' className='menu-item text-base'>
+          <a href='https://foodbank.sg/advocacy/' className={navBarItemStyle}>
             What We Do
           </a>
 
-          <a href='https://foodbank.sg/food-drive/' className='menu-item text-base'>
+          <a href='https://foodbank.sg/food-drive/' className={navBarItemStyle}>
             Deposit Food
           </a>
 
-          <a href='https://foodbank.sg/time-based/' className='menu-item text-base'>
+          <a href='https://foodbank.sg/time-based/' className={navBarItemStyle}>
             Volunteer
           </a>
 
-          <a href='https://foodbank.sg/donate/' className='menu-item text-base'>
+          <a href='https://foodbank.sg/donate/' className={navBarItemStyle}>
             Donate
           </a>
 
-          <a href='https://foodbank.sg/newsletter/' className='menu-item text-base'>
+          <a href='https://foodbank.sg/newsletter/' className={navBarItemStyle}>
             What&apos;s New
           </a>
         </div>
@@ -41,7 +42,7 @@ const NavbarGeneral = () => {
         <Button onClick={() => router.push('/login')} className='w-28 border-[#4D4D4D] bg-[#4D4D4D] text-white hover:bg-[#797979]'>
           Log In
         </Button>
-        <Button onClick={() => router.push('/sign-up')} className='border-[#A9D357] bg-[#A9D357] text-black hover:bg-[#c0f062]'>
+        <Button onClick={() => router.push('/sign-up')} className='border-main-green bg-main-green text-black hover:bg-[#c0f062]'>
           Sign Up
         </Button>
       </div>

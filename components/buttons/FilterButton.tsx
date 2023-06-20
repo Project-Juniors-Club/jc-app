@@ -30,11 +30,11 @@ const FilterButton = ({
   };
   return (
     <Popover className='relative'>
-      <Popover.Button className='flex items-center rounded-lg border border-solid border-[#7FB519] py-2.5 pr-5 pl-[1.625rem] text-[#385600]'>
+      <Popover.Button className='flex items-center rounded-lg border border-solid border-btn-green py-2.5 pr-5 pl-[1.625rem] text-dark-gray'>
         Filter
         <Image className='pl-1' src={'/icons/Filter.svg'} alt='Filter' width={28} height={28} />
       </Popover.Button>
-      <Popover.Panel className='absolute w-[25.125rem] rounded-[0.625rem] border border-solid border-[#C7C7C7] bg-white px-3 pt-3 pb-1.5'>
+      <Popover.Panel className='absolute z-10 w-[25.125rem] rounded-[0.625rem] border border-solid border-[#C7C7C7] bg-white px-3 pt-3 pb-1.5'>
         {({ close }) => (
           <form onSubmit={e => handleSubmit(e, close)}>
             <div className='flex gap-3'>
@@ -63,7 +63,7 @@ const FilterButton = ({
                 );
               })}
             </div>
-            <button className={'float-right mt-2.5 rounded-lg border border-solid border-[#7FB519] bg-[#A9D357] px-10 py-3'} type='submit'>
+            <button className={'float-right mt-2.5 rounded-lg border border-solid border-btn-green bg-main-green px-10 py-3'} type='submit'>
               Apply
             </button>
           </form>
