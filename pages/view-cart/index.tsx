@@ -40,7 +40,7 @@ const ViewCart = ({ courses }) => {
   };
 
   const handleProceed = () => {
-    localStorage.setItem('Cart', JSON.stringify(cartCourses.map((course, i) => ({ id: course.id, selected: checkedItems[i] }))));
+    localStorage.setItem('Cart', JSON.stringify(cartCourses.map((course, i) => ({ ...course, selected: checkedItems[i] }))));
     router.push('/apply-vouchers');
   };
 
