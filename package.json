@@ -2,8 +2,9 @@
   "private": true,
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
+    "postinstall": "prisma generate",
     "type-check": "tsc",
     "seed": "ts-node --script-mode ./prisma/seed.ts",
     "prepare": "husky install"
