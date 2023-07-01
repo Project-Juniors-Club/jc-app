@@ -7,43 +7,21 @@ import styles from './ApplyVouchers.module.css';
 import Layout from '../../components/Layout';
 import NavBarCart from '../../components/navbar/NavBarCart';
 import Button from '../../components/Button';
+import { createImportSpecifier } from 'typescript';
 
-const ApplyVouchers = ({ courses }) => {
+const ApplyVouchers = () => {
   const router = useRouter();
   const [cartCourses, setCartCourses] = useState([]);
 
   useEffect(() => {
     const courseList = JSON.parse(localStorage.getItem('Cart'));
-    // dummy data
-    // const courses = await prisma.course.findMany({
-    //   where: {
-    //     id: {
-    //       in: courseList.map(course => course.id),
-    //     }
-    //   }
-    // });
-
-    // dummy data
-    const courses = [
-      {
-        id: '1',
-        name: 'Food Sourcing',
-        description: 'Learn how to source food',
-        stars: 5,
-        adminId: '1',
-        price: 4.95,
-      },
-      {
-        id: '2',
-        name: 'Food Sourcing but Longer and Pricier',
-        description: 'Learn how to source food but Longer and Pricier',
-        stars: 4,
-        adminId: '2',
-        price: 10.0,
-      },
-    ];
-
-    setCartCourses(courses);
+    console.log(courseList);
+    const numPriceCourseList = courseList.map(course => {
+      course.price = parseInt(course.price).toFixed(2);
+      return course;
+    });
+    console.log(numPriceCourseList);
+    setCartCourses(numPriceCourseList);
   }, []);
 
   const handleBack = () => {
@@ -71,15 +49,13 @@ const ApplyVouchers = ({ courses }) => {
 
 const VoucherTable = ({ cartCourses }) => {
   return (
-    <Box marginInline='15%' marginTop='40px' marginBottom='20px' paddingBlock='5px' paddingInline='20px' className={styles.tablebody}>
-      <Table variant='simple'>
-        <tbody>
-          {cartCourses.map((course, index) => (
-            <VoucherEntry course={course} key={index} />
-          ))}
-        </tbody>
-      </Table>
-    </Box>
+    <Table variant='simple'>
+      <tbody>
+        {cartCourses.map((course, index) => (
+          <VoucherEntry course={course} key={index} />
+        ))}
+      </tbody>
+    </Table>
   );
 };
 
@@ -102,12 +78,14 @@ const VoucherEntry = ({ course }) => {
   };
 
   return (
-    <tr style={{ borderTop: '15px solid transparent' }}>
+    <tr style={{ borderTop: '15px solid transparent' }} className='flex items-center justify-center gap-20'>
       <td>
-        <Text fontSize='md'>{course.name}</Text>
+        <Text fontSize='md' className='font-semibold'>
+          {course.title}
+        </Text>
       </td>
-      <td style={{ borderRight: '25px solid transparent' }}>
-        <Text fontSize='md'>${course.price.toFixed(2) - voucherSaving}</Text>
+      <td>
+        <Text fontSize='md'>${course.price - voucherSaving}</Text>
       </td>
       <td>
         <input
@@ -143,7 +121,6 @@ const VoucherEntry = ({ course }) => {
 const TotalSummaryBox = ({ cartCourses, handleBack, handleCheckout }) => {
   return (
     <Box
-      maxW='50%'
       marginInline='25%'
       marginTop='40px'
       marginBottom='20px'
@@ -161,7 +138,7 @@ const TotalSummaryBox = ({ cartCourses, handleBack, handleCheckout }) => {
           Total ({cartCourses.length} {cartCourses.length > 1 ? 'courses' : 'course'})
         </Text>
         <Text fontWeight='700' fontSize='28px'>
-          ${cartCourses.reduce((acc, course) => acc + course.price, 0).toFixed(2)}
+          ${cartCourses.reduce((acc, course) => acc + course.price, 0)}
         </Text>
       </Box>
       <Box display='flex' flexDir='row'>

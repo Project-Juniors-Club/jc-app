@@ -58,7 +58,7 @@ const UploadButton = ({
         }}
         isDisabled={isDisabled}
       >
-        <div className='text-[#385600]'>{buttonText}</div>
+        <div className='text-dark-gray'>{buttonText}</div>
       </CustomButton>
       <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${fileWatch.length ? '' : 'hidden'}`}>
         <div className={`flex`}>

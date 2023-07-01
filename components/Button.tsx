@@ -37,16 +37,16 @@ const getConfig = (variant: Variants) => {
     'font-normal w-fit h-[48px] rounded-lg border-[1px] disabled:opacity-50 disabled:pointer-events-none text-lg leading-6 font-sans px-6 py-2.5';
   switch (variant) {
     case 'green-solid':
-      colourConfig = 'bg-[#A9D357] border-[#7FB519] hover:bg-[#7FB519] ';
+      colourConfig = 'bg-main-green border-btn-green hover:bg-btn-green ';
       break;
     case 'green-outline':
-      colourConfig = 'bg-[#FFFFFF] border-[#7FB519] hover:bg-[#EBF8D3] ';
+      colourConfig = 'bg-[#FFFFFF] border-btn-green hover:bg-main-light-green ';
       break;
     case 'black-solid':
-      colourConfig = 'bg-[#4D4D4D] border-[#2D2D2D] hover:bg-[#2D2D2D] text-white ';
+      colourConfig = 'bg-[#4D4D4D] border-hover-dark-gray hover:bg-hover-dark-gray text-white ';
       break;
     case 'black-outline':
-      colourConfig = 'bg-[#FFFFFF] border-[#131313] hover:bg-[#B5B5B5] ';
+      colourConfig = 'bg-black border-[#131313] hover:bg-[#B5B5B5] ';
       break;
   }
 

@@ -62,6 +62,7 @@ model User {
   admin         Admin?
   normalUser    NormalUser?
   userCourses   UserCourse[]
+  coursesInCart Course[]     @relation("CoursesInCart")
 
   @@map("users")
 }
@@ -138,6 +139,7 @@ model Course {
   userCourses        UserCourse[]
   courseEditor       CourseEditor[]
   coverImageAssetId  String?
+  users              User[]         @relation("CoursesInCart")
 
   @@map("courses")
 }

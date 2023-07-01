@@ -50,11 +50,11 @@ const LandingPage = () => {
           </Box>
           <Box className='min-w-screen min-h-[50%] bg-[#F4FFE0] px-40 py-20'>
             <Center className='px-40'>
-              <VStack className='w-1/2'>
-                <Box alignItems={'center'}>
-                  <Text fontSize={'4rem'}>What is Juniors Club?</Text>
-                </Box>
+              <VStack className='w-2/3'>
                 <Box alignContent={'start'}>
+                  <Text fontSize={'4rem'} className='mb-4'>
+                    What is Juniors Club?
+                  </Text>
                   <Text fontSize={'1.75rem'}>
                     <strong>The Food Bank Singapore</strong> believes that it is critical to plant the seed of service and social
                     responsibility from a young age.
