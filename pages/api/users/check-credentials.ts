@@ -25,7 +25,6 @@ async function handlePOST(res, req) {
   });
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
     // logger.debug("password correct");
-
     res.json(omit(user, 'password'));
   } else {
     // logger.debug("incorrect credentials");
