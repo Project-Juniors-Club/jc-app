@@ -83,21 +83,21 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>(null);
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
-  const login = (data: FormData) => {
-    let newTimeout = setTimeout(() => {
-      setPendingLogin(false);
-      setTimeoutId(null);
-      return Promise.reject('new Error Request timed out, try inputting email again');
-    }, 100000);
-    setTimeoutId(newTimeout);
+  const login = async (data: FormData) => {
+    // let newTimeout = setTimeout(() => {
+    //   setPendingLogin(false);
+    //   setTimeoutId(null);
+    //   return Promise.reject('new Error Request timed out, try inputting email again');
+    // }, 100000);
+    // setTimeoutId(newTimeout);
     console.log(data);
-    return signIn('email', { email: data.email, password: data.password, redirect: false });
+    const res = await signIn('credentials', { email: data.email, password: data.password, redirect: false });
+    return res;
   };
 
   const mutation = useMutation(login, {
     onSuccess: data => {
-      console.log(data);
-      // router.push('/');
+      router.push('/');
     },
     onSettled: () => {},
     onError: error => {
@@ -191,11 +191,11 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
             </>
           </Box>
         </Flex>
-        <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
+        {/* <Modal title='' onClose={handleModalClosed} isOpen={isPendingLogin}>
           <div className='mx-4 mb-4'>
             <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
           </div>
-        </Modal>
+        </Modal> */}
       </Box>
     </>
   );

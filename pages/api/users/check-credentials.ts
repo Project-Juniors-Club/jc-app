@@ -13,8 +13,12 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
 // POST /api/user
 async function handlePOST(res, req) {
+  // this is weird where the body is return in the form of { <body in json string> : ''}
+  const body = JSON.parse(Object.keys(req.body)[0]);
   const user = await prisma.user.findUnique({
-    where: { email: req.body.username },
+    where: {
+      email: body.email,
+    },
     select: {
       id: true,
       name: true,
@@ -23,7 +27,7 @@ async function handlePOST(res, req) {
       password: true,
     },
   });
-  if (user && bcrypt.compareSync(req.body.password, user.password)) {
+  if (user && bcrypt.compareSync(body.password, user.password)) {
     // logger.debug("password correct");
     res.json(omit(user, 'password'));
   } else {
