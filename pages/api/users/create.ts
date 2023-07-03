@@ -16,7 +16,7 @@ async function handlePOST(res, req) {
   //     ...req.body,
   //     password: hashPassword(req.body.password),
   //   });
-
+  console.log(res);
   const hash = bcrypt.hashSync(req.body.password, 10);
 
   const user = await prisma.user.create({

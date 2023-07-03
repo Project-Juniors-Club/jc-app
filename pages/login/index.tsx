@@ -90,13 +90,14 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
       return Promise.reject('new Error Request timed out, try inputting email again');
     }, 100000);
     setTimeoutId(newTimeout);
+    console.log(data);
     return signIn('email', { email: data.email, password: data.password, redirect: false });
   };
 
   const mutation = useMutation(login, {
     onSuccess: data => {
-      openSuccessNotification('Email Sent', 'Please check your email');
-      router.push('/');
+      console.log(data);
+      // router.push('/');
     },
     onSettled: () => {},
     onError: error => {
@@ -165,6 +166,7 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                         focusBorderColor='#8EC12C'
                         borderColor='grey'
                         color='black'
+                        type='password'
                         {...register('password', {
                           required: 'This is required.',
                         })}
