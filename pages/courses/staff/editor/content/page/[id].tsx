@@ -61,7 +61,7 @@ export type EditorPageFormValues = {
     questions: EditorSerializedQuizQuestion[];
   };
   // TODO: intergrate sorting game
-  sortingGame: any;
+  sortingGame: EditorSerializedMatchingGame;
   matchingGame: EditorSerializedMatchingGame;
 };
 
@@ -239,7 +239,7 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
                     <option value='matchingGame'>Matching Game</option>
                   </Select>
                   {interactiveType === 'quizGame' && <QuizCreator useFormReturns={useFormReturns} />}
-                  {interactiveType === 'sortGame' && <SortingGameCreator useFormReturns={useFormReturns} />}
+                  {interactiveType === 'sortingGame' && <SortingGameCreator useFormReturns={useFormReturns} />}
                   {interactiveType === 'matchingGame' && <MatchingGameCreator useFormReturns={useFormReturns} />}
                 </Box>
               )}
