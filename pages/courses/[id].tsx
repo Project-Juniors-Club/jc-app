@@ -11,6 +11,7 @@ import NavBarCourse from '../../components/navbar/NavBar';
 import { DisplayedImage } from '../../components/course/homepage/InternalCourseCard';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type CourseViewProp = {
   course: any;
@@ -33,11 +34,12 @@ type CourseViewProp = {
 const CourseView = ({ course, category, errors, courseContentOverview, userCourseId }: CourseViewProp) => {
   const sess = useSession();
   const { chapters } = courseContentOverview;
+  const [isAdded, setIsAdded] = useState(false);
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
   const router = useRouter();
-  let isAdded = false;
+
   if (userCourseId) {
-    isAdded = true;
+    setIsAdded(true);
   }
   const addToCart = async () => {
     const {
@@ -45,7 +47,9 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
     } = await axios.post(`/api/cart/${router.query.id}`, {
       userId: sess?.data.user?.id,
     });
-    console.log(updatedCourse);
+    if (updatedCourse) {
+      setIsAdded(true);
+    }
   };
 
   if (errors) {
