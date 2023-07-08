@@ -222,6 +222,7 @@ model Game {
   matchingGame          MatchingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
   QuizGame              QuizGame?
+  sortingGame           SortingGame?
 
   @@map("games")
 }
@@ -238,8 +239,8 @@ model SpotTheDifferenceGame {
 }
 
 model SortingGame {
-  id               String        @id @default(cuid())
-  name             String
+  gameId           String        @id
+  game             Game          @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
   duration         Float
   buckets          Bucket[]
 }
@@ -247,7 +248,7 @@ model SortingGame {
 model Bucket {
   id               String        @id @default(cuid())
   name             String
-  sortingGame      SortingGame   @relation(fields: [sortingGameId], references: [id])
+  sortingGame      SortingGame   @relation(fields: [sortingGameId], references: [gameId])
   sortingGameId    String
   bucketItems      BucketItem[]
 }
