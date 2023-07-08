@@ -43,7 +43,7 @@ const SortingGameCreator = ({ useFormReturns }: SortingGameCreatorProp) => {
     control,
   } = useFormReturns as UseFormReturn<{ sortingGame: SortingGame }>;
   const sortingGame = useWatch({ name: 'sortingGame', control: control });
-  const buckets = sortingGame?.buckets;
+  const buckets = sortingGame?.buckets || [];
   const handleOnBucketDelete = (idx: number) => () => {
     buckets.splice(idx, 1);
     setValue('sortingGame.buckets', buckets);

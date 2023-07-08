@@ -65,6 +65,33 @@ export const createSortingGame = async ({ duration, buckets }: SerializedSorting
   });
 };
 
+export const findUniqueSortingGame = async (gameId: string) => {
+  return await prisma.sortingGame.findUnique({
+    where: {
+      gameId: gameId,
+    },
+    include: {
+      buckets: {
+        include: {
+          bucketItems: {
+            include: {
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const deleteSortingGame = async (gameId: string) => {
+  return await prisma.sortingGame.delete({
+    where: {
+      gameId: gameId,
+    },
+  });
+};
+
 export const updateSortingGame = async (gameId: string, { duration, buckets }: SerializedSortingGame) => {
   // First get all the old images, delete them, then update the sorting game items
   return await prisma.$transaction(async tx => {

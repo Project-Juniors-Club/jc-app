@@ -6,6 +6,8 @@ import prisma from '../prisma';
 import { findUniqueMatchingGame } from './matchingGame';
 import { findUniqueQuiz } from './quiz';
 import { findQuiz } from './quiz';
+import { findUniqueSortingGame } from './sortingGame';
+import { EditorSerializedSortingGame } from '../../components/sorting-game-editor/Creator';
 
 const getEditorQuizGame = async (gameId: string): Promise<{ questions: EditorSerializedQuizQuestion[] }> => {
   const prismaQuiz = await prisma.quizGame.findUnique({
@@ -53,6 +55,24 @@ const getEditorMatchingGame = async (gameId: string): Promise<EditorSerializedMa
   return {
     duration: matchingGame.duration,
     images: matchingGame.images.map(image => image.image),
+  };
+};
+
+const getEditorSortingGame = async (gameId: string): Promise<EditorSerializedSortingGame> => {
+  const sortingGame = await findUniqueSortingGame(gameId);
+  return {
+    duration: sortingGame.duration,
+    buckets: sortingGame.buckets.map(bucket => {
+      return {
+        text: bucket.name,
+        bucketItems: bucket.bucketItems.map(bucketItem => {
+          return {
+            text: bucketItem.text,
+            image: bucketItem.image ? { assetId: bucketItem.image.imageId } : undefined,
+          };
+        }),
+      };
+    }),
   };
 };
 
@@ -119,7 +139,15 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
           },
 
     // TODO: fetch sortingGame data
-    sortingGame: { buckets: [] },
+    sortingGame: {
+      assetType:
+        'game' && interactiveType === 'sortingGame'
+          ? await getEditorSortingGame(page.asset.game.assetId)
+          : {
+              duration: 0,
+              buckets: [],
+            },
+    },
 
     matchingGame:
       assetType === 'game' && interactiveType === 'matchingGame'
