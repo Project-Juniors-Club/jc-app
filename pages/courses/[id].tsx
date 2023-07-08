@@ -38,9 +38,6 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
   const router = useRouter();
 
-  if (userCourseId) {
-    setIsAdded(true);
-  }
   const addToCart = async () => {
     const {
       data: { data: updatedCourse },
@@ -157,8 +154,8 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                 ${course.price}
               </Box>
             </Box>
-            <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded}>
-              <Box color={'#000000'}>{isAdded ? 'Added' : 'Add To Cart'}</Box>
+            <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
+              <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
             </CustomButton>
           </Flex>
         </Box>
@@ -187,7 +184,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       course,
       category,
       courseContentOverview,
-      userCourseId: userCourse?.id ?? null,
+      userCourseId: userCourse?.id ?? '',
     },
   };
 }
