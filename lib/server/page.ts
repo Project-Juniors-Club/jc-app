@@ -140,15 +140,14 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
           },
 
     // TODO: fetch sortingGame data
-    sortingGame: {
-      assetType:
-        'game' && interactiveType === 'sortingGame'
-          ? await getEditorSortingGame(page.asset.game.assetId)
-          : {
-              duration: 0,
-              buckets: [],
-            },
-    },
+    sortingGame:
+      assetType === 'game' && interactiveType === 'sortingGame'
+        ? await getEditorSortingGame(page.asset.game.assetId)
+        : {
+            text: '',
+            duration: 0,
+            buckets: [],
+          },
 
     matchingGame:
       assetType === 'game' && interactiveType === 'matchingGame'

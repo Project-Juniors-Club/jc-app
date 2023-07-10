@@ -17,10 +17,12 @@ type EditorSortingGameBucketItem = {
   text: string;
   image?: {
     assetId: string;
+    _uploadedFile?: File;
   };
 };
 
 export type EditorSerializedSortingGame = Omit<SortingGame, 'buckets'> & {
+  text: string;
   buckets: EditorSortingGameBucket[];
   duration: number;
 };
@@ -83,6 +85,17 @@ const SortingGameCreator = ({ useFormReturns }: SortingGameCreatorProp) => {
         <Text fontWeight={700} mb={5}>
           Sorting Game
         </Text>
+
+        <Textarea
+          fontSize={14}
+          w='100%'
+          placeholder='Bucket'
+          {...register('sortingGame.text', { required: true })}
+          defaultValue={sortingGame.text}
+          borderColor='#9E9E9E'
+          isInvalid={!!errors?.sortingGame?.text}
+          bg='white'
+        />
 
         <VStack w='100%'>
           {buckets.map((bucket, idx) => (

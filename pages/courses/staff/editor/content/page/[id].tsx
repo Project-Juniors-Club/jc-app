@@ -23,11 +23,11 @@ import { createOrUpdateAsset, validatePageFormValues } from '../../../../../../l
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
 import { EditorSerializedQuizQuestion } from '../../../../../../components/quiz-editor/Question';
-import { SerializedSortingGame } from '../../../../../../components/sorting-game-editor/Creator';
 import getPageEditorFormValue from '../../../../../../lib/server/page';
 import MatchingGameCreator, { EditorSerializedMatchingGame } from '../../../../../../components/matching-game-editor/Creator';
 import { ImageWithUploadableFile } from '../../../../../../components/UploadImageButtonWithPreview';
 import { SerializedMatchingGame } from '../../../../../../lib/server/matchingGame';
+import { EditorSerializedSortingGame } from '../../../../../../components/sorting-game-editor/Creator';
 
 type Props = {
   id: string;
