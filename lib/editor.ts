@@ -69,6 +69,10 @@ const handleGame = async (data: EditorPageFormValues) => {
       return (await axios.post(`/api/matching-game`, { ...data.matchingGame })).data.data.gameId;
     }
   }
+
+  if (data.interactiveType === 'sortingGame') {
+    return handleSortingGame(data);
+  }
 };
 
 export const validatePageFormValues = (data: EditorPageFormValues) => {
@@ -81,6 +85,7 @@ export const validatePageFormValues = (data: EditorPageFormValues) => {
     description: validatePageDescription(data),
     quizGame: validateQuizGame(data),
     matchingGame: validateMatchingGame(data),
+    sortingGame: validateSortingGame(data),
   };
 
   const errors = Object.entries(initialErrors).reduce((acc, [key, value]) => {
@@ -121,6 +126,67 @@ const validatePageDescription = ({ assetType, description }: EditorPageFormValue
   return (assetType === 'image' || assetType === 'video') && description.trim().length === 0
     ? { message: 'This is required', type: 'required' }
     : undefined;
+};
+
+const validateSortingGame = ({ assetType, interactiveType, sortingGame }: EditorPageFormValues) => {
+  if (assetType !== 'game' || interactiveType !== 'sortingGame') {
+    return undefined;
+  }
+
+  const bucketsErrors = sortingGame.buckets.map((bucket, index) => {
+    const bucketError = {};
+
+    if (!bucket.name || bucket.name.trim().length === 0) {
+      bucketError['name'] = { message: 'This is required', type: 'required' };
+    }
+
+    const bucketItemsErrors = bucket.bucketItems.map((item, itemIndex) => {
+      const itemError = {};
+
+      if (!item.text || item.text.trim().length === 0) {
+        itemError['text'] = { message: 'This is required', type: 'required' };
+      }
+
+      if (!item.image || (!item.image.assetId && !item.image._uploadedFile)) {
+        itemError['image'] = { message: 'Select an image', type: 'required' };
+      }
+
+      return Object.keys(itemError).length > 0 ? itemError : undefined;
+    });
+
+    if (bucketItemsErrors.filter(err => err !== undefined).length !== 0) {
+      bucketError['bucketItems'] = bucketItemsErrors;
+    }
+
+    return Object.keys(bucketError).length > 0 ? bucketError : undefined;
+  });
+
+  return bucketsErrors.filter(err => err !== undefined).length !== 0
+    ? {
+        buckets: bucketsErrors,
+      }
+    : undefined;
+};
+
+const handleSortingGame = async (data: EditorPageFormValues) => {
+  const sortingGame = data.sortingGame;
+
+  // Upload images
+  sortingGame.buckets.forEach(bucket => {
+    bucket.bucketItems.forEach(async item => {
+      if (item.image?._uploadedFile) {
+        item.image.assetId = await uploadFile(item.image._uploadedFile);
+      }
+    });
+  });
+
+  if (data.originalAssetType === 'game' && data.originalInteractiveType === 'sortingGame') {
+    // Update the Sorting Game
+    return (await axios.put(`/api/sorting-game/${data.originalAssetId}`, { ...sortingGame })).data.data.gameId;
+  } else {
+    // Create a new Sorting Game
+    return (await axios.post(`/api/sorting-game`, { ...sortingGame })).data.data.gameId;
+  }
 };
 
 const validateQuizGame = ({ assetType, interactiveType, quizGame }: EditorPageFormValues) => {

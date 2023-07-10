@@ -61,10 +61,11 @@ const getEditorMatchingGame = async (gameId: string): Promise<EditorSerializedMa
 const getEditorSortingGame = async (gameId: string): Promise<EditorSerializedSortingGame> => {
   const sortingGame = await findUniqueSortingGame(gameId);
   return {
+    text: '',
     duration: sortingGame.duration,
     buckets: sortingGame.buckets.map(bucket => {
       return {
-        text: bucket.name,
+        name: bucket.name,
         bucketItems: bucket.bucketItems.map(bucketItem => {
           return {
             text: bucketItem.text,
