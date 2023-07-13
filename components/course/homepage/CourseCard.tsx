@@ -14,7 +14,7 @@ const CourseCard = ({ course }: { course: SerializedCourse }) => {
         if (!sess) {
           return;
         }
-        updateLastSeen(sess?.data.user.id, course.id);
+        updateLastSeen(sess?.data?.user?.id, course.id);
         router.push('/courses/' + course.id);
       }}
     >
