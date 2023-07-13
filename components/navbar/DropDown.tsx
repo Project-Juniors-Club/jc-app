@@ -10,10 +10,10 @@ const DropDown = ({ buttonName, dropdownItems }) => {
         {buttonName}
         <ChevronDownIcon className='ml-2 -mr-1 h-5 w-5 text-[#434343]' aria-hidden='true' />
       </Menu.Button>
-      <Menu.Items className={`absolute mt-6 divide-y divide-slate-600 rounded-lg bg-white shadow-lg`}>
+      <Menu.Items className={`absolute mt-6 divide-slate-600 bg-white shadow-lg`}>
         {arr.map(item => {
           return (
-            <Menu.Item as='div' key={item.clickOption} className={`block py-4 px-6`}>
+            <Menu.Item as='div' key={item.clickOption} className={`block py-4 px-6 hover:bg-[#F4FFE0] hover:font-bold`}>
               {({ active }) => (
                 <a className={`${active}`} onClick={item.onClick} href='#'>
                   {item.clickOption}
