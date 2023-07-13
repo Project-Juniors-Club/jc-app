@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const httpMethod = req.method;
     if (httpMethod == 'POST') {
       const { name, description, courseId, chapterNumber, userId }: Chapter & { userId: string } = req.body;
+      console.log(req.body);
       // CREATE CHAPTER
       const [newChapter] = await prisma.$transaction([
         prisma.chapter.create({

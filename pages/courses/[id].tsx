@@ -1,20 +1,24 @@
 import axios from 'axios';
 import prisma from '../../lib/prisma';
 import { Image, Text, Box, Flex, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react';
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import { Category } from '@prisma/client';
-import { getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
+import { checkCourseInCart, getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
 import Layout from '../../components/Layout';
 import CustomButton from '../../components/Button';
 import styles from '../../components/Course.module.css';
 import NavBarCourse from '../../components/navbar/NavBar';
 import { DisplayedImage } from '../../components/course/homepage/InternalCourseCard';
+import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type CourseViewProp = {
   course: any;
   creator: any;
   category: Category;
   errors: any;
+  userCourseId: string;
   courseContentOverview: {
     chapters: {
       description: string;
@@ -27,9 +31,23 @@ type CourseViewProp = {
   };
 };
 
-const CourseView = ({ course, category, errors, courseContentOverview }: CourseViewProp) => {
+const CourseView = ({ course, category, errors, courseContentOverview, userCourseId }: CourseViewProp) => {
+  const sess = useSession();
   const { chapters } = courseContentOverview;
+  const [isAdded, setIsAdded] = useState(false);
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
+  const router = useRouter();
+
+  const addToCart = async () => {
+    const {
+      data: { data: updatedCourse },
+    } = await axios.post(`/api/cart/${router.query.id}`, {
+      userId: sess?.data.user?.id,
+    });
+    if (updatedCourse) {
+      setIsAdded(true);
+    }
+  };
 
   if (errors) {
     return (
@@ -82,7 +100,7 @@ const CourseView = ({ course, category, errors, courseContentOverview }: CourseV
             {chapters.map(chapter => {
               return (
                 <>
-                  <AccordionItem className='bg-[#ebf8d3]'>
+                  <AccordionItem className='bg-main-light-green'>
                     <h2>
                       <AccordionButton border='1px solid #C7C7C7'>
                         <Box flex='1' textAlign='left' flexDirection={'column'}>
@@ -136,8 +154,8 @@ const CourseView = ({ course, category, errors, courseContentOverview }: CourseV
                 ${course.price}
               </Box>
             </Box>
-            <CustomButton variant={'green-solid'}>
-              <Box color={'#000000'}>Add to cart</Box>
+            <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
+              <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
             </CustomButton>
           </Flex>
         </Box>
@@ -146,21 +164,14 @@ const CourseView = ({ course, category, errors, courseContentOverview }: CourseV
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const courses = await prisma.course.findMany();
-  const paths = courses.map(course => ({
-    params: { id: course.id.toString() },
-  }));
-
-  return { paths, fallback: false };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const id = params?.id as string;
-  console.log({ params });
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+  const id = context.params?.id as string;
+  console.log({ id });
   const course = await getCourseWithAuthorAndDate(id);
   const courseContentOverview = await getCourseContentOverview(id);
   console.log({ course });
+  const userCourse = await checkCourseInCart(session?.user?.id, id);
   const category =
     course.categoryId &&
     (await prisma.category.findUnique({
@@ -173,7 +184,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       course,
       category,
       courseContentOverview,
+      userCourseId: userCourse?.id ?? '',
     },
   };
-};
+}
 export default CourseView;

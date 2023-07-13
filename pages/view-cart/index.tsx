@@ -4,55 +4,43 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/reac
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-import Layout from '../../components/Layout';
 import styles from './ViewCart.module.css';
 import Button from '../../components/Button';
 import NavBarCart from '../../components/navbar/NavBarCart';
+import prisma from '../../lib/prisma';
+import { getSession, useSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
+import { Course } from '@prisma/client';
+import axios from 'axios';
 
 const ViewCart = ({ courses }) => {
+  const session = useSession();
   const router = useRouter();
 
-  const [cartCourses, setCartCourses] = useState([]);
-  const [checkedItems, setCheckedItems] = useState([]);
-  const allChecked = useMemo(() => (checkedItems.length > 0 ? checkedItems.every(Boolean) : false), [checkedItems]);
+  const [cartCourses, setCartCourses] = useState<Course[]>([]);
 
   useEffect(() => {
-    const courseList = JSON.parse(localStorage.getItem('Cart') || '[]');
-    console.log(courseList);
-
-    // dummy data
-    const courses = [
-      {
-        id: '1',
-        name: 'Food Sourcing',
-        description: 'Learn how to source food',
-        stars: 5,
-        adminId: '1',
-        price: 4.95,
-        selected: false,
+    const coursesObj = JSON.parse(courses);
+    const coursesObjWithPrice = coursesObj.map(course => {
+      course.price = parseFloat(course.price);
+      return course;
+    });
+    setCartCourses(coursesObjWithPrice);
+  }, [courses]);
+  const [checkedItems, setCheckedItems] = useState([]);
+  const allChecked = useMemo(() => (checkedItems.length > 0 ? checkedItems.every(Boolean) : false), [checkedItems]);
+  const handleRemove = async index => {
+    await axios.delete(`/api/cart/${cartCourses[index].id}`, {
+      data: {
+        userId: session?.data?.user?.id,
       },
-      {
-        id: '2',
-        name: 'Food Sourcing but Longer and Pricier',
-        description: 'Learn how to source food but Longer and Pricier',
-        stars: 4,
-        adminId: '2',
-        price: 10.0,
-        selected: false,
-      },
-    ];
-
-    setCartCourses(courses);
-    setCheckedItems(courses.map(course => course.selected ?? false));
-  }, []);
-
-  const handleRemove = index => {
+    });
     setCartCourses(cartCourses.filter((course, i) => i !== index));
     setCheckedItems(checkedItems.filter((item, i) => i !== index));
   };
 
   const handleProceed = () => {
-    localStorage.setItem('Cart', JSON.stringify(cartCourses.map((course, i) => ({ id: course.id, selected: checkedItems[i] }))));
+    localStorage.setItem('Cart', JSON.stringify(cartCourses.map((course, i) => ({ ...course, selected: checkedItems[i] }))));
     router.push('/apply-vouchers');
   };
 
@@ -110,8 +98,8 @@ const CartTable = ({ cartCourses, checkedItems, setCheckedItems, handleRemove })
                   onChange={e => setCheckedItems([...checkedItems.slice(0, index), e.target.checked, ...checkedItems.slice(index + 1)])}
                 />
               </Td>
-              <Td width='70%'>{course.name}</Td>
-              <Td width='10%'>${course.price.toFixed(2)}</Td>
+              <Td width='70%'>{course.title}</Td>
+              <Td width='10%'>${parseInt(course.price).toFixed(2)}</Td>
               <Td width='10%'>
                 <Text
                   fontSize='xs'
@@ -187,5 +175,18 @@ const EmptyCart = () => {
     </Box>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+
+  const user = await prisma.user.findFirst({
+    where: { id: session?.user?.id },
+    include: { coursesInCart: true },
+  });
+
+  console.log(user.coursesInCart);
+
+  return { props: { courses: JSON.stringify(user.coursesInCart) } };
+}
 
 export default ViewCart;
