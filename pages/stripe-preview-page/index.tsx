@@ -18,8 +18,8 @@ export default function PreviewPage() {
   }, []);
 
   return (
-    <form action='/api/checkout_session' method='POST'>
-      <section>
+    <form action='/api/checkout_session' method='POST' style={{ alignSelf: 'flex-end' }}>
+      <section style={{ height: 'max-content' }}>
         <button type='submit' role='link'>
           Checkout
         </button>
