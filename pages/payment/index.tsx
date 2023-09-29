@@ -34,6 +34,7 @@ import Layout from '../../components/Layout';
 import styles from './Payment.module.css';
 import CustomButton from '../../components/Button';
 //import StripeCheckoutForm from './StripeCheckoutForm';
+import PreviewPage from '../stripe-preview-page';
 
 const stripePromise = loadStripe(
   'pk_test_51MOi34Aiw9D5AdICpzHtMTM5DFck7YVTGxSeJ0yx2E6XJ8NT5gTyGRWywWqS8EmdXiBk5RpW76bQolO3kGUJPdXr00c7zbejp3',
@@ -98,7 +99,6 @@ const Payment = () => {
       <Container maxW='container.xl'>
         <Flex py={20}>
           <VStack w='full' h='full' p={10} spacing={10} alignItems='flex-start' border='1px' borderRadius='8px' borderColor='#7FB519'>
-            <Heading fontSize={24}>Courses Ordered</Heading>
             <TableContainer w='full'>
               <Table variant='simple'>
                 <Thead bg='#EBF8D3'>
@@ -117,46 +117,39 @@ const Payment = () => {
                 </Tbody>
               </Table>
             </TableContainer>
-            <Box alignSelf='flex-end' borderStyle='solid' borderWidth='1px' borderColor='#E2E8F0' borderRadius='8px' p={5} w='100%'>
-              <TableContainer marginLeft='30%' p={0}>
-                <Table variant='unstyled'>
-                  <Tbody>
-                    <Tr>
-                      <Td>Subtotal:</Td>
-                      <Td>${subtotal.toFixed(2)}</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Discount Applied:</Td>
-                      <Td>-${discountApplied.toFixed(2)}</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Total:</Td>
-                      <Td>${total.toFixed(2)}</Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Box>
+            <Flex w='full' justifyContent={'space-between'}>
+              <Box borderStyle='solid' borderWidth='1px' borderColor='#E2E8F0' borderRadius='8px' p={5}>
+                <TableContainer p={0}>
+                  <Table variant='unstyled'>
+                    <Tbody>
+                      <Tr>
+                        <Td>Subtotal:</Td>
+                        <Td fontWeight={'semibold'} fontSize={'large'}>
+                          ${subtotal.toFixed(2)}
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td>Discount Applied:</Td>
+                        <Td fontWeight={'semibold'} fontSize={'large'}>
+                          -${discountApplied.toFixed(2)}
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td>Total:</Td>
+                        <Td fontWeight={'semibold'} fontSize={'x-large'}>
+                          ${total.toFixed(2)}
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </Box>
+              <Flex flexDir={'column'} justifyContent={'flex-end'}>
+                <PreviewPage />
+              </Flex>
+            </Flex>
           </VStack>
           <Spacer p='2%' />
-          <VStack w='full' h='full' p={10} spacing={10} alignItems='flex-start' border='1px' borderRadius='8px' borderColor='#7FB519'>
-            <Heading fontSize={24}>Select a Payment Method</Heading>
-            <Tabs alignSelf='stretch' align='center' isFitted>
-              <TabList>
-                <Tab _selected={{ color: '#7FB519' }}>PayNow</Tab>
-                <Tab _selected={{ color: '#7FB519' }}>Credit/Debit Card (via checkout.com)</Tab>
-              </TabList>
-
-              <TabPanels>
-                <TabPanel>
-                  <p>one!</p>
-                </TabPanel>
-                <TabPanel>
-                  <CheckoutForm />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </VStack>
         </Flex>
       </Container>
     </Layout>
@@ -179,7 +172,7 @@ const CheckoutForm = () => (
     <Frames
       config={{
         debug: true,
-        publicKey: 'pk_sbox_5cdu3zk4ywwlclah2kcfiq7p2qt',
+        publicKey: 'pk_sbox_xemmftszxfphnr34ztzgpcws3a6',
         localization: {
           cardNumberPlaceholder: 'Card number',
           expiryMonthPlaceholder: 'MM',
