@@ -11,6 +11,7 @@ import NavBarCourse from '../../components/navbar/NavBar';
 import { DisplayedImage } from '../../components/course/homepage/InternalCourseCard';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type CourseViewProp = {
   course: any;
@@ -33,19 +34,19 @@ type CourseViewProp = {
 const CourseView = ({ course, category, errors, courseContentOverview, userCourseId }: CourseViewProp) => {
   const sess = useSession();
   const { chapters } = courseContentOverview;
+  const [isAdded, setIsAdded] = useState(false);
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
   const router = useRouter();
-  let isAdded = false;
-  if (userCourseId) {
-    isAdded = true;
-  }
+
   const addToCart = async () => {
     const {
       data: { data: updatedCourse },
     } = await axios.post(`/api/cart/${router.query.id}`, {
       userId: sess?.data.user?.id,
     });
-    console.log(updatedCourse);
+    if (updatedCourse) {
+      setIsAdded(true);
+    }
   };
 
   if (errors) {
@@ -153,8 +154,8 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                 ${course.price}
               </Box>
             </Box>
-            <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded}>
-              <Box color={'#000000'}>{isAdded ? 'Added' : 'Add To Cart'}</Box>
+            <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
+              <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
             </CustomButton>
           </Flex>
         </Box>
@@ -183,7 +184,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       course,
       category,
       courseContentOverview,
-      userCourseId: userCourse?.id ?? null,
+      userCourseId: userCourse?.id ?? '',
     },
   };
 }

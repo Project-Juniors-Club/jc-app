@@ -14,6 +14,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Session } from 'next-auth';
 import Head from 'next/head';
 import favicon from '../public/favicon.ico';
+import useLoading from '../hooks/useLoading';
+import { LoadingPage } from '../components/loading/LoadingPage';
 
 const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(radioAnatomy.keys);
 
@@ -83,6 +85,8 @@ function MyApp({
 }: AppProps<{
   session: Session;
 }>) {
+  const loading = useLoading();
+
   return (
     <>
       <Head>
@@ -92,6 +96,7 @@ function MyApp({
         <QueryClientProvider client={queryClient}>
           <ChakraProvider theme={theme}>
             <RecoilRoot>
+              {loading && <LoadingPage />}
               <Component {...pageProps} />
             </RecoilRoot>
           </ChakraProvider>
