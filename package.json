@@ -40,6 +40,7 @@
     "googleapis": "^107.0.0",
     "intercept-stdout": "^0.1.2",
     "konva": "^8.4.2",
+    "lodash": "^4.17.21",
     "next": "^12.3.4",
     "next-auth": "^4.22.1",
     "nodemailer": "^6.7.8",
