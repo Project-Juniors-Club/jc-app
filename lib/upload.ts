@@ -14,7 +14,7 @@ const uploadFile = async (file: File) => {
             'Access-Control-Allow-Origin': '*',
           },
         })
-        .then(() => assetId as String),
+        .then(() => assetId as string),
     );
 };
 
