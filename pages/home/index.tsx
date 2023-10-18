@@ -38,7 +38,7 @@ const LandingPage = () => {
                     Empowering our future leaders through education to make a difference in Singapore’s food industry
                   </Text>
                   <Box className='h-1' />
-                  <CustomButton variant={'black-solid'}>
+                  <CustomButton variant={'black-solid'} onClick={() => router.push('/sign-up')}>
                     <Text color={'#FFFFFF'}>Sign Up</Text>
                   </CustomButton>
                 </VStack>
