@@ -42,6 +42,7 @@
     "intercept-stdout": "^0.1.2",
     "joi": "^17.8.3",
     "konva": "^8.4.2",
+    "lodash": "^4.17.21",
     "next": "^12.3.4",
     "next-auth": "^4.22.1",
     "nodemailer": "^6.7.8",
