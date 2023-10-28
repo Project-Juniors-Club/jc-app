@@ -61,6 +61,7 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
 
   const submitChapterData = (data: FormValues) =>
     axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+  const deleteChapter = (data: FormValues) => axios.delete(`/api/courses/chapters/${id}`);
 
   const mutateOnSave = useMutation({
     mutationFn: submitChapterData,
@@ -80,6 +81,16 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
     },
     onError: () => {
       openErrorNotification('Failed to save chapter', 'Please try again');
+    },
+  });
+  const mutateOnDelete = useMutation({
+    mutationFn: deleteChapter,
+    onSuccess: data => {
+      openSuccessNotification('Deleted chapter successfully');
+      router.push(`/courses/staff/editor/content/${courseStructure.id}`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to delete chapter', 'Please try again');
     },
   });
   const session = useSession();
@@ -124,7 +135,9 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
                     Cancel
                   </Button>
                 </HStack>
-                <Button variant='black-solid'>Delete Chapter</Button>
+                <Button variant='black-solid' onClick={handleSubmit(data => mutateOnDelete.mutate(data))}>
+                  Delete Chapter
+                </Button>
               </Flex>
             </form>
           </Box>
