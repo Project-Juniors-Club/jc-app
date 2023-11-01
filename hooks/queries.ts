@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { NormalUser, User } from '@prisma/client';
+import { NormalUser, User, Admin } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
 
 export const useUserQuery = (id: string) => {
@@ -12,5 +12,22 @@ export const useUserQuery = (id: string) => {
     {
       enabled: !!id,
     },
+  );
+};
+
+
+export const useAdminQuery = (id:string) => {
+  return useQuery<Admin, AxiosError>(
+    ['admin', id],
+    async () => {
+      const {data} = await axios.get(`/api/internal/admin/${id}`);
+      return {
+        userId:id,
+        disabled:data?.disabled,
+        role:data?.role};
+    },
+    {
+      enabled: !!id,
+    }
   );
 };
