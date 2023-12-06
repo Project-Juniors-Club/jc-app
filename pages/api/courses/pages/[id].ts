@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: page });
     } else if (httpMethod == 'DELETE') {
-      // DELETE COURSE
+      // DELETE PAGE
       const page = await prisma.page.delete({
         where: {
           id: pageId,

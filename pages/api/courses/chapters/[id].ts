@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: chapter });
     } else if (httpMethod == 'DELETE') {
-      // DELETE COURSE
+      // DELETE CHAPTER
       const chapter = await prisma.chapter.delete({
         where: {
           id: chapterId,
