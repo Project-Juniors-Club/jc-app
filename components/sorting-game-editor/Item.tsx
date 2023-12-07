@@ -49,6 +49,7 @@ export const Item = ({
             registerLabel={`${registerLabel}.image`}
             useFormReturns={useFormReturns}
             registerOptions={{ required: itemType === 'image' }}
+            image={null}
           />
         )}
       </VStack>

@@ -83,7 +83,7 @@ const CourseList = ({ courses }: { courses: SerializedCourse[] }) => {
               x.options.map(y => (
                 <div
                   key={x.title + y}
-                  className='ml-2.5 flex h-12 items-center rounded-lg border border-solid border-[#7FB519] bg-[#A9D357] py-3 pr-[1.125rem] pl-6'
+                  className='ml-2.5 flex h-12 items-center rounded-lg border border-solid border-btn-green bg-main-green py-3 pr-[1.125rem] pl-6'
                 >
                   <p className='mr-1'>{x.title + ': ' + y}</p>
                   <button className='h-6 w-6 cursor-pointer' onClick={() => handleDelete(x.title, y)}>

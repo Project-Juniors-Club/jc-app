@@ -12,12 +12,12 @@ export const validateQuestions = (questions: SerializedQuizQuestion[]) => {
 };
 
 const validateQuestion = (question: SerializedQuizQuestion) => {
-  if (question.quizGameOptions.length <= 0) {
+  if (question.options.length <= 0) {
     return { valid: false, message: 'There should be at least 1 option for each question.' };
   }
 
-  const { isMultipleResponse, questionTitle, quizGameOptions } = question;
-  const correctOptions = quizGameOptions.filter(option => option.isCorrectOption);
+  const { isMultipleResponse, text: questionTitle, options: quizGameOptions } = question;
+  const correctOptions = quizGameOptions.filter(option => option.isCorrect);
 
   if (questionTitle.length == 0) {
     return { valid: false, message: 'Question should not be empty.' };
@@ -37,7 +37,7 @@ const validateQuestion = (question: SerializedQuizQuestion) => {
 };
 
 const validateOption = (option: SerializedQuizOption) => {
-  const { quizGameOptionType, optionText, optionImage } = option;
+  const { type: quizGameOptionType, text: optionText, image: optionImage } = option;
 
   if (quizGameOptionType == QuizGameOptionType.textAndImage && (optionImage == null || optionText == null || optionText.length == 0)) {
     return { valid: false, message: 'Quiz option type of text and image should have non-null text and image.' };

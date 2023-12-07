@@ -26,6 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const pageId = req.query.id as string;
 
     if (httpMethod == 'GET') {
+      // We might want to improve this to be used sync status between page editor and server state, but now not sure how this would be used
       const page = await prisma.page.findFirst({
         where: { id: pageId },
       });
@@ -98,9 +99,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ message: errorMessageHandler({ httpMethod: req.method, isSingleEntity: true }, entityMessageObj) });
   }
 }
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };

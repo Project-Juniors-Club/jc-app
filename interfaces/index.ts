@@ -84,15 +84,6 @@ export type CourseItem = {
   };
 };
 
-export type Image = {
-  id: string;
-  courseItemId: string | null;
-  url: string;
-  courseItem: {
-    name: string;
-  } | null;
-};
-
 export type Video = {
   id: string;
   courseItemId: string;
