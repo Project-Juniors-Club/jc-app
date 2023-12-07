@@ -53,12 +53,24 @@ export const findSorting = async (where?: Partial<Prisma.SortingGameWhereInput>,
   })) as SortingGame[];
 };
 
-export const findUniqueSorting = async (where: Prisma.SortingGameWhereUniqueInput, select?: Prisma.SortingGameSelect) => {
-  return (await prisma.sortingGame.findUnique({
-    where,
-    select,
-  })) as SortingGame;
-};
+export const findUniqueSorting = async (gameId: string) => {
+  return await prisma.sortingGame.findUnique({
+    where: {
+      gameId: gameId,
+    },
+    include: {
+      sortingGameBuckets: {
+        include: {
+          sortingGameObjects: {
+            include: {
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
 
 export const updateSorting = async (
   where: Partial<Prisma.SortingGameWhereUniqueInput>,

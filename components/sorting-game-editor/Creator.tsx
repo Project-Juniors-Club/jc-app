@@ -24,7 +24,6 @@ type EditorSortingGameBucketItem = {
 export type EditorSerializedSortingGame = Omit<SortingGame, 'buckets'> & {
   text: string;
   buckets: EditorSortingGameBucket[];
-  duration: number;
 };
 
 type SortingGameCreatorProp = {

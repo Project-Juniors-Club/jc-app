@@ -12,7 +12,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const gameId = req.query.id as string;
 
     if (httpMethod == 'GET') {
-      const game = await findUniqueSorting({ gameId });
+      const game = await findUniqueSorting(gameId);
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: game });
     } else if (httpMethod == 'DELETE') {
       const deletedGame = await deleteSorting({ gameId });
