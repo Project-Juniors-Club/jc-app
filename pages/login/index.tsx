@@ -24,6 +24,7 @@ type Props = {
 
 type FormData = {
   email: string;
+  password: string;
 };
 
 export const SSOSignUp = () => {
@@ -82,19 +83,20 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>(null);
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
-  const login = (data: FormData) => {
-    let newTimeout = setTimeout(() => {
-      setPendingLogin(false);
-      setTimeoutId(null);
-      return Promise.reject('new Error Request timed out, try inputting email again');
-    }, 100000);
-    setTimeoutId(newTimeout);
-    return signIn('email', { email: data.email, redirect: false });
+  const login = async (data: FormData) => {
+    // let newTimeout = setTimeout(() => {
+    //   setPendingLogin(false);
+    //   setTimeoutId(null);
+    //   return Promise.reject('new Error Request timed out, try inputting email again');
+    // }, 100000);
+    // setTimeoutId(newTimeout);
+    console.log(data);
+    const res = await signIn('credentials', { email: data.email, password: data.password, redirect: false });
+    return res;
   };
 
   const mutation = useMutation(login, {
     onSuccess: data => {
-      openSuccessNotification('Email Sent', 'Please check your email');
       router.push('/');
     },
     onSettled: () => {},
@@ -145,21 +147,41 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                         focusBorderColor='#8EC12C'
                         borderColor='grey'
                         color='black'
-                        {...register('password', {
+                        {...register('email', {
                           required: 'This is required.',
                         })}
                       />
                     </Flex>
                     {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
                   </FormControl>
+                  <FormControl isInvalid={Boolean(errors.email)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                    <FormLabel htmlFor='password' color='#3D3D3D'>
+                      Password
+                    </FormLabel>
+                    <Flex>
+                      <Input
+                        id='password'
+                        placeholder='Enter your password'
+                        _placeholder={{ color: 'gray.500' }}
+                        focusBorderColor='#8EC12C'
+                        borderColor='grey'
+                        color='black'
+                        type='password'
+                        {...register('password', {
+                          required: 'This is required.',
+                        })}
+                      />
+                    </Flex>
+                    {errors.email && <FormErrorMessage>Please enter a password that is stronger.</FormErrorMessage>}
+                  </FormControl>
                   <Button type='submit' backgroundColor='#8EC12C' _dark={{ backgroundColor: '#78be20' }} color='black' mt={4} width='full'>
                     Log In
                   </Button>
                   <Box width='full' textAlign='center' mt={5}>
                     Don&#39;t have an account?{' '}
-                    <Link href='/login'>
+                    <Link href='/sign-up'>
                       <Text as='u' fontWeight='bold' color='#385600' _hover={{ cursor: 'pointer' }}>
-                        Log in
+                        Sign Up
                       </Text>
                     </Link>
                   </Box>
@@ -169,11 +191,11 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
             </>
           </Box>
         </Flex>
-        <Modal title='Pending Email' onClose={handleModalClosed} isOpen={isPendingLogin}>
+        {/* <Modal title='' onClose={handleModalClosed} isOpen={isPendingLogin}>
           <div className='mx-4 mb-4'>
             <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
           </div>
-        </Modal>
+        </Modal> */}
       </Box>
     </>
   );

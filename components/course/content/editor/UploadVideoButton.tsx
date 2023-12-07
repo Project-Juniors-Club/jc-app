@@ -56,7 +56,7 @@ const UploadVideoButton = ({ useFormReturns: { control, setValue, resetField, cl
         }}
         isDisabled={isDisabled}
       >
-        <div className='text-[#385600]'>{'Upload Video'}</div>
+        <div className='text-dark-gray'>{'Upload Video'}</div>
       </Button>
       <div className='text-[#C90707]'>{error?.message}</div>
       <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${uploadedFile ? '' : 'hidden'}`}>

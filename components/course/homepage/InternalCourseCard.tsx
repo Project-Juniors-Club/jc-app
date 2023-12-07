@@ -5,7 +5,7 @@ import { Course } from '../../../interfaces';
 export const DisplayedImage = (props: { url: string }) => {
   const { url } = props;
   return (
-    <div className='h-[170px] w-[315px] rounded-[16px] bg-[#ebf8d3]'>
+    <div className='h-[170px] w-[315px] rounded-[16px] bg-main-light-green'>
       {url ? <Image width='315px' height='170px' borderRadius='16px' src={url} alt='testing' /> : <>Image</>}
     </div>
   );
@@ -30,10 +30,10 @@ const InternalCourseCard = ({ course }: any) => {
               </div>
             </div>
             <div className='flex h-8 w-full justify-between'>
-              <div className={`w-max rounded-md px-4 py-1.5 text-sm text-white ${course.category ? 'bg-[#A9D357]' : 'bg-[#606060]'}`}>
+              <div className={`w-max rounded-md px-4 py-1.5 text-sm text-white ${course.category ? 'bg-main-green' : 'bg-[#606060]'}`}>
                 {course.category ? course.category.name : 'Uncategorized'}
               </div>
-              <div className={`flex w-max flex-row px-3 py-1 ${isFree ? 'bg-[#A9D357]' : 'bg-[#606060]'} rounded-md text-white`}>
+              <div className={`flex w-max flex-row px-3 py-1 ${isFree ? 'bg-main-green' : 'bg-[#606060]'} rounded-md text-white`}>
                 {isFree ? 'FREE' : `S\$${Number(course.price).toFixed(2)}`}
               </div>
             </div>

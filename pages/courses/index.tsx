@@ -16,7 +16,7 @@ const CourseHomePage = ({ courses }) => {
     if (!sess) {
       return;
     }
-    getRecentCourses(sess?.data.user.id).then((value: SerializedCourse[]) => {
+    getRecentCourses(sess?.data?.user?.id).then((value: SerializedCourse[]) => {
       setRecentCourses(value);
     });
   }, [sess]);

@@ -52,6 +52,7 @@ model User {
   email         String       @unique
   type          UserType     @default(normalUser)
   emailVerified DateTime?
+  password      String?
   image         String?
   name          String?
   age           Int?
@@ -61,6 +62,7 @@ model User {
   admin         Admin?
   normalUser    NormalUser?
   userCourses   UserCourse[]
+  coursesInCart Course[]     @relation("CoursesInCart")
 
   @@map("users")
 }
@@ -137,6 +139,7 @@ model Course {
   userCourses        UserCourse[]
   courseEditor       CourseEditor[]
   coverImageAssetId  String?
+  users              User[]         @relation("CoursesInCart")
 
   @@map("courses")
 }
@@ -191,6 +194,8 @@ model Image {
   Course                     Course[]
   QuizGameQuestion           QuizGameQuestion[]
   QuizGameOption             QuizGameOption[]
+  MatchingGameImage          MatchingGameImage?
+  SortingGameImage           SortingGameImage?
 
   @@map("images")
 }
@@ -220,6 +225,7 @@ model Game {
   matchingGame          MatchingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
   QuizGame              QuizGame?
+  sortingGame           SortingGame?
 
   @@map("games")
 }
@@ -235,9 +241,54 @@ model SpotTheDifferenceGame {
   differences  Float[]
 }
 
+model SortingGame {
+  gameId           String        @id
+  game             Game          @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  duration         Float
+  buckets          Bucket[]
+}
+
+model Bucket {
+  id               String        @id @default(cuid())
+  name             String
+  sortingGame      SortingGame   @relation(fields: [sortingGameId], references: [gameId])
+  sortingGameId    String
+  bucketItems      BucketItem[]
+}
+
+model BucketItem {
+  id               String        @id @default(cuid())
+  text             String?
+  image            SortingGameImage? @relation(fields: [imageId], references: [id])
+  imageId          String?
+  bucket           Bucket        @relation(fields: [bucketId], references: [id])
+  bucketId         String
+}
+
+model SortingGameImage {
+  id               String        @id @default(cuid())
+  image            Image         @relation(fields: [imageId], references: [assetId])
+  imageId          String        @unique
+  bucketItems      BucketItem[]
+}
+
 model MatchingGame {
-  gameId String @id
-  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  gameId   String              @id
+  game     Game                @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  duration Float
+  images   MatchingGameImage[]
+}
+
+model MatchingGameImage {
+  id String @id @default(cuid())
+
+  index Int
+
+  image   Image  @relation(fields: [imageId], references: [assetId])
+  imageId String @unique
+
+  matchingGame   MatchingGame @relation(fields: [matchingGameId], references: [gameId], onDelete: Cascade)
+  matchingGameId String
 }
 
 model QuizGame {
