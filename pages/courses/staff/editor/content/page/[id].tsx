@@ -1,7 +1,7 @@
 import { Article, Asset, AssetType, Page, Video, Image, GameType, Game } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
+import { useFieldArray, RegisterOptions, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Grid, GridItem, Divider, Center, Input, Select, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
@@ -164,7 +164,7 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
                   {...register('duration', {
                     required: { value: true, message: 'Enter Page Duration' },
                     valueAsNumber: true,
-                  })}
+                  } as RegisterOptions)}
                 />
                 <FormErrorMessage>{errors?.duration?.message}</FormErrorMessage>
               </FormControl>
