@@ -192,10 +192,10 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  SortingGameObject          SortingGameObject[]
   QuizGameQuestion           QuizGameQuestion[]
   QuizGameOption             QuizGameOption[]
   MatchingGameImage          MatchingGameImage?
-  SortingGameImage           SortingGameImage?
 
   @@map("images")
 }
@@ -225,7 +225,7 @@ model Game {
   matchingGame          MatchingGame?
   spotTheDifferenceGame SpotTheDifferenceGame?
   QuizGame              QuizGame?
-  sortingGame           SortingGame?
+  SortingGame           SortingGame?
 
   @@map("games")
 }
@@ -239,37 +239,6 @@ model SpotTheDifferenceGame {
   rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
   rightImageId String  @unique
   differences  Float[]
-}
-
-model SortingGame {
-  gameId           String        @id
-  game             Game          @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
-  duration         Float
-  buckets          Bucket[]
-}
-
-model Bucket {
-  id               String        @id @default(cuid())
-  name             String
-  sortingGame      SortingGame   @relation(fields: [sortingGameId], references: [gameId])
-  sortingGameId    String
-  bucketItems      BucketItem[]
-}
-
-model BucketItem {
-  id               String        @id @default(cuid())
-  text             String?
-  image            SortingGameImage? @relation(fields: [imageId], references: [id])
-  imageId          String?
-  bucket           Bucket        @relation(fields: [bucketId], references: [id])
-  bucketId         String
-}
-
-model SortingGameImage {
-  id               String        @id @default(cuid())
-  image            Image         @relation(fields: [imageId], references: [assetId])
-  imageId          String        @unique
-  bucketItems      BucketItem[]
 }
 
 model MatchingGame {
@@ -332,6 +301,45 @@ enum QuizGameOptionType {
   text
   image
   textAndImage
+}
+
+model SortingGame {
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  description String
+
+  sortingGameBuckets SortingGameBucket[]
+}
+
+model SortingGameBucket {
+  id String @id @default(cuid())
+
+  description String
+
+  sortingGameObjects SortingGameObject[]
+
+  sortingGame   SortingGame? @relation(fields: [sortingGameId], references: [gameId])
+  sortingGameId String?
+}
+
+model SortingGameObject {
+  id String @id @default(cuid())
+
+  objectType SortingGameObjectType
+
+  text String?
+
+  image   Image?  @relation(fields: [imageId], references: [assetId], onDelete: Cascade)
+  imageId String?
+
+  correctBucket   SortingGameBucket @relation(fields: [correctBucketId], references: [id])
+  correctBucketId String
+}
+
+enum SortingGameObjectType {
+  text
+  image
 }
 
 enum UserType {
