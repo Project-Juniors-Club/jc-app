@@ -1,37 +1,45 @@
-import React from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
 import CourseList from '../../components/course/homepage/CourseList';
-import UnfinishedCourseList from '../../components/course/homepage/UnfinishedCourseList';
+import ViewedCourseList from '../../components/course/homepage/ViewedCourseList';
 import WelcomeMessage from '../../components/course/homepage/WelcomeMessage';
-import { Course } from '../../interfaces';
+import NavBar from '../../components/navbar/NavBar';
+import { getRecentCourses } from '../../lib/courseRecent';
+import { getAllCourses, SerializedCourse } from '../../lib/server/course';
 
 const CourseHomePage = ({ courses }) => {
+  const sess = useSession();
+
+  const [recentCourses, setRecentCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!sess) {
+      return;
+    }
+    getRecentCourses(sess?.data?.user?.id).then((value: SerializedCourse[]) => {
+      setRecentCourses(value);
+    });
+  }, [sess]);
+
   return (
-    <div className='px-40 py-16'>
-      <WelcomeMessage isUnfinishedCoursesEmpty={false} />
-      <UnfinishedCourseList />
-      <CourseList courses={courses} />
-    </div>
+    <>
+      <NavBar />
+      <div className='px-40 py-16'>
+        <WelcomeMessage isUnfinishedCoursesEmpty={recentCourses.length > 0} />
+        <ViewedCourseList courses={recentCourses} />
+        <CourseList courses={courses} />
+      </div>
+    </>
   );
 };
 
 export async function getStaticProps() {
-  //   const courses = await prisma.course.findMany();
-  const courses: Course[] = [
-    { adminId: '1', description: 'test', id: '1', name: 'abc', price: 100, stars: 2.2 },
-    {
-      adminId: '1',
-      description: 'This is the course title which is pretty long but should not exceed more than three lines',
-      id: '2',
-      name: 'Course coordinator',
-      price: 23,
-      stars: 2.2,
-    },
-    { adminId: '1', description: 'test', id: '3', name: 'Hello world', price: 50, stars: 2.2 },
-  ];
+  const courses = await getAllCourses();
 
   return {
     props: { courses },
     revalidate: 86400,
   };
 }
+
 export default CourseHomePage;

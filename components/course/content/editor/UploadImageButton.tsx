@@ -10,7 +10,7 @@ type Props = {
   imageFilename: string;
 };
 
-const UploadImageButton = ({ useFormReturns: { control, setValue, resetField }, isDisabled, imageFilename }: Props) => {
+const UploadImageButton = ({ useFormReturns: { control, setValue, resetField, clearErrors }, isDisabled, imageFilename }: Props) => {
   const {
     field: { onChange: removeOriginal },
   } = useController({ name: 'image.removeOriginal', control: control });
@@ -44,6 +44,7 @@ const UploadImageButton = ({ useFormReturns: { control, setValue, resetField }, 
           if (e.target.files.length) {
             removeOriginal(true);
             setValue('image.uploadedFile', e.target.files[0]);
+            clearErrors('image.uploadedFile');
           }
           e.target.value = '';
         }}
@@ -56,7 +57,7 @@ const UploadImageButton = ({ useFormReturns: { control, setValue, resetField }, 
         }}
         isDisabled={isDisabled}
       >
-        <div className='text-[#385600]'>{'Upload Image'}</div>
+        <div className='text-dark-gray'>{'Upload Image'}</div>
       </Button>
       <div className='text-[#C90707]'>{error?.message}</div>
       <div className={`flex h-6 w-max min-w-[167px] items-center justify-between ${uploadedFile ? '' : 'hidden'}`}>

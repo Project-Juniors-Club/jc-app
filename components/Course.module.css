@@ -20,6 +20,11 @@
   font-size: 16px;
 }
 
+.accordion {
+  margin-top: 20px;
+  margin-bottom: 100px;
+}
+
 /* styles from here onwards are for staff page */
 
 .navigateBack {
@@ -95,9 +100,9 @@
   font-size: 16px;
 }
 
-.editCourseContentButton {
+/* .editCourseContentButton {
   margin-right: 200px;
-}
+} */
 
 /* .button {
   align-items: center;
