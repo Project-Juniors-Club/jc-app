@@ -16,7 +16,7 @@ export const UserType: {
   courseEditor: 'courseEditor',
 };
 
-export type UserType = typeof UserType[keyof typeof UserType];
+export type UserType = (typeof UserType)[keyof typeof UserType];
 
 export type User = {
   id: string;
