@@ -150,7 +150,7 @@ model Chapter {
   description   String
   courseId      String
   chapterNumber Int
-  course        Course @relation(fields: [courseId], references: [id])
+  course        Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   pages         Page[]
 
   @@map("chapters")
@@ -163,7 +163,7 @@ model Page {
   description String?
   duration    Int
   chapterId   String?
-  chapter     Chapter? @relation(fields: [chapterId], references: [id])
+  chapter     Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   assetId     String   @unique
   asset       Asset    @relation(fields: [assetId], references: [id])
 
