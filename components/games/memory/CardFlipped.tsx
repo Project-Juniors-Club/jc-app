@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CardFlipped = ({ name }) => {
+const CardFlipped = ({ name }: { name: string }) => {
   const style = {
     width: '100px',
     height: '100px',

@@ -123,10 +123,12 @@ export const getCourseStructure = async (id: string) => {
         select: {
           name: true,
           id: true,
+          chapterNumber: true,
           pages: {
             select: {
               name: true,
               id: true,
+              pageNumber: true,
             },
             orderBy: {
               pageNumber: 'asc',
@@ -245,6 +247,84 @@ export const getRecentlyUsedCourse = async (id: string): Promise<SerializedCours
   });
 
   return result;
+};
+
+export const checkCourseInCart = async (userId: string, courseId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      coursesInCart: true,
+    },
+  });
+
+  if (user) {
+    const course = user.coursesInCart.find(book => book.id === courseId);
+    return course;
+  }
+};
+
+export const addCourseToCart = async (userId: string, courseId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  const course = await prisma.course.findUnique({
+    where: {
+      id: courseId,
+    },
+  });
+
+  // Check if the user and course exist
+  if (user && course) {
+    const updatedCourse = await prisma.course.update({
+      where: {
+        id: courseId,
+      },
+      data: {
+        users: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return updatedCourse;
+  }
+};
+
+export const deleteCourseToCart = async (userId: string, courseId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  const course = await prisma.course.findUnique({
+    where: {
+      id: courseId,
+    },
+  });
+
+  // Check if the user and course exist
+  if (user && course) {
+    const updatedCourse = await prisma.course.update({
+      where: {
+        id: courseId,
+      },
+      data: {
+        users: {
+          disconnect: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return updatedCourse;
+  }
 };
 
 export const updateLastSeen = async (user_id: string, course_id: string): Promise<UserCourse> => {

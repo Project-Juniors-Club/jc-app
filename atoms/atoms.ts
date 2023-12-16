@@ -40,6 +40,11 @@ export const signUpEmailState = atom({
   default: '',
 });
 
+export const signUpPasswordState = atom({
+  key: 'signUpPassword',
+  default: '',
+});
+
 export const signUpNameState = atom({
   key: 'signUpName',
   default: '',
@@ -79,6 +84,11 @@ export const idState = atom({
   default: '',
 });
 
+export const passwordState = atom({
+  key: 'password',
+  default: '',
+});
+
 export const userState = selector({
   key: 'user',
   get: ({ get }) => {
@@ -87,8 +97,8 @@ export const userState = selector({
     const name = get(nameState);
     const email = get(emailState);
     const role = get(roleState);
-
-    return { id, name, email, role };
+    const password = get(passwordState);
+    return { id, name, email, role, password };
   },
   set: ({ set }, value) => {
     if (!(value instanceof DefaultValue)) {
@@ -96,6 +106,7 @@ export const userState = selector({
       set(nameState, value.name);
       set(emailState, value.email);
       set(roleState, value.role);
+      set(passwordState, value.password);
     }
   },
 });

@@ -28,7 +28,7 @@ const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) =
               className='h-4 w-4 cursor-pointer border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
               value={1}
               {...register('isFree')}
-              onChange={() => setIsFree(true)}
+              onClick={() => setIsFree(true)}
               disabled={isDisabled}
               defaultChecked={defaultPrice === 0}
             />
@@ -44,7 +44,7 @@ const PriceInput = ({ register, errors, isDisabled, defaultPrice = 0 }: Props) =
               className='h-4 w-4 cursor-pointer border-2 border-[#E6E6E6] text-[#9BCB3F] focus:ring-0 focus:ring-[#E6E6E6]'
               value={0}
               {...register('isFree')}
-              onChange={() => setIsFree(false)}
+              onClick={() => setIsFree(false)}
               disabled={isDisabled}
               defaultChecked={defaultPrice > 0}
             />

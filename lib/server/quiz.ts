@@ -2,18 +2,18 @@ import { Prisma, GameType, AssetType, QuizGame, QuizGameOptionType, Image } from
 import prisma from '../prisma';
 
 export type SerializedQuizOption = {
-  isCorrectOption: boolean;
-  quizGameOptionType: QuizGameOptionType;
-  optionText: string | null;
-  optionImage: Image | null;
+  isCorrect: boolean;
+  type: QuizGameOptionType;
+  text: string | null;
+  image: Image | null;
 };
 
 export type SerializedQuizQuestion = {
   questionNumber: number;
   isMultipleResponse: boolean;
-  questionTitle: string;
+  text: string;
   image: Image | null;
-  quizGameOptions: SerializedQuizOption[];
+  options: SerializedQuizOption[];
 };
 
 export const createQuiz = async (quizGameQuestions: SerializedQuizQuestion[]) => {
@@ -33,20 +33,22 @@ export const createQuiz = async (quizGameQuestions: SerializedQuizQuestion[]) =>
         create: quizGameQuestions.map(question => ({
           questionNumber: question.questionNumber,
           isMultipleResponse: question.isMultipleResponse,
-          questionTitle: question.questionTitle,
-          image: question.image && {
-            connect: {
-              assetId: question.image.assetId,
-            },
-          },
-          quizGameOptions: {
-            create: question.quizGameOptions.map(option => ({
-              isCorrectOption: option.isCorrectOption,
-              quizGameOptionType: option.quizGameOptionType,
-              optionText: option.optionText,
-              optionImage: option.optionImage && {
+          questionTitle: question.text,
+          image: question?.image?.assetId
+            ? {
                 connect: {
-                  assetId: option.optionImage.assetId,
+                  assetId: question.image.assetId,
+                },
+              }
+            : undefined,
+          quizGameOptions: {
+            create: question.options.map(option => ({
+              isCorrectOption: option.isCorrect,
+              quizGameOptionType: option.type,
+              optionText: option.text,
+              optionImage: option?.image?.assetId && {
+                connect: {
+                  assetId: option.image.assetId,
                 },
               },
             })),
