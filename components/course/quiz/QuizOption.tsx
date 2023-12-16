@@ -13,7 +13,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   name?: string;
   index?: number;
   children?: ReactNode;
-  setSelected?: Dispatch<any>;
+  setSelected?: Dispatch<number>;
 }
 
 export const QuizOption = ({
@@ -45,7 +45,13 @@ export const QuizOption = ({
   return (
     <div className='m-2 flex w-10/12 rounded-md p-2 align-middle' style={backgroundStyle}>
       <div className='mr-2 flex flex-col justify-center text-center align-middle'>
-        <input className='translate-y-[-0.125rem]' type='radio' name={name} disabled={isShow} onChange={() => setSelected(index)} />
+        <input
+          className='translate-y-[-0.125rem]'
+          type='radio'
+          name={name}
+          disabled={isShow}
+          onChange={() => setSelected && setSelected(index)}
+        />
       </div>
       {children}
     </div>
