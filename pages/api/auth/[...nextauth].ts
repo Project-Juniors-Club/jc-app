@@ -5,6 +5,7 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '../../../lib/prisma';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { findUniqueUser } from '../../../lib/server/user';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -24,10 +25,11 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    session({ session, token, user }) {
+    async session({ session, token, user }) {
       if (session.user) {
         session.user.type = token.type;
         session.user.id = token.id;
+        session.data = await findUniqueUser({id: token.id}, {dob: true});
       }
       return session;
     },

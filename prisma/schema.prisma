@@ -56,6 +56,7 @@ model User {
   image         String?
   name          String?
   age           Int?
+  dob           DateTime?
   pdpa          Boolean      @default(false)
   accounts      Account[]
   sessions      Session[]

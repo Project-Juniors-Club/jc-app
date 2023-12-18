@@ -3,12 +3,13 @@ import { useRouter } from 'next/router';
 import CustomButton from '../../components/Button';
 import Footer from '../../components/Footer';
 import NavBar from '../../components/navbar/NavBar';
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 const UserManagePage = () => {
     const router = useRouter();
     const { data: session } = useSession();
+    console.log(session);
     function handleChange(){
         //no editing allowed, do nothing
     }
@@ -43,7 +44,7 @@ const UserManagePage = () => {
                             <Box>
                                 <Text mb='8px'>Date of Birth</Text>
                                 <Input
-                                    value=''
+                                    value={session?.data?.dob && session?.data?.dob.split('T')[0]}
                                     onChange={handleChange}
                                     size='md'
                                     placeholder='NA'
@@ -54,7 +55,6 @@ const UserManagePage = () => {
                                 <CustomButton onClick={() => alert('Coming soon')} variant={'black-solid'}>
                                     <Text color={'#FFFFFF'}>Delete Account</Text>
                                 </CustomButton>
-
                                 <CustomButton style={{float: 'right'}} onClick={() => alert('Coming soon')} variant={'green-solid'}>
                                     <Text color={'#FFFFFF'}>Edit Details</Text>
                                 </CustomButton>
