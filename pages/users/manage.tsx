@@ -4,11 +4,13 @@ import CustomButton from '../../components/Button';
 import Footer from '../../components/Footer';
 import NavBar from '../../components/navbar/NavBar';
 import React from "react";
+import { useSession } from "next-auth/react";
 
 const UserManagePage = () => {
     const router = useRouter();
+    const { data: session } = useSession();
     function handleChange(){
-
+        //no editing allowed, do nothing
     }
     return (
         <>
@@ -25,37 +27,35 @@ const UserManagePage = () => {
                             <Box>
                                 <Text mb='8px'>Email</Text>
                                 <Input
-                                    value='test'
+                                    value={session?.user.email}
                                     onChange={handleChange}
-                                    placeholder='Here is a sample placeholder'
                                     size='md'
                                 />
                             </Box>
                             <Box>
                                 <Text mb='8px'>Full Name</Text>
                                 <Input
-                                    value='test'
+                                    value={session?.user.name}
                                     onChange={handleChange}
-                                    placeholder='Here is a sample placeholder'
                                     size='md'
                                 />
                             </Box>
                             <Box>
                                 <Text mb='8px'>Date of Birth</Text>
                                 <Input
-                                    value='2018-07-22'
+                                    value=''
                                     onChange={handleChange}
                                     size='md'
-                                    type="date"
+                                    placeholder='NA'
                                 />
                             </Box>
                             <Box className='pb-6'></Box>
                             <Box>
-                                <CustomButton onClick={() => router.push('/courses')} variant={'black-solid'}>
+                                <CustomButton onClick={() => alert('Coming soon')} variant={'black-solid'}>
                                     <Text color={'#FFFFFF'}>Delete Account</Text>
                                 </CustomButton>
 
-                                <CustomButton style={{float: 'right'}} onClick={() => router.push('/courses')} variant={'green-solid'}>
+                                <CustomButton style={{float: 'right'}} onClick={() => alert('Coming soon')} variant={'green-solid'}>
                                     <Text color={'#FFFFFF'}>Edit Details</Text>
                                 </CustomButton>
                             </Box>
