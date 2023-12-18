@@ -63,6 +63,7 @@ model User {
   normalUser    NormalUser?
   userCourses   UserCourse[]
   coursesInCart Course[]     @relation("CoursesInCart")
+  deleted       Boolean?      @default(false)
 
   @@map("users")
 }
