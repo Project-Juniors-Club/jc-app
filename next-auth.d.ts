@@ -20,8 +20,8 @@ declare module 'next-auth' {
     user?: {
       type?: UserType;
       id?: string;
-      data?: any;
     } & DefaultSession['user'];
+    data?: any;
   }
 
   /** Passed as a parameter to the `jwt` callback */
