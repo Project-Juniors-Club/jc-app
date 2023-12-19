@@ -70,7 +70,7 @@ export const findUniqueSorting = async (gameId: string) => {
       },
     },
   });
-}
+};
 
 export const updateSorting = async (
   where: Partial<Prisma.SortingGameWhereUniqueInput>,

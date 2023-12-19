@@ -77,7 +77,6 @@ const getEditorMatchingGame = async (gameId: string): Promise<EditorSerializedMa
   };
 };
 
-
 // fill in here with whatever value is needed for the SSR form data
 const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues> => {
   const page = await prisma.page.findUnique({
