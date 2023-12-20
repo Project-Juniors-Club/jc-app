@@ -28,17 +28,8 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     }
 }
 
-async function createOtp(email: string){
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    await updateUser(
-        { email: email },
-        {
-            otp: otp,
-        }
-    );
+async function emailto(to: string, subject: string, html: string){
     const from = process.env.EMAIL_FROM;
-    const to = email;
-    const subject = 'Account Deletion OTP';
     const newTransport = () => {
         return nodemailer.createTransport({
             ...smtp,
@@ -53,10 +44,21 @@ async function createOtp(email: string){
         from,
         to,
         subject,
-        html: `<h1>Your OTP is <u><b>${otp}</b></u></h1>`
+        html: html,
     };
     const info = await newTransport().sendMail(mailOptions);
     console.log(nodemailer.getTestMessageUrl(info));
+}
+
+async function createOtp(email: string){
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await updateUser(
+        { email: email },
+        {
+            otp: otp,
+        }
+    );
+    emailto(email, 'Account Deletion OTP', `<h1>Your OTP is <u><b>${otp}</b></u></h1>`).then();
     return true;
 }
 
@@ -77,6 +79,9 @@ async function execute(email: string, otp: string, mode: string){
                     deleted: true,
                 }
             );
+            emailto(email, 'Account Deletion Request',
+                `We have received a request to permanently delete your account. 
+                Your account has been deactivated from the site and will be permanently deleted within 14 days.`).then();
         }
         return true;
     } else {
