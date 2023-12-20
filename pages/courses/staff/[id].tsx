@@ -11,6 +11,8 @@ import styles from '../../../components/Course.module.css';
 import { useRouter } from 'next/router';
 import NavBarCourse from '../../../components/navbar/NavBarCourse';
 import { DisplayedImage } from '../../../components/course/homepage/InternalCourseCard';
+import { useMutation } from '@tanstack/react-query';
+import useSnackbar from '../../../hooks/useSnackbar';
 
 type CourseStaffViewProp = {
   course: any;
@@ -31,6 +33,20 @@ type CourseStaffViewProp = {
 const CourseStaffView = ({ course, category, errors, courseContentOverview }: CourseStaffViewProp) => {
   const { chapters } = courseContentOverview;
   const router = useRouter();
+  const { openSuccessNotification, openErrorNotification } = useSnackbar();
+
+  const deleteCourse = async () => axios.delete(`/api/courses/${course.id}`);
+
+  const mutateOnDelete = useMutation({
+    mutationFn: deleteCourse,
+    onSuccess: () => {
+      openSuccessNotification('Deleted course successfully!');
+      router.push(`/courses/staff`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to delete course', 'Please try again');
+    },
+  });
 
   if (errors) {
     return (
@@ -64,7 +80,7 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                   <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
-              <CustomButton variant={'black-outline'} className={styles.courseButton}>
+              <CustomButton variant={'black-outline'} className={styles.courseButton} onClick={() => mutateOnDelete.mutate()}>
                 <Flex>
                   <Box color={'#000000'}>Delete Course</Box>
                   <Image src={'/icons/trash.svg'} className={styles.icon} alt='open' />
