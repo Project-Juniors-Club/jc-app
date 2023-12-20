@@ -15,7 +15,6 @@ import NavBar from '../../components/navbar/NavBar';
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { signOut } from 'next-auth/react';
-import {useForm} from "react-hook-form";
 import axios from "axios";
 
 const UserManagePage = () => {
@@ -53,7 +52,7 @@ const UserManagePage = () => {
             setIsLoading2(false);
         }
     };
-    //const router = useRouter();
+    const router = useRouter();
     const { data: session } = useSession();
     const [showDeleteModal, setDeleteModal] = useState(0);
     function handleChange(){
@@ -177,6 +176,7 @@ const UserManagePage = () => {
                                     value={session?.user.email}
                                     onChange={handleChange}
                                     size='md'
+                                    variant='filled'
                                 />
                             </Box>
                             <Box>
@@ -185,15 +185,16 @@ const UserManagePage = () => {
                                     value={session?.user.name}
                                     onChange={handleChange}
                                     size='md'
+                                    variant='filled'
                                 />
                             </Box>
                             <Box>
                                 <Text mb='8px'>Date of Birth</Text>
                                 <Input
-                                    value={session?.data?.dob && session?.data?.dob.split('T')[0]}
+                                    value={session?.data?.dob ? session?.data?.dob.split('T')[0] : 'NA'}
                                     onChange={handleChange}
                                     size='md'
-                                    placeholder='NA'
+                                    variant='filled'
                                 />
                             </Box>
                             <Box className='pb-6'></Box>
@@ -207,7 +208,7 @@ const UserManagePage = () => {
                                   loadingText='Sending OTP'>
                                     <Text color={'#FFFFFF'}>Delete Account</Text>
                                 </CustomButton>
-                                <CustomButton style={{float: 'right'}} onClick={() => alert('Coming soon')} variant={'green-solid'}>
+                                <CustomButton style={{float: 'right'}} onClick={() => router.push('/users/edit')} variant={'green-solid'}>
                                     <Text color={'#FFFFFF'}>Edit Details</Text>
                                 </CustomButton>
                             </Box>
