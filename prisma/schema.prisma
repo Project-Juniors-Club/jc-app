@@ -139,8 +139,8 @@ model Course {
   createdBy          Admin          @relation("createdBy", fields: [creatorId], references: [userId])
   lastUpdatedBy      Admin          @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
   userCourses        UserCourse[]
-  User User? @relation("CoursesInCart", fields: [userId], references: [id])
-  userId String?
+  User               User?          @relation("CoursesInCart", fields: [userId], references: [id])
+  userId             String?
 
   @@map("courses")
 }
@@ -220,15 +220,15 @@ model Article {
 
 model Game {
   type                  GameType
-  assetId String @id
-  asset   Asset  @relation(fields: [assetId], references: [id])
+  assetId               String                 @id
+  asset                 Asset                  @relation(fields: [assetId], references: [id])
   matchingGame          MatchingGame?
   QuizGame              QuizGame?
   SortingGame           SortingGame?
   SpotTheDifferenceGame SpotTheDifferenceGame?
 
-  @@map("games")
   @@unique([assetId], name: "unique_asset_id")
+  @@map("games")
 }
 
 model SpotTheDifferenceGame {
