@@ -1,12 +1,25 @@
-export const validateDifferences = (differences: number[]) => {
-  if (differences.length % 4 !== 0) {
-    return { valid: false, message: 'The number of values should be a multiple of 4.' };
-  }
-
-  for (const location of differences) {
-    if (location > 1 || location < 0) {
+import { SpotTheDifferenceRegion } from '@prisma/client';
+export const validateDifferences = (differences: SpotTheDifferenceRegion[]) => {
+  for (const difference of differences) {
+    if (
+      difference.x < 0 ||
+      difference.y < 0 ||
+      difference.height < 0 ||
+      difference.width < 0 ||
+      difference.x >= 1 ||
+      difference.y >= 1 ||
+      difference.height >= 1 ||
+      difference.width >= 1
+    ) {
       return { valid: false, message: 'All values should be non-negative floats less than one.' };
     }
+    differences.some((difference, index) => {
+      for (let i = index + 1; i < differences.length; i++) {
+        if (difference.x === differences[i].x && difference.y === differences[i].y) {
+          return { valid: false, message: 'There should not be spot the differences starting at same x and y coordinate' };
+        }
+      }
+    });
   }
   return { valid: true };
 };

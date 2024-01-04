@@ -11,14 +11,14 @@ type QuestionTypeSelectProp = {
 
 const QuestionTypeSelect = ({
   registerLabel,
-  defaultType = 'mcq',
+  defaultType = 'mrq',
   useFormReturns: { watch, register, setValue },
   onChange,
 }: QuestionTypeSelectProp) => {
   const mcqText = 'Multiple Choice (MCQ)';
   const mrqText = 'Multiple Response (MRQ)';
   register(registerLabel, { value: defaultType });
-  const questionTypeWatch = watch(registerLabel, defaultType) as string;
+  const isMultipleResponse: boolean = watch(registerLabel, defaultType === 'mrq');
   return (
     <Menu>
       <MenuButton
@@ -32,14 +32,14 @@ const QuestionTypeSelect = ({
         w='100%'
         textAlign='left'
       >
-        {questionTypeWatch == 'mcq' ? mcqText : mrqText}
+        {isMultipleResponse ? mrqText : mcqText}
       </MenuButton>
-      <MenuList>
+      <MenuList zIndex={3}>
         <MenuOptionGroup
           defaultValue={defaultType}
           type='radio'
           onChange={val => {
-            setValue(registerLabel, val);
+            setValue(registerLabel, val === 'mrq');
             onChange();
           }}
         >

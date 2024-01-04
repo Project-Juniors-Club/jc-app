@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Category, Course, CourseStatus, User } from '@prisma/client';
 import CustomButton from '../../../components/Button';
 import prisma from '../../../lib/prisma';
-import NavBarCart from '../../../components/navbar/NavBarCart';
+import NavBarAdmin from '../../../components/navbar/NavBarAdmin';
 import { useRouter } from 'next/router';
 import { getAllCourses } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
@@ -87,7 +87,7 @@ const StaffCourseOverviewPage = ({ courses, categories }: IProps) => {
 
   return (
     <>
-      <NavBarCart />
+      <NavBarAdmin />
       <div className='px-36'>
         <div className='flex items-center justify-between py-16'>
           <h1 className='text-5xl font-bold'>Course Overview</h1>

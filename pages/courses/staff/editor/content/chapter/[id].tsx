@@ -2,7 +2,7 @@ import { Chapter } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
+import { Text, Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Center, Input, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
@@ -16,7 +16,7 @@ import Footer from '../../../../../../components/Footer';
 import Button from '../../../../../../components/Button';
 import MyAccordion from '../../../../../../components/course/content/editor/MyAccordion';
 import { CourseStructure, getCourseStructure } from '../../../../../../lib/server/course';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CancelModal from '../../../../../../components/course/create/CancelModal';
 
 type FormValues = {
@@ -34,7 +34,15 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [courseStructure, setCourseStructure] = useState(initialCourseStructure);
+  const queryClient = useQueryClient();
+  const { data: courseStructure } = useQuery<CourseStructure>({
+    queryKey: ['courseStructure'],
+    queryFn: async () => {
+      const res = await axios.get(`/api/courses/structure/${initialCourseStructure.id}`);
+      return res.data;
+    },
+    initialData: initialCourseStructure,
+  });
 
   const useFormReturns = useForm({
     defaultValues: { name: chapter.name, description: chapter.description },
@@ -53,12 +61,13 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
 
   const submitChapterData = (data: FormValues) =>
     axios.put(`/api/courses/chapters/${id}`, { ...data, updaterId: session.data.user.id, courseId: courseStructure.id });
+  const deleteChapter = (data: FormValues) => axios.delete(`/api/courses/chapters/${id}`);
 
   const mutateOnSave = useMutation({
     mutationFn: submitChapterData,
     onSuccess: data => {
       openSuccessNotification('Updated chapter successfully!');
-      courseStructure.chapters[chapter.chapterNumber - 1].name = data.data.name;
+      queryClient.invalidateQueries({ queryKey: ['courseStructure'] });
     },
     onError: () => {
       openErrorNotification('Update failed', 'Please try again');
@@ -72,6 +81,16 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
     },
     onError: () => {
       openErrorNotification('Failed to save chapter', 'Please try again');
+    },
+  });
+  const mutateOnDelete = useMutation({
+    mutationFn: deleteChapter,
+    onSuccess: data => {
+      openSuccessNotification('Deleted chapter successfully');
+      router.push(`/courses/staff/editor/content/${courseStructure.id}`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to delete chapter', 'Please try again');
     },
   });
   const session = useSession();
@@ -116,7 +135,9 @@ const EditContentChapter = ({ id, courseStructure: initialCourseStructure, chapt
                     Cancel
                   </Button>
                 </HStack>
-                <Button variant='black-solid'>Delete Chapter</Button>
+                <Button variant='black-solid' onClick={handleSubmit(data => mutateOnDelete.mutate(data))}>
+                  Delete Chapter
+                </Button>
               </Flex>
             </form>
           </Box>

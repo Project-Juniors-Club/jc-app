@@ -8,6 +8,24 @@ export type SortingGame = {
   buckets: Bucket[];
 };
 
+type EditorSortingGameBucket = {
+  name: string;
+  bucketItems: EditorSortingGameBucketItem[];
+};
+
+type EditorSortingGameBucketItem = {
+  text: string;
+  image?: {
+    assetId: string;
+    _uploadedFile?: File;
+  };
+};
+
+export type EditorSerializedSortingGame = Omit<SortingGame, 'buckets'> & {
+  text: string;
+  buckets: EditorSortingGameBucket[];
+};
+
 type SortingGameCreatorProp = {
   useFormReturns: UseFormReturn<any>;
 };
@@ -43,7 +61,7 @@ const SortingGameCreator = ({ useFormReturns }: SortingGameCreatorProp) => {
     control,
   } = useFormReturns as UseFormReturn<{ sortingGame: SortingGame }>;
   const sortingGame = useWatch({ name: 'sortingGame', control: control });
-  const buckets = sortingGame?.buckets;
+  const buckets = sortingGame?.buckets || [];
   const handleOnBucketDelete = (idx: number) => () => {
     buckets.splice(idx, 1);
     setValue('sortingGame.buckets', buckets);
@@ -66,6 +84,7 @@ const SortingGameCreator = ({ useFormReturns }: SortingGameCreatorProp) => {
         <Text fontWeight={700} mb={5}>
           Sorting Game
         </Text>
+
         <Textarea
           fontSize={14}
           w='100%'
@@ -76,6 +95,7 @@ const SortingGameCreator = ({ useFormReturns }: SortingGameCreatorProp) => {
           isInvalid={!!errors?.sortingGame?.text}
           bg='white'
         />
+
         <VStack w='100%'>
           {buckets.map((bucket, idx) => (
             <Bucket

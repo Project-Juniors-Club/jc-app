@@ -1,0 +1,32 @@
+.card {
+  transform: scale(1);
+}
+.card:hover {
+  animation-name: card-hover-in;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.card:not(:hover) {
+  animation-name: card-hover-out;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes card-hover-in {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes card-hover-out {
+  0% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

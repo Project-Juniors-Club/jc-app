@@ -26,13 +26,14 @@ import Layout from '../../components/Layout';
 import google from '../../public/assets/google_logo.svg';
 import apple from '../../public/assets/apple_logo_black.svg';
 import facebook from '../../public/assets/facebook_logo_blue.svg';
-import { signUpEmailState } from '../../atoms/atoms';
+import { signUpEmailState, signUpPasswordState } from '../../atoms/atoms';
 import { FormEvent } from 'react';
 import Navbar from '../../components/navbar/NavBar';
 import { SSOSignUp } from '../login';
 
 type FormValues = {
   email: string;
+  password: string;
 };
 
 type Props = {
@@ -69,16 +70,34 @@ const sso = [
 
 const SignUp = ({ csrfToken, providers }: Props) => {
   const [email, setEmail] = useRecoilState(signUpEmailState);
+  const [password, setPassword] = useRecoilState(signUpPasswordState);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { email: email ?? '' } });
+  } = useForm({ defaultValues: { email: email ?? '', password: password ?? '' } });
   const router = useRouter();
 
-  const onSubmit = (data: FormValues) => {
-    setEmail(data.email);
-    router.push('/sign-up/account-details');
+  const onSubmit = async (data: FormValues) => {
+    console.log(data);
+    const body = { ...data };
+    console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
+    const res = await fetch(`/api/users/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: true,
+        callbackUrl: '/',
+      });
+    }
+
+    // setEmail(data.email);
+    // router.push('/sign-up/account-details');
   };
 
   const handleSignIn = (event: FormEvent, provider: Provider) => {
@@ -127,6 +146,26 @@ const SignUp = ({ csrfToken, providers }: Props) => {
                       />
                     </Flex>
                     {errors.email && <FormErrorMessage>Please enter a valid email address.</FormErrorMessage>}
+                  </FormControl>
+                  <FormControl isInvalid={Boolean(errors.password)} mt={4} width={{ sm: '80vw', md: '80vw', lg: '500px' }}>
+                    <FormLabel htmlFor='password' color='#3D3D3D'>
+                      Password
+                    </FormLabel>
+                    <Flex>
+                      <Input
+                        id='password'
+                        placeholder='Enter your password'
+                        _placeholder={{ color: 'gray.500' }}
+                        focusBorderColor='#8EC12C'
+                        borderColor='grey'
+                        color='black'
+                        type='password'
+                        {...register('password', {
+                          required: 'This is required.',
+                        })}
+                      />
+                    </Flex>
+                    {errors.email && <FormErrorMessage>Please enter a password that is stronger.</FormErrorMessage>}
                   </FormControl>
                   <Button type='submit' backgroundColor='#8EC12C' _dark={{ backgroundColor: '#78be20' }} color='black' mt={4} width='full'>
                     Sign up

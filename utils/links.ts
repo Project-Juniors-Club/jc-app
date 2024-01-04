@@ -3,7 +3,7 @@ export const URL = '/api/auth/login';
 export const socials = [
   {
     name: 'Instagram',
-    url: 'https://www.instagram.com/foodbanksingapore/',
+    url: 'https://www.instagram.com/foodbanksg/',
     icon: 'instagram',
   },
   {

@@ -17,7 +17,7 @@ const MemoryGame = () => {
   const [selectedCards, setSelectedCards] = useState<CardObj[]>([]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const randomiseCards = ({ cards }) => {
+  const randomiseCards = ({ cards }: { cards: CardObj[] }) => {
     let randomOrderArr = [];
     let cardsArr = cards;
     for (let i = cardsArr.length; i > 0; i--) {
@@ -59,7 +59,7 @@ const MemoryGame = () => {
         }, 1000);
       }
     }
-  }, [selectedCards]);
+  }, [selectedCards, randomCards, score, turns]);
 
   const handleClick = (cardIndex: number, card: CardObj) => {
     if (isPlaying && selectedCards.length < 2) {

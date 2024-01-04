@@ -13,10 +13,10 @@ const CourseHomePage = ({ courses }) => {
   const [recentCourses, setRecentCourses] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!sess) {
+    if (!sess || !sess.data) {
       return;
     }
-    getRecentCourses(sess?.data.user.id).then((value: SerializedCourse[]) => {
+    getRecentCourses(sess?.data?.user?.id).then((value: SerializedCourse[]) => {
       setRecentCourses(value);
     });
   }, [sess]);

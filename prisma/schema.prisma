@@ -52,6 +52,7 @@ model User {
   email         String       @unique
   type          UserType     @default(normalUser)
   emailVerified DateTime?
+  password      String?
   image         String?
   name          String?
   age           Int?
@@ -61,6 +62,7 @@ model User {
   admin         Admin?
   normalUser    NormalUser?
   userCourses   UserCourse[]
+  coursesInCart Course[]     @relation("CoursesInCart")
 
   @@map("users")
 }
@@ -137,6 +139,8 @@ model Course {
   createdBy          Admin          @relation("createdBy", fields: [creatorId], references: [userId])
   lastUpdatedBy      Admin          @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
   userCourses        UserCourse[]
+  User User? @relation("CoursesInCart", fields: [userId], references: [id])
+  userId String?
 
   @@map("courses")
 }
@@ -147,7 +151,7 @@ model Chapter {
   description   String
   courseId      String
   chapterNumber Int
-  course        Course @relation(fields: [courseId], references: [id])
+  course        Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   pages         Page[]
 
   @@map("chapters")
@@ -189,6 +193,8 @@ model Image {
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
+  SortingGameObject          SortingGameObject[]
+  MatchingGameImage          MatchingGameImage?
   asset                      Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("images")
@@ -214,13 +220,15 @@ model Article {
 
 model Game {
   type                  GameType
-  assetId               String                 @id
+  assetId String @id
+  asset   Asset  @relation(fields: [assetId], references: [id])
   matchingGame          MatchingGame?
   QuizGame              QuizGame?
-  spotTheDifferenceGame SpotTheDifferenceGame?
-  asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  SortingGame           SortingGame?
+  SpotTheDifferenceGame SpotTheDifferenceGame?
 
   @@map("games")
+  @@unique([assetId], name: "unique_asset_id")
 }
 
 model SpotTheDifferenceGame {
@@ -234,8 +242,22 @@ model SpotTheDifferenceGame {
 }
 
 model MatchingGame {
-  gameId String @id
-  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  gameId   String              @id
+  game     Game                @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  duration Float
+  images   MatchingGameImage[]
+}
+
+model MatchingGameImage {
+  id String @id @default(cuid())
+
+  index Int
+
+  image   Image  @relation(fields: [imageId], references: [assetId])
+  imageId String @unique
+
+  matchingGame   MatchingGame @relation(fields: [matchingGameId], references: [gameId], onDelete: Cascade)
+  matchingGameId String
 }
 
 model QuizGame {
@@ -271,6 +293,45 @@ enum QuizGameOptionType {
   text
   image
   textAndImage
+}
+
+model SortingGame {
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
+  description String
+
+  sortingGameBuckets SortingGameBucket[]
+}
+
+model SortingGameBucket {
+  id String @id @default(cuid())
+
+  description String
+
+  sortingGameObjects SortingGameObject[]
+
+  sortingGame   SortingGame? @relation(fields: [sortingGameId], references: [gameId])
+  sortingGameId String?
+}
+
+model SortingGameObject {
+  id String @id @default(cuid())
+
+  objectType SortingGameObjectType
+
+  text String?
+
+  image   Image?  @relation(fields: [imageId], references: [assetId], onDelete: Cascade)
+  imageId String?
+
+  correctBucket   SortingGameBucket @relation(fields: [correctBucketId], references: [id])
+  correctBucketId String
+}
+
+enum SortingGameObjectType {
+  text
+  image
 }
 
 enum UserType {
