@@ -76,12 +76,12 @@ model NormalUser {
 
 model Admin {
   userId         String         @id
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdCourses Course[]       @relation("createdBy")
-  updatedCourses Course[]       @relation("updatedBy")
-  courseEditor   CourseEditor[]
   disabled       Boolean        @default(true)
   role           String         @default("Staff")
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseEditor   CourseEditor[]
+  createdCourses Course[]       @relation("createdBy")
+  updatedCourses Course[]       @relation("updatedBy")
 
   @@map("admins")
 }
@@ -90,8 +90,8 @@ model CourseEditor {
   id       String @id @default(cuid())
   courseId String
   adminId  String
-  course   Course @relation(fields: [courseId], references: [id])
   admin    Admin  @relation(fields: [adminId], references: [userId])
+  course   Course @relation(fields: [courseId], references: [id])
 
   @@unique([adminId, courseId])
   @@map("courseEditors")
@@ -104,9 +104,9 @@ model UserCourse {
   progress   Int
   correctQns Int
   stars      Int
+  lastSeenBy DateTime
   course     Course   @relation(fields: [courseId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
-  lastSeenBy DateTime
 
   @@unique([userId, courseId])
   @@map("userCourses")
@@ -129,17 +129,18 @@ model Course {
   createDate         DateTime       @default(now())
   lastUpdatedUserId  String
   lastUpdatedDate    DateTime       @updatedAt
-  coverImage         Image?         @relation(fields: [coverImageAssetId], references: [assetId])
   status             CourseStatus   @default(DRAFT)
   categoryId         String?
+  coverImageAssetId  String?
+  chapters           Chapter[]
+  courseEditor       CourseEditor[]
+  category           Category?      @relation(fields: [categoryId], references: [id])
+  coverImage         Image?         @relation(fields: [coverImageAssetId], references: [assetId])
   createdBy          Admin          @relation("createdBy", fields: [creatorId], references: [userId])
   lastUpdatedBy      Admin          @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
-  category           Category?      @relation(fields: [categoryId], references: [id])
-  chapters           Chapter[]
   userCourses        UserCourse[]
-  courseEditor       CourseEditor[]
-  coverImageAssetId  String?
-  users              User[]         @relation("CoursesInCart")
+  User               User?          @relation("CoursesInCart", fields: [userId], references: [id])
+  userId             String?
 
   @@map("courses")
 }
@@ -157,15 +158,15 @@ model Chapter {
 }
 
 model Page {
+  chapterId   String?
   id          String   @id @default(cuid())
   name        String
   pageNumber  Int
   description String?
   duration    Int
-  chapterId   String?
-  chapter     Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   assetId     String   @unique
   asset       Asset    @relation(fields: [assetId], references: [id])
+  chapter     Chapter? @relation(fields: [chapterId], references: [id])
 
   @@map("pages")
 }
@@ -176,35 +177,34 @@ model Asset {
   article   Article?
   game      Game?
   image     Image?
-  video     Video?
   page      Page?
+  video     Video?
 
   @@map("assets")
 }
 
 model Image {
-  filename String?
-  url      String
-  key      String?
-  assetId  String  @id
-  asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
-
+  url                        String
+  assetId                    String                 @id
+  filename                   String?
+  key                        String?
+  QuizGameOption             QuizGameOption[]
+  QuizGameQuestion           QuizGameQuestion[]
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
   SortingGameObject          SortingGameObject[]
-  QuizGameQuestion           QuizGameQuestion[]
-  QuizGameOption             QuizGameOption[]
   MatchingGameImage          MatchingGameImage?
+  asset                      Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }
 
 model Video {
-  filename String?
   url      String
-  key      String?
   assetId  String  @id
+  filename String?
+  key      String?
   asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("videos")
@@ -221,12 +221,13 @@ model Article {
 model Game {
   type                  GameType
   assetId               String                 @id
-  asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset                 Asset                  @relation(fields: [assetId], references: [id])
   matchingGame          MatchingGame?
-  spotTheDifferenceGame SpotTheDifferenceGame?
   QuizGame              QuizGame?
   SortingGame           SortingGame?
+  SpotTheDifferenceGame SpotTheDifferenceGame?
 
+  @@unique([assetId], name: "unique_asset_id")
   @@map("games")
 }
 
@@ -271,40 +272,32 @@ model MatchingGameImage {
 }
 
 model QuizGame {
-  gameId String @id
-  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
-
+  gameId            String             @id
+  game              Game               @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
   quizGameQuestions QuizGameQuestion[]
 }
 
 model QuizGameQuestion {
-  id String @id @default(cuid())
-
+  id                 String           @id @default(cuid())
   questionNumber     Int
   isMultipleResponse Boolean
   questionTitle      String
-
-  image   Image?  @relation(fields: [imageId], references: [assetId])
-  imageId String?
-
-  quizGameOptions QuizGameOption[]
-
-  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
-  quizGameId String
+  imageId            String?
+  quizGameId         String
+  quizGameOptions    QuizGameOption[]
+  image              Image?           @relation(fields: [imageId], references: [assetId])
+  quizGame           QuizGame         @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
 }
 
 model QuizGameOption {
   id                 String             @id @default(cuid())
   isCorrectOption    Boolean
   quizGameOptionType QuizGameOptionType
-
-  optionText String?
-
-  optionImage   Image?  @relation(fields: [optionImageId], references: [assetId])
-  optionImageId String?
-
-  quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
+  optionText         String?
+  optionImageId      String?
   quizGameQuestionId String
+  optionImage        Image?             @relation(fields: [optionImageId], references: [assetId])
+  quizGameQuestion   QuizGameQuestion   @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
 }
 
 enum QuizGameOptionType {
