@@ -232,13 +232,24 @@ model Game {
 }
 
 model SpotTheDifferenceGame {
-  gameId       String  @id
-  leftImageId  String  @unique
-  rightImageId String  @unique
-  differences  Float[]
-  game         Game    @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
   leftImage    Image   @relation("LeftImage", fields: [leftImageId], references: [assetId])
+  leftImageId  String  @unique
   rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
+  rightImageId String  @unique
+  differences  SpotTheDifferenceRegion[]
+}
+
+model SpotTheDifferenceRegion {
+  id           String    @id @default(cuid())
+  x            Float
+  y            Float
+  width        Float
+  height       Float
+  game         SpotTheDifferenceGame @relation(fields: [gameId], references: [gameId])
+  gameId       String
 }
 
 model MatchingGame {
