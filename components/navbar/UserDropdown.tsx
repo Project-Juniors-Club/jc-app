@@ -6,12 +6,12 @@ import DropDown from './DropDown';
 const UserDropdown = () => {
   const loginItems = [{ clickOption: 'My Profile' }, { clickOption: 'Log Out', onClick: () => signOut() }];
   const { data: session } = useSession();
-  let username: string;
-  if (session) {
-    username = session.user.name;
-  } else {
-    username = 'Username';
+  let username: string | undefined = session?.user?.name;
+
+  if (!username) {
+    username = 'User';
   }
+
   return (
     <div className='flex flex-row items-center gap-2 p-0'>
       <Image src={'/assets/logos/user.svg'} width={36} height={41} alt='user' />
