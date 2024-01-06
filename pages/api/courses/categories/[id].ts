@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Get Category
       const category = await prisma.category.findFirst({
         where: { id: categoryId },
+        include: { courses: true },
       });
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: category });
     } else if (httpMethod == 'DELETE') {
