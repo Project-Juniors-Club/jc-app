@@ -13,6 +13,7 @@ export type SerializedCourse = {
   lastUpdatedUserId: string;
   status: CourseStatus;
   categoryId: string;
+  courseEditor: { adminId: string }[];
   coverImageAssetId: string;
   createdBy?: {
     user: {
@@ -30,6 +31,11 @@ export const getCourseWithCoverImage = async (where?: Prisma.CourseWhereUniqueIn
     where,
     include: {
       coverImage: true,
+      courseEditor: {
+        select: {
+          adminId: true,
+        },
+      },
     },
   });
 };
@@ -169,6 +175,11 @@ export const getAllCourses = async (): Promise<SerializedCourse[]> => {
           name: true,
         },
       },
+      courseEditor: {
+        select: {
+          adminId: true,
+        },
+      },
       coverImage: {
         select: {
           url: true,
@@ -285,7 +296,7 @@ export const addCourseToCart = async (userId: string, courseId: string) => {
         id: courseId,
       },
       data: {
-        users: {
+        userCourses: {
           connect: {
             id: userId,
           },
@@ -316,7 +327,7 @@ export const deleteCourseToCart = async (userId: string, courseId: string) => {
         id: courseId,
       },
       data: {
-        users: {
+        userCourses: {
           disconnect: {
             id: userId,
           },

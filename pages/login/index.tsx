@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Local imports
 import useSnackbar from '../../hooks/useSnackbar';
@@ -84,12 +86,6 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
   const { openErrorNotification, openSuccessNotification } = useSnackbar();
 
   const login = async (data: FormData) => {
-    // let newTimeout = setTimeout(() => {
-    //   setPendingLogin(false);
-    //   setTimeoutId(null);
-    //   return Promise.reject('new Error Request timed out, try inputting email again');
-    // }, 100000);
-    // setTimeoutId(newTimeout);
     console.log(data);
     const res = await signIn('credentials', { email: data.email, password: data.password, redirect: false });
     return res;
@@ -105,9 +101,27 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setPendingLogin(true);
-    mutation.mutate(data);
+    try {
+      const res = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (res?.error) {
+        toast.error('Login failed. Please check your credentials and try again.');
+      } else {
+        toast.success('Login successful!');
+        router.push('/');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      toast.error('An unexpected error occurred during login.');
+    } finally {
+      setPendingLogin(false);
+    }
   };
 
   const handleModalClosed = () => {
@@ -187,15 +201,11 @@ const LoginPage = ({ csrfToken, providers }: Props) => {
                   </Box>
                 </form>
                 <SSOSignUp />
+                <ToastContainer position='bottom-center' autoClose={5000} />
               </Box>
             </>
           </Box>
         </Flex>
-        {/* <Modal title='' onClose={handleModalClosed} isOpen={isPendingLogin}>
-          <div className='mx-4 mb-4'>
-            <p className='text-left'>A sign in link has been sent to your email address that you provided. Please check your email</p>
-          </div>
-        </Modal> */}
       </Box>
     </>
   );
