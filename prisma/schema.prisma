@@ -46,7 +46,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
 model User {
   id            String       @id @default(cuid())
   email         String       @unique
@@ -97,6 +96,7 @@ model CourseEditor {
   @@map("courseEditors")
 }
 
+
 model UserCourse {
   id         String   @id @default(cuid())
   userId     String
@@ -104,9 +104,9 @@ model UserCourse {
   progress   Int
   correctQns Int
   stars      Int
-  lastSeenBy DateTime
   course     Course   @relation(fields: [courseId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+  lastSeenBy DateTime
 
   @@unique([userId, courseId])
   @@map("userCourses")
@@ -129,18 +129,17 @@ model Course {
   createDate         DateTime       @default(now())
   lastUpdatedUserId  String
   lastUpdatedDate    DateTime       @updatedAt
+  coverImage         Image?         @relation(fields: [coverImageAssetId], references: [assetId])
   status             CourseStatus   @default(DRAFT)
   categoryId         String?
-  coverImageAssetId  String?
-  chapters           Chapter[]
-  courseEditor       CourseEditor[]
-  category           Category?      @relation(fields: [categoryId], references: [id])
-  coverImage         Image?         @relation(fields: [coverImageAssetId], references: [assetId])
   createdBy          Admin          @relation("createdBy", fields: [creatorId], references: [userId])
   lastUpdatedBy      Admin          @relation("updatedBy", fields: [lastUpdatedUserId], references: [userId])
+  category           Category?      @relation(fields: [categoryId], references: [id])
+  chapters           Chapter[]
   userCourses        UserCourse[]
-  User               User?          @relation("CoursesInCart", fields: [userId], references: [id])
-  userId             String?
+  courseEditor       CourseEditor[]
+  coverImageAssetId  String?
+  users              User[]         @relation("CoursesInCart")
 
   @@map("courses")
 }

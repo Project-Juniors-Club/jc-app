@@ -296,7 +296,7 @@ export const addCourseToCart = async (userId: string, courseId: string) => {
         id: courseId,
       },
       data: {
-        userCourses: {
+        users: {
           connect: {
             id: userId,
           },
@@ -327,7 +327,7 @@ export const deleteCourseToCart = async (userId: string, courseId: string) => {
         id: courseId,
       },
       data: {
-        userCourses: {
+        users: {
           disconnect: {
             id: userId,
           },
