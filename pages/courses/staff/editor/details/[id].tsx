@@ -26,12 +26,15 @@ import {
   SerializedCourse,
   SerializedCourseWithCoverImage,
 } from '../../../../../lib/server/course';
+import { Admin } from '../../../../../interfaces';
+import EditorSelect from '../../../../../components/course/create/EditorSelect';
 
 type FormValues = {
   title: string;
   learningObjectives: string;
   description: string;
   category: Category;
+  editor: Admin;
   coverImage: File[];
   isFree: string;
   price: number;
@@ -41,11 +44,12 @@ type FormValues = {
 
 type Props = {
   categories: Category[];
+  editors: Admin[];
   sess: Session;
   course: SerializedCourseWithCoverImage;
 };
 
-const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
+const CourseDetailsEditPage = ({ categories, editors, sess, course }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -66,6 +70,14 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
     description: undefined,
   };
 
+  // Assumes 1 editor, change if has multiple editors
+  const defaultEditor = editors.find(editor => editor.userId == course.courseEditor?.find(x => true).adminId) || {
+    userId: undefined,
+    user: {
+      username: undefined,
+    },
+  };
+
   register('originalCoverImage', { value: course.coverImage?.filename });
   const removeOriginalCoverImage = () => setValue('originalCoverImage', false);
   const coverImageFilename = watch('originalCoverImage', course.coverImage?.filename);
@@ -73,7 +85,7 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
   const isDisabled = isSubmitting || isSubmitSuccessful;
 
   const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { title, description, learningObjectives, isFree, category, coverImage } = data;
+    const { title, description, learningObjectives, isFree, category, editor, coverImage } = data;
 
     const coverImageAssetId =
       coverImage.length > 0 ? await uploadFile(coverImage[0]) : coverImageFilename ? course.coverImageAssetId : null;
@@ -88,6 +100,7 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
         updaterId: sess.user.id,
         price: +isFree ? 0 : data?.price,
         categoryId: category?.id,
+        editorId: editor?.userId,
         status: CourseStatus.DRAFT,
         coverImageRemoved: course.coverImageAssetId && !coverImageFilename, // removed
       })
@@ -165,6 +178,7 @@ const CourseDetailsEditPage = ({ categories, sess, course }: Props) => {
               disabled={isDisabled}
               defaultCategory={defaultCategory}
             />
+            <EditorSelect editors={editors} name='editor' control={control} disabled={isDisabled} defaultEditor={defaultEditor} />
             <UploadButton
               register={register}
               resetField={resetField}
@@ -208,7 +222,24 @@ export const getServerSideProps: GetServerSideProps = async req => {
   const course = serializeCourse(await getCourseWithCoverImage({ id })) as SerializedCourseWithCoverImage;
   const sess = await getSession(req);
   const categories = await prisma.category.findMany();
-  return { props: { categories, sess, course } };
+  const admins = await prisma.admin.findMany({
+    include: {
+      user: true,
+    },
+  });
+
+  const editors = admins.map(admin => {
+    const editor = {
+      userId: admin.userId,
+      user: {
+        username: admin.user.name,
+      },
+    };
+
+    return editor;
+  });
+
+  return { props: { categories, editors, sess, course } };
 };
 
 export default CourseDetailsEditPage;
