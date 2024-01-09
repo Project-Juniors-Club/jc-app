@@ -13,6 +13,8 @@ import NavBarCourse from '../../../components/navbar/NavBarCourse';
 import { DisplayedImage } from '../../../components/course/homepage/InternalCourseCard';
 import { useMutation } from '@tanstack/react-query';
 import useSnackbar from '../../../hooks/useSnackbar';
+import DeleteConfirmationModal from '../../../components/DeleteConfirmationModal';
+import { useState } from 'react';
 
 type CourseStaffViewProp = {
   course: any;
@@ -34,19 +36,20 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
   const { chapters } = courseContentOverview;
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const deleteCourse = async () => axios.delete(`/api/courses/${course.id}`);
 
-  const mutateOnDelete = useMutation({
-    mutationFn: deleteCourse,
-    onSuccess: () => {
+  const handleDeleteConfirmation = async () => {
+    try {
+      await deleteCourse();
       openSuccessNotification('Deleted course successfully!');
       router.push(`/courses/staff`);
-    },
-    onError: () => {
+    } catch (error) {
       openErrorNotification('Failed to delete course', 'Please try again');
-    },
-  });
+    }
+  };
+  
 
   if (errors) {
     return (
@@ -80,12 +83,18 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                   <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
-              <CustomButton variant={'black-outline'} className={styles.courseButton} onClick={() => mutateOnDelete.mutate()}>
+              <CustomButton variant={'black-outline'} className={styles.courseButton} onClick={() => setIsDeleteModalOpen(true)}>
                 <Flex>
                   <Box color={'#000000'}>Delete Course</Box>
                   <Image src={'/icons/trash.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
+              <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onDelete={handleDeleteConfirmation}
+              />
+
               <CustomButton variant={'black-solid'} className={styles.courseButton}>
                 <Flex>
                   <Box color={'#FFFFFF'}>Publish Course</Box>
