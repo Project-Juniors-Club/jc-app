@@ -16,12 +16,10 @@ const ApplyVouchers = () => {
 
   useEffect(() => {
     const courseList = JSON.parse(localStorage.getItem('Cart'));
-    console.log(courseList);
     const numPriceCourseList = courseList.map(course => {
       course.price = parseInt(course.price).toFixed(2);
       return course;
     });
-    console.log(numPriceCourseList);
     setCartCourses(numPriceCourseList);
   }, []);
 
@@ -85,7 +83,6 @@ const VoucherEntry = ({ course, cartCourses, setCartCourses }) => {
       const updatedCartCourses = prevCartCourses.map(c => {
         if (c.id === course.id) {
           const newPrice = parseFloat(c.price) - voucherSaving;
-          console.log(`Old price: ${c.price}, Voucher saving: ${voucherSaving}, New price: ${newPrice.toFixed(2)}`);
           return {
             ...c,
             price: newPrice.toFixed(2),
@@ -94,12 +91,9 @@ const VoucherEntry = ({ course, cartCourses, setCartCourses }) => {
         return c;
       });
 
-      console.log(updatedCartCourses);
-
       return updatedCartCourses;
     });
   };
-
 
   return (
     <tr style={{ borderTop: '15px solid transparent' }} className='flex items-center justify-center gap-20'>
