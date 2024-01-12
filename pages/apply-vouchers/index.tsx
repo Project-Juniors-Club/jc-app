@@ -12,6 +12,7 @@ import { createImportSpecifier } from 'typescript';
 const ApplyVouchers = () => {
   const router = useRouter();
   const [cartCourses, setCartCourses] = useState([]);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const courseList = JSON.parse(localStorage.getItem('Cart'));
@@ -23,6 +24,11 @@ const ApplyVouchers = () => {
     console.log(numPriceCourseList);
     setCartCourses(numPriceCourseList);
   }, []);
+
+  useEffect(() => {
+    const newTotal = cartCourses.reduce((acc, course) => acc + parseFloat(course.price), 0);
+    setTotal(newTotal.toFixed(2));
+  }, [cartCourses, total]);
 
   const handleBack = () => {
     router.push('/view-cart');
@@ -41,25 +47,25 @@ const ApplyVouchers = () => {
         </Text>
         <Text pl='160px'>Apply voucher codes, if any</Text>
       </Box>
-      <VoucherTable cartCourses={cartCourses} />
-      <TotalSummaryBox cartCourses={cartCourses} handleBack={handleBack} handleCheckout={handleCheckout} />
+      <VoucherTable cartCourses={cartCourses} setCartCourses={setCartCourses} />
+      <TotalSummaryBox cartCourses={cartCourses} handleBack={handleBack} handleCheckout={handleCheckout} total={total} />
     </Layout>
   );
 };
 
-const VoucherTable = ({ cartCourses }) => {
+const VoucherTable = ({ cartCourses, setCartCourses }) => {
   return (
     <Table variant='simple'>
       <tbody>
         {cartCourses.map((course, index) => (
-          <VoucherEntry course={course} key={index} />
+          <VoucherEntry course={course} cartCourses={cartCourses} setCartCourses={setCartCourses} key={index} />
         ))}
       </tbody>
     </Table>
   );
 };
 
-const VoucherEntry = ({ course }) => {
+const VoucherEntry = ({ course, cartCourses, setCartCourses }) => {
   const [text, setText] = useState('');
   const [voucherSaving, setVoucherSaving] = useState(0);
 
@@ -74,8 +80,26 @@ const VoucherEntry = ({ course }) => {
     //   setVoucherSaving(voucher.discount);
     // }
     setVoucherSaving(1); // for testing
-    course.price -= voucherSaving;
+
+    setCartCourses(prevCartCourses => {
+      const updatedCartCourses = prevCartCourses.map(c => {
+        if (c.id === course.id) {
+          const newPrice = parseFloat(c.price) - voucherSaving;
+          console.log(`Old price: ${c.price}, Voucher saving: ${voucherSaving}, New price: ${newPrice.toFixed(2)}`);
+          return {
+            ...c,
+            price: newPrice.toFixed(2),
+          };
+        }
+        return c;
+      });
+
+      console.log(updatedCartCourses);
+
+      return updatedCartCourses;
+    });
   };
+
 
   return (
     <tr style={{ borderTop: '15px solid transparent' }} className='flex items-center justify-center gap-20'>
@@ -118,7 +142,7 @@ const VoucherEntry = ({ course }) => {
   );
 };
 
-const TotalSummaryBox = ({ cartCourses, handleBack, handleCheckout }) => {
+const TotalSummaryBox = ({ cartCourses, handleBack, handleCheckout, total }) => {
   return (
     <Box
       marginInline='25%'
@@ -138,7 +162,7 @@ const TotalSummaryBox = ({ cartCourses, handleBack, handleCheckout }) => {
           Total ({cartCourses.length} {cartCourses.length > 1 ? 'courses' : 'course'})
         </Text>
         <Text fontWeight='700' fontSize='28px'>
-          ${cartCourses.reduce((acc, course) => acc + course.price, 0)}
+          ${total}
         </Text>
       </Box>
       <Box display='flex' flexDir='row'>
