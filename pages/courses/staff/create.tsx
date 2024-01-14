@@ -19,15 +19,12 @@ import prisma from '../../../lib/prisma';
 import NavBarCart from '../../../components/navbar/NavBarCourse';
 import Footer from '../../../components/Footer';
 import uploadFile from '../../../lib/upload';
-import EditorSelect from '../../../components/course/create/EditorSelect';
-import { Admin } from '../../../interfaces';
 
 type FormValues = {
   title: string;
   learningObjectives: string;
   description: string;
   category: Category;
-  editor: Admin;
   coverImage: File[];
   isFree: string;
   price: number;
@@ -35,11 +32,10 @@ type FormValues = {
 
 type Props = {
   categories: Category[];
-  editors: Admin[];
   sess: Session;
 };
 
-const CourseCreatePage = ({ categories, editors, sess }: Props) => {
+const CourseCreatePage = ({ categories, sess }: Props) => {
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -56,7 +52,7 @@ const CourseCreatePage = ({ categories, editors, sess }: Props) => {
   const isDisabled = isSubmitting || isSubmitSuccessful;
 
   const onSubmit: SubmitHandler<FormValues> = async data => {
-    const { title, description, learningObjectives, isFree, category, editor, coverImage } = data;
+    const { title, description, learningObjectives, isFree, category, coverImage } = data;
 
     const coverImageAssetId = coverImage.length ? await uploadFile(coverImage[0]) : undefined;
 
@@ -70,7 +66,6 @@ const CourseCreatePage = ({ categories, editors, sess }: Props) => {
         creatorId: sess.user.id,
         price: +isFree ? 0 : data?.price,
         categoryId: category?.id,
-        editorId: editor?.userId,
         status: CourseStatus.DRAFT,
       })
       .then(resp => resp.data.data.id);
@@ -150,7 +145,6 @@ const CourseCreatePage = ({ categories, editors, sess }: Props) => {
               errors={errors}
             />
             <CategorySelect categories={categories} name='category' control={control} disabled={isDisabled} />
-            <EditorSelect editors={editors} name='editor' control={control} disabled={isDisabled} />
             <UploadButton
               register={register}
               resetField={resetField}
@@ -204,23 +198,7 @@ const CourseCreatePage = ({ categories, editors, sess }: Props) => {
 export const getServerSideProps: GetServerSideProps = async req => {
   const sess = await getSession(req);
   const categories = await prisma.category.findMany();
-  const admins = await prisma.admin.findMany({
-    include: {
-      user: true,
-    },
-  });
-
-  const editors = admins.map(admin => {
-    const editor = {
-      userId: admin.userId,
-      user: {
-        username: admin.user.name,
-      },
-    };
-
-    return editor;
-  });
-  return { props: { categories, editors, sess } };
+  return { props: { categories, sess } };
 };
 
 export default CourseCreatePage;

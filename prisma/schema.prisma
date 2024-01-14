@@ -75,12 +75,12 @@ model NormalUser {
 
 model Admin {
   userId         String         @id
-  disabled       Boolean        @default(true)
-  role           String         @default("Staff")
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseEditor   CourseEditor[]
   createdCourses Course[]       @relation("createdBy")
   updatedCourses Course[]       @relation("updatedBy")
+  courseEditor   CourseEditor[]
+  disabled       Boolean        @default(true)
+  role           String         @default("Staff")
 
   @@map("admins")
 }
@@ -89,8 +89,8 @@ model CourseEditor {
   id       String @id @default(cuid())
   courseId String
   adminId  String
-  admin    Admin  @relation(fields: [adminId], references: [userId])
   course   Course @relation(fields: [courseId], references: [id])
+  admin    Admin  @relation(fields: [adminId], references: [userId])
 
   @@unique([adminId, courseId])
   @@map("courseEditors")
@@ -157,15 +157,15 @@ model Chapter {
 }
 
 model Page {
-  chapterId   String?
   id          String   @id @default(cuid())
   name        String
   pageNumber  Int
   description String?
   duration    Int
+  chapterId   String?
+  chapter     Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   assetId     String   @unique
   asset       Asset    @relation(fields: [assetId], references: [id])
-  chapter     Chapter? @relation(fields: [chapterId], references: [id])
 
   @@map("pages")
 }
@@ -176,34 +176,35 @@ model Asset {
   article   Article?
   game      Game?
   image     Image?
-  page      Page?
   video     Video?
+  page      Page?
 
   @@map("assets")
 }
 
 model Image {
-  url                        String
-  assetId                    String                 @id
-  filename                   String?
-  key                        String?
-  QuizGameOption             QuizGameOption[]
-  QuizGameQuestion           QuizGameQuestion[]
+  filename String?
+  url      String
+  key      String?
+  assetId  String  @id
+  asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
   spotTheDifferenceGameLeft  SpotTheDifferenceGame? @relation("LeftImage")
   spotTheDifferenceGameRight SpotTheDifferenceGame? @relation("RightImage")
   Course                     Course[]
   SortingGameObject          SortingGameObject[]
+  QuizGameQuestion           QuizGameQuestion[]
+  QuizGameOption             QuizGameOption[]
   MatchingGameImage          MatchingGameImage?
-  asset                      Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }
 
 model Video {
-  url      String
-  assetId  String  @id
   filename String?
+  url      String
   key      String?
+  assetId  String  @id
   asset    Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@map("videos")
@@ -220,13 +221,12 @@ model Article {
 model Game {
   type                  GameType
   assetId               String                 @id
-  asset                 Asset                  @relation(fields: [assetId], references: [id])
+  asset                 Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade)
   matchingGame          MatchingGame?
+  spotTheDifferenceGame SpotTheDifferenceGame?
   QuizGame              QuizGame?
   SortingGame           SortingGame?
-  SpotTheDifferenceGame SpotTheDifferenceGame?
 
-  @@unique([assetId], name: "unique_asset_id")
   @@map("games")
 }
 
@@ -271,32 +271,40 @@ model MatchingGameImage {
 }
 
 model QuizGame {
-  gameId            String             @id
-  game              Game               @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+  gameId String @id
+  game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
+
   quizGameQuestions QuizGameQuestion[]
 }
 
 model QuizGameQuestion {
-  id                 String           @id @default(cuid())
+  id String @id @default(cuid())
+
   questionNumber     Int
   isMultipleResponse Boolean
   questionTitle      String
-  imageId            String?
-  quizGameId         String
-  quizGameOptions    QuizGameOption[]
-  image              Image?           @relation(fields: [imageId], references: [assetId])
-  quizGame           QuizGame         @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+
+  image   Image?  @relation(fields: [imageId], references: [assetId])
+  imageId String?
+
+  quizGameOptions QuizGameOption[]
+
+  quizGame   QuizGame @relation(fields: [quizGameId], references: [gameId], onDelete: Cascade)
+  quizGameId String
 }
 
 model QuizGameOption {
   id                 String             @id @default(cuid())
   isCorrectOption    Boolean
   quizGameOptionType QuizGameOptionType
-  optionText         String?
-  optionImageId      String?
+
+  optionText String?
+
+  optionImage   Image?  @relation(fields: [optionImageId], references: [assetId])
+  optionImageId String?
+
+  quizGameQuestion   QuizGameQuestion @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
   quizGameQuestionId String
-  optionImage        Image?             @relation(fields: [optionImageId], references: [assetId])
-  quizGameQuestion   QuizGameQuestion   @relation(fields: [quizGameQuestionId], references: [id], onDelete: Cascade)
 }
 
 enum QuizGameOptionType {
