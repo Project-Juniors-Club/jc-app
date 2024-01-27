@@ -55,6 +55,7 @@ model User {
   image         String?
   name          String?
   age           Int?
+  dob           DateTime?
   pdpa          Boolean      @default(false)
   accounts      Account[]
   sessions      Session[]
@@ -62,6 +63,8 @@ model User {
   normalUser    NormalUser?
   userCourses   UserCourse[]
   coursesInCart Course[]     @relation("CoursesInCart")
+  deleted       Boolean?      @default(false)
+  otp           String?
 
   @@map("users")
 }
