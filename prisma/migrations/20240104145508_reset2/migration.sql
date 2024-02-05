@@ -33,6 +33,11 @@ ALTER TABLE "pages" DROP CONSTRAINT "pages_chapterId_fkey";
 ALTER TABLE "SortingGame" DROP COLUMN "duration",
 ADD COLUMN     "description" TEXT NOT NULL;
 
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "deleted" BOOLEAN DEFAULT false,
+ADD COLUMN     "dob" TIMESTAMP(3),
+ADD COLUMN     "otp" TEXT;
+
 -- DropTable
 DROP TABLE "Bucket";
 

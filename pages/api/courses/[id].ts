@@ -46,6 +46,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         lastUpdatedDate: course.createDate.toLocaleDateString(),
       };
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: result });
+    } else if (httpMethod == 'POST') {
+      try {
+        const { id, status } = req.body;
+        if (status === 'APPROVED' || status === 'ARCHIVED' || status == 'DRAFT') {
+          const updatedCourse = await prisma.course.update({
+            where: {
+              id: id,
+            },
+            data: {
+              status: status,
+            },
+          });
+
+          return res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
+        } else {
+          return { message: 'Invalid status. Allowed values are "APPROVED" or "ARCHIVED".' };
+        }
+      } catch (error) {
+        console.log(error);
+        return { message: errorMessageHandler({ httpMethod: 'PUT', isSingleEntity: true }, entityMessageObj) };
+      }
     } else if (httpMethod == 'DELETE') {
       // DELETE COURSE
       const deleteCourse = async () => {
