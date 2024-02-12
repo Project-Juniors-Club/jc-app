@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         },
       });
-      res.status(200).json({ messgae: entityMessageObj.getAllSuccess, data: categories });
+      res.status(200).json({ message: entityMessageObj.getAllSuccess, data: categories });
     } else if (httpMethod == 'POST') {
       // Create Cateogry
       const { name, description } = req.body;
