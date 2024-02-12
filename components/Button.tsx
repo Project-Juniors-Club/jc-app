@@ -8,17 +8,18 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
+  loadingText?: string;
   variant?: Variants;
   children?: ReactNode;
 }
 
-const Button = ({ className = '', variant = 'green-solid', isDisabled = false, isLoading = false, children = null, ...rest }: Props) => {
+const Button = ({ className = '', variant = 'green-solid', isDisabled = false, isLoading = false, children = null, loadingText = '', ...rest }: Props) => {
   let toShow;
   if (isLoading) {
     if (variant === 'black-solid') {
-      toShow = <Spinner color='#FFFFFF' />;
+      toShow = <><Spinner color='#FFFFFF' />  {loadingText}</>;
     } else {
-      toShow = <Spinner />;
+      toShow = <><Spinner />{loadingText}</>;
     }
   } else {
     toShow = children;

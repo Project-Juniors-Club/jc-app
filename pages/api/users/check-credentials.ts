@@ -25,9 +25,10 @@ async function handlePOST(res, req) {
       email: true,
       image: true,
       password: true,
+      deleted: true,
     },
   });
-  if (user && bcrypt.compareSync(body.password, user.password)) {
+  if (user && bcrypt.compareSync(body.password, user.password) && !user.deleted) {
     // logger.debug("password correct");
     res.json(omit(user, 'password'));
   } else {
