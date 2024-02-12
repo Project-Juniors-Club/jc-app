@@ -198,6 +198,58 @@ export const getAllCourses = async (): Promise<SerializedCourse[]> => {
   return result;
 };
 
+export const getAllPublishedCourses = async (): Promise<SerializedCourse[]> => {
+  const courses = await prisma.course.findMany({
+    where: {
+      status: CourseStatus.APPROVED,
+    },
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      courseEditor: {
+        select: {
+          adminId: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  const result = courses.map(course => {
+    return {
+      ...course,
+      price: course.price.toNumber(),
+      createDate: course.createDate.toLocaleDateString(),
+      lastUpdatedDate: course.createDate.toLocaleDateString(),
+    };
+  });
+  return result;
+};
+
 export const getRecentlyUsedCourse = async (id: string): Promise<SerializedCourse[]> => {
   const coursesIds = await prisma.userCourse.findMany({
     where: { userId: id },
@@ -296,7 +348,7 @@ export const addCourseToCart = async (userId: string, courseId: string) => {
         id: courseId,
       },
       data: {
-        userCourses: {
+        users: {
           connect: {
             id: userId,
           },
@@ -327,7 +379,7 @@ export const deleteCourseToCart = async (userId: string, courseId: string) => {
         id: courseId,
       },
       data: {
-        userCourses: {
+        users: {
           disconnect: {
             id: userId,
           },

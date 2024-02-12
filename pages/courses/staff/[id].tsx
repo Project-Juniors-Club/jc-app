@@ -13,6 +13,8 @@ import NavBarCourse from '../../../components/navbar/NavBarCourse';
 import { DisplayedImage } from '../../../components/course/homepage/InternalCourseCard';
 import { useMutation } from '@tanstack/react-query';
 import useSnackbar from '../../../hooks/useSnackbar';
+import DeleteConfirmationModal from '../../../components/DeleteConfirmationModal';
+import { useState } from 'react';
 
 type CourseStaffViewProp = {
   course: any;
@@ -34,19 +36,49 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
   const { chapters } = courseContentOverview;
   const router = useRouter();
   const { openSuccessNotification, openErrorNotification } = useSnackbar();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const deleteCourse = async () => axios.delete(`/api/courses/${course.id}`);
 
-  const mutateOnDelete = useMutation({
-    mutationFn: deleteCourse,
-    onSuccess: () => {
+  const handleDeleteConfirmation = async () => {
+    try {
+      await deleteCourse();
       openSuccessNotification('Deleted course successfully!');
       router.push(`/courses/staff`);
-    },
-    onError: () => {
+    } catch (error) {
       openErrorNotification('Failed to delete course', 'Please try again');
-    },
-  });
+    }
+  };
+  
+
+  const [courseStatus, setCourseStatus] = useState(course.status);
+
+  const publishCourse = async courseId => {
+    try {
+      await axios.post(`/api/courses/${courseId}`, { id: courseId, status: 'APPROVED' });
+      setCourseStatus('APPROVED');
+    } catch (error) {
+      console.error('Error publishing course:', error);
+    }
+  };
+
+  const archiveCourse = async courseId => {
+    try {
+      await axios.post(`/api/courses/${courseId}`, { id: courseId, status: 'ARCHIVED' });
+      setCourseStatus('ARCHIVED');
+    } catch (error) {
+      console.error('Error publishing course:', error);
+    }
+  };
+
+  const unarchiveCourse = async courseId => {
+    try {
+      await axios.post(`/api/courses/${courseId}`, { id: courseId, status: 'DRAFT' });
+      setCourseStatus('DRAFT');
+    } catch (error) {
+      console.error('Error publishing course:', error);
+    }
+  };
 
   if (errors) {
     return (
@@ -67,7 +99,11 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
             <Link href='/courses/'>
               <a className={styles.navigateBack}>{'\u2190'} View all courses</a>
             </Link>
-            <div className={styles.status}>{course.status}</div>
+            <div className={styles.status}>
+              {courseStatus === 'DRAFT' && <div className={styles.draft}>DRAFT</div>}
+              {courseStatus === 'APPROVED' && <div className={styles.published}>PUBLISHED</div>}
+              {courseStatus === 'ARCHIVED' && <div className={styles.archived}>ARCHIVED</div>}
+            </div>
             <Box className={styles.header} mb='15px'>
               {course.title}
             </Box>
@@ -80,15 +116,33 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                   <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
-              <CustomButton variant={'black-outline'} className={styles.courseButton} onClick={() => mutateOnDelete.mutate()}>
+
+              <CustomButton variant={'black-outline'} className={styles.courseButton} onClick={() => setIsDeleteModalOpen(true)}>
                 <Flex>
                   <Box color={'#000000'}>Delete Course</Box>
                   <Image src={'/icons/trash.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
-              <CustomButton variant={'black-solid'} className={styles.courseButton}>
+              <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onDelete={handleDeleteConfirmation}
+              />
+              <CustomButton
+                variant={'black-solid'}
+                className={styles.courseButton}
+                onClick={() => {
+                  courseStatus === 'DRAFT' && publishCourse(course.id);
+                  courseStatus === 'APPROVED' && archiveCourse(course.id);
+                  courseStatus === 'ARCHIVED' && unarchiveCourse(course.id);
+                }}
+              >
                 <Flex>
-                  <Box color={'#FFFFFF'}>Publish Course</Box>
+                  <Box color={'#FFFFFF'}>
+                    {courseStatus === 'DRAFT' && 'Publish Course'}
+                    {courseStatus === 'APPROVED' && 'Archive Course'}
+                    {courseStatus === 'ARCHIVED' && 'Unarchive Course'}
+                  </Box>
                   <Image src={'/icons/open.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
