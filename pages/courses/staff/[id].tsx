@@ -116,6 +116,7 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                   <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
+
               <CustomButton variant={'black-outline'} className={styles.courseButton} onClick={() => setIsDeleteModalOpen(true)}>
                 <Flex>
                   <Box color={'#000000'}>Delete Course</Box>
