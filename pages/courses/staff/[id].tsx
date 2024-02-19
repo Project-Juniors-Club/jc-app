@@ -49,7 +49,6 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
       openErrorNotification('Failed to delete course', 'Please try again');
     }
   };
-  
 
   const [courseStatus, setCourseStatus] = useState(course.status);
 
@@ -123,6 +122,18 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
                   <Image src={'/icons/trash.svg'} className={styles.icon} alt='open' />
                 </Flex>
               </CustomButton>
+
+              <CustomButton
+                variant={'green-solid'}
+                className={styles.courseButton}
+                onClick={() => router.push(`/promo/staff/${course.id}`)}
+              >
+                <Flex>
+                  <Box color={'#000000'}>Edit Course</Box>
+                  <Image src={'/icons/trash.svg'} className={styles.icon} alt='open' />
+                </Flex>
+              </CustomButton>
+
               <DeleteConfirmationModal
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}

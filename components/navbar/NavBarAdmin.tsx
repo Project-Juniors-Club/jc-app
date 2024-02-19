@@ -19,6 +19,12 @@ const NavBarAdmin = () => {
           </Link>
         </div>
 
+        <div className={`main-nav-menu ml-7 flex h-full items-center gap-6 ${navBarItemStyle}`}>
+          <Link href='/courses' className='menu-item text-base'>
+            Transaction Management
+          </Link>
+        </div>
+
         {/* TO UPDATE LINK */}
         <div className={`main-nav-menu ml-7 flex h-full items-center gap-6 ${navBarItemStyle}`}>
           <Link href='/courses' className='menu-item text-base'>
