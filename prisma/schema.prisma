@@ -46,6 +46,7 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
 model User {
   id            String       @id @default(cuid())
   email         String       @unique
@@ -63,7 +64,7 @@ model User {
   normalUser    NormalUser?
   userCourses   UserCourse[]
   coursesInCart Course[]     @relation("CoursesInCart")
-  deleted       Boolean?      @default(false)
+  deleted       Boolean?     @default(false)
   otp           String?
 
   @@map("users")
@@ -98,7 +99,6 @@ model CourseEditor {
   @@unique([adminId, courseId])
   @@map("courseEditors")
 }
-
 
 model UserCourse {
   id         String   @id @default(cuid())
@@ -143,8 +143,21 @@ model Course {
   courseEditor       CourseEditor[]
   coverImageAssetId  String?
   users              User[]         @relation("CoursesInCart")
+  Promo              Promo[]
 
   @@map("courses")
+}
+
+model Promo {
+  id        String @id @default(cuid())
+  code      String
+  startDate String
+  endDate   String
+  discount  Int
+  courseId  String
+  course    Course @relation(fields: [courseId], references: [id])
+
+  @@map("promos")
 }
 
 model Chapter {
@@ -237,21 +250,21 @@ model SpotTheDifferenceGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 
-  leftImage    Image   @relation("LeftImage", fields: [leftImageId], references: [assetId])
-  leftImageId  String  @unique
-  rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
-  rightImageId String  @unique
+  leftImage    Image                     @relation("LeftImage", fields: [leftImageId], references: [assetId])
+  leftImageId  String                    @unique
+  rightImage   Image                     @relation("RightImage", fields: [rightImageId], references: [assetId])
+  rightImageId String                    @unique
   differences  SpotTheDifferenceRegion[]
 }
 
 model SpotTheDifferenceRegion {
-  id           String    @id @default(cuid())
-  x            Float
-  y            Float
-  width        Float
-  height       Float
-  game         SpotTheDifferenceGame @relation(fields: [gameId], references: [gameId])
-  gameId       String
+  id     String                @id @default(cuid())
+  x      Float
+  y      Float
+  width  Float
+  height Float
+  game   SpotTheDifferenceGame @relation(fields: [gameId], references: [gameId])
+  gameId String
 }
 
 model MatchingGame {
