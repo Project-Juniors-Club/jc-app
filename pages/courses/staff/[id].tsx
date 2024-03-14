@@ -160,11 +160,17 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
             </Flex>
           </Box>
 
-          <Box>
-            <Box className='mt-32 ml-48 '>
+          <Flex className='flex-col items-end justify-items-center space-y-4 pt-10	'>
+            <Box className=''>
               <DisplayedImage url={course.coverImage?.url} />
             </Box>
-          </Box>
+            <CustomButton variant={'green-solid'} className={styles.courseButton} onClick={() => router.push(`/promo/staff/${course.id}`)}>
+              <Flex>
+                <Box color={'#000000'}>Manage Promo Codes</Box>
+                <Image src={'/icons/edit.svg'} className={styles.icon} alt='open' />
+              </Flex>
+            </CustomButton>
+          </Flex>
         </Flex>
       </Box>
 
