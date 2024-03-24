@@ -32,6 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               },
             },
           },
+          courseEditor: {
+            select: {
+              adminId: true,
+            },
+          },
         },
       });
       const result = {
@@ -41,18 +46,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         lastUpdatedDate: course.createDate.toLocaleDateString(),
       };
       res.status(200).json({ message: entityMessageObj.getOneSuccess, data: result });
+    } else if (httpMethod == 'POST') {
+      try {
+        const { id, status } = req.body;
+        if (status === 'APPROVED' || status === 'ARCHIVED' || status == 'DRAFT') {
+          const updatedCourse = await prisma.course.update({
+            where: {
+              id: id,
+            },
+            data: {
+              status: status,
+            },
+          });
+
+          return res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
+        } else {
+          return { message: 'Invalid status. Allowed values are "APPROVED" or "ARCHIVED".' };
+        }
+      } catch (error) {
+        console.log(error);
+        return { message: errorMessageHandler({ httpMethod: 'PUT', isSingleEntity: true }, entityMessageObj) };
+      }
     } else if (httpMethod == 'DELETE') {
       // DELETE COURSE
-      const deleteCourse = await prisma.course.delete({
-        where: {
-          id: id,
-        },
-      });
-      res.status(200).json({ message: entityMessageObj.deleteSuccess, data: deleteCourse });
+      const deleteCourse = async () => {
+        try {
+          await prisma.courseEditor.deleteMany({
+            where: {
+              courseId: id,
+            },
+          });
+        
+          await prisma.course.delete({
+            where: {
+              id: id,
+            },
+          });
+          return res.status(200).json({ message: entityMessageObj.deleteSuccess });
+        } catch (error) {
+          return res.status(500).json({ message: 'Failed to delete course' });
+        }
+      }
+      deleteCourse();
     } else if (httpMethod == 'PUT') {
       // UPDATE TITLE, DESCRIPTION
-      const { title, description, learningObjectives, coverImageAssetId, updaterId, price, categoryId, status, coverImageRemoved } =
-        req.body;
+      const {
+        title,
+        description,
+        learningObjectives,
+        coverImageAssetId,
+        updaterId,
+        price,
+        categoryId,
+        editorId,
+        status,
+        coverImageRemoved,
+      } = req.body;
       const updatedCourse = await prisma.course.update({
         where: {
           id: id,
@@ -83,7 +132,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           price: price,
           status: status,
         },
+        include: {
+          courseEditor: true,
+        },
       });
+
+      if (editorId) {
+        await prisma.courseEditor.update({
+          where: {
+            id: updatedCourse.courseEditor.find(courseEditorElement => courseEditorElement.courseId == id).id,
+          },
+          data: {
+            adminId: editorId,
+          },
+        });
+      }
 
       res.status(200).json({ message: entityMessageObj.updateSuccess, data: updatedCourse });
     } else {

@@ -13,6 +13,7 @@ export type SerializedCourse = {
   lastUpdatedUserId: string;
   status: CourseStatus;
   categoryId: string;
+  courseEditor: { adminId: string }[];
   coverImageAssetId: string;
   createdBy?: {
     user: {
@@ -30,6 +31,11 @@ export const getCourseWithCoverImage = async (where?: Prisma.CourseWhereUniqueIn
     where,
     include: {
       coverImage: true,
+      courseEditor: {
+        select: {
+          adminId: true,
+        },
+      },
     },
   });
 };
@@ -167,6 +173,63 @@ export const getAllCourses = async (): Promise<SerializedCourse[]> => {
       category: {
         select: {
           name: true,
+        },
+      },
+      courseEditor: {
+        select: {
+          adminId: true,
+        },
+      },
+      coverImage: {
+        select: {
+          url: true,
+        },
+      },
+    },
+  });
+  const result = courses.map(course => {
+    return {
+      ...course,
+      price: course.price.toNumber(),
+      createDate: course.createDate.toLocaleDateString(),
+      lastUpdatedDate: course.createDate.toLocaleDateString(),
+    };
+  });
+  return result;
+};
+
+export const getAllPublishedCourses = async (): Promise<SerializedCourse[]> => {
+  const courses = await prisma.course.findMany({
+    where: {
+      status: CourseStatus.APPROVED,
+    },
+    include: {
+      createdBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      lastUpdatedBy: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      courseEditor: {
+        select: {
+          adminId: true,
         },
       },
       coverImage: {

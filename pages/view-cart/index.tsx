@@ -28,7 +28,7 @@ const ViewCart = ({ courses }) => {
     setCartCourses(coursesObjWithPrice);
   }, [courses]);
   const [checkedItems, setCheckedItems] = useState([]);
-  const allChecked = useMemo(() => (checkedItems.length > 0 ? checkedItems.every(Boolean) : false), [checkedItems]);
+  const allChecked = useMemo(() => checkedItems.length === cartCourses.length && checkedItems.every(Boolean), [checkedItems, cartCourses]);
   const handleRemove = async index => {
     await axios.delete(`/api/cart/${cartCourses[index].id}`, {
       data: {

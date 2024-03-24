@@ -5,8 +5,8 @@ import { EditorPageFormValues } from '../../pages/courses/staff/editor/content/p
 import prisma from '../prisma';
 import { findUniqueMatchingGame } from './matchingGame';
 import { findUniqueQuiz } from './quiz';
+import { findUniqueSorting } from './sorting';
 import { findQuiz } from './quiz';
-import { findUniqueSortingGame } from './sortingGame';
 import { EditorSerializedSortingGame } from '../../components/sorting-game-editor/Creator';
 
 const getEditorQuizGame = async (gameId: string): Promise<{ questions: EditorSerializedQuizQuestion[] }> => {
@@ -50,30 +50,30 @@ const getEditorQuizGame = async (gameId: string): Promise<{ questions: EditorSer
   };
 };
 
+const getEditorSortingGame = async (gameId: string): Promise<EditorSerializedSortingGame> => {
+  const sortingGame = await findUniqueSorting(gameId);
+  return {
+    text: sortingGame.description,
+    buckets: sortingGame.sortingGameBuckets.map(bucket => {
+      return {
+        name: '',
+        bucketItems: bucket.sortingGameObjects.map(object => {
+          return {
+            objectType: object.objectType,
+            text: object.text,
+            image: object.image,
+          };
+        }),
+      };
+    }),
+  };
+};
+
 const getEditorMatchingGame = async (gameId: string): Promise<EditorSerializedMatchingGame> => {
   const matchingGame = await findUniqueMatchingGame(gameId);
   return {
     duration: matchingGame.duration,
     images: matchingGame.images.map(image => image.image),
-  };
-};
-
-const getEditorSortingGame = async (gameId: string): Promise<EditorSerializedSortingGame> => {
-  const sortingGame = await findUniqueSortingGame(gameId);
-  return {
-    text: '',
-    duration: sortingGame.duration,
-    buckets: sortingGame.buckets.map(bucket => {
-      return {
-        name: bucket.name,
-        bucketItems: bucket.bucketItems.map(bucketItem => {
-          return {
-            text: bucketItem.text,
-            image: bucketItem.image ? { assetId: bucketItem.image.imageId } : undefined,
-          };
-        }),
-      };
-    }),
   };
 };
 
@@ -145,7 +145,6 @@ const getPageEditorFormValue = async (id: string): Promise<EditorPageFormValues>
         ? await getEditorSortingGame(page.asset.game.assetId)
         : {
             text: '',
-            duration: 0,
             buckets: [],
           },
 

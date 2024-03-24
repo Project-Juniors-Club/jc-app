@@ -1,21 +1,14 @@
 /*
   Warnings:
 
-  - You are about to drop the column `duration` on the `MatchingGame` table. All the data in the column will be lost.
-  - You are about to drop the `MatchingGameImage` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the column `userId` on the `courses` table. All the data in the column will be lost.
 
 */
 -- DropForeignKey
-ALTER TABLE "MatchingGameImage" DROP CONSTRAINT "MatchingGameImage_imageId_fkey";
-
--- DropForeignKey
-ALTER TABLE "MatchingGameImage" DROP CONSTRAINT "MatchingGameImage_matchingGameId_fkey";
+ALTER TABLE "courses" DROP CONSTRAINT "courses_userId_fkey";
 
 -- AlterTable
-ALTER TABLE "MatchingGame" DROP COLUMN "duration";
-
--- DropTable
-DROP TABLE "MatchingGameImage";
+ALTER TABLE "courses" DROP COLUMN "userId";
 
 -- CreateTable
 CREATE TABLE "_CoursesInCart" (

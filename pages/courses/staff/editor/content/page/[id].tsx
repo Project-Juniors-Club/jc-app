@@ -1,7 +1,7 @@
 import { Article, Asset, AssetType, Page, Video, Image, GameType, Game } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
+import { useFieldArray, RegisterOptions, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Grid, GridItem, Divider, Center, Input, Select, HStack, VStack, FormLabel, Textarea } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
@@ -112,6 +112,7 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
       courseId: courseStructure.id,
     });
   };
+  const deletePageData = async (data: EditorPageFormValues) => axios.delete(`/api/courses/pages/${id}`);
 
   const session = useSession();
   const mutateOnSave = useMutation({
@@ -134,7 +135,17 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
       openErrorNotification('Failed to save page', 'Please try again');
     },
   });
-  const isDisabled = mutateOnSave.isLoading || mutateOnExit.isLoading || mutateOnExit.isSuccess;
+  const mutateOnDelete = useMutation({
+    mutationFn: deletePageData,
+    onSuccess: data => {
+      openSuccessNotification('Deleted page successfully!');
+      router.push(`/courses/staff/editor/content/${courseStructure.id}`);
+    },
+    onError: () => {
+      openErrorNotification('Failed to delete page', 'Please try again');
+    },
+  });
+  const isDisabled = mutateOnSave.isLoading || mutateOnExit.isLoading || mutateOnExit.isSuccess || mutateOnDelete.isLoading;
 
   return (
     <div>
@@ -164,7 +175,7 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
                   {...register('duration', {
                     required: { value: true, message: 'Enter Page Duration' },
                     valueAsNumber: true,
-                  })}
+                  } as RegisterOptions)}
                 />
                 <FormErrorMessage>{errors?.duration?.message}</FormErrorMessage>
               </FormControl>
@@ -260,7 +271,9 @@ const EditContentPage = ({ id, courseStructure: initialCourseStructure, formValu
                     Cancel
                   </Button>
                 </HStack>
-                <Button variant='black-solid'>Delete Page</Button>
+                <Button variant='black-solid' onClick={handleSubmit(data => mutateOnDelete.mutate(data))}>
+                  Delete Page
+                </Button>
               </Flex>
             </form>
           </Box>

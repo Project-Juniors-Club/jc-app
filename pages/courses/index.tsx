@@ -5,7 +5,7 @@ import ViewedCourseList from '../../components/course/homepage/ViewedCourseList'
 import WelcomeMessage from '../../components/course/homepage/WelcomeMessage';
 import NavBar from '../../components/navbar/NavBar';
 import { getRecentCourses } from '../../lib/courseRecent';
-import { getAllCourses, SerializedCourse } from '../../lib/server/course';
+import { getAllPublishedCourses, SerializedCourse } from '../../lib/server/course';
 
 const CourseHomePage = ({ courses }) => {
   const sess = useSession();
@@ -13,7 +13,7 @@ const CourseHomePage = ({ courses }) => {
   const [recentCourses, setRecentCourses] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!sess) {
+    if (!sess || !sess.data) {
       return;
     }
     getRecentCourses(sess?.data?.user?.id).then((value: SerializedCourse[]) => {
@@ -34,7 +34,7 @@ const CourseHomePage = ({ courses }) => {
 };
 
 export async function getStaticProps() {
-  const courses = await getAllCourses();
+  const courses = await getAllPublishedCourses();
 
   return {
     props: { courses },
