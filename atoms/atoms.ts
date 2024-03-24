@@ -13,7 +13,7 @@ export const emailState = atom({
 
 export const roleState = atom({
   key: 'role',
-  default: -1,
+  default: '',
 });
 
 export const userInfoState = selector({
