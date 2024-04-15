@@ -42,7 +42,7 @@ export const createPromo = async (
   data: Prisma.PromoUpdateInput,
   select?: Prisma.PromoSelect,
 ) => {
-  return (await prisma.promos.create({
+  return (await prisma.promo.create({
     where,
     data,
     select,
