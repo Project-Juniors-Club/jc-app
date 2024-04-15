@@ -3,15 +3,13 @@ import { useState, useMemo } from 'react';
 import {
   Text,
   Box,
-  Button,
+  HStack,
   Flex,
   FormControl,
   FormLabel,
   FormErrorMessage,
   Heading,
   Input,
-  SimpleGrid,
-  Checkbox,
   Table,
   TableContainer,
   Tbody,
@@ -25,27 +23,18 @@ import {
   RadioGroup,
   Radio,
   Stack,
-  PseudoBox,
-  Spacer,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react';
-import { GetStaticProps, GetStaticPaths } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Local imports
-import useSnackbar from '../../../hooks/useSnackbar';
-import { URL } from '../../../utils/links';
-import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
-import { Provider } from 'next-auth/providers';
+import { getSession } from 'next-auth/react';
 import NavBarAdmin from '../../../components/navbar/NavBarAdmin';
 import { EditIcon } from '@chakra-ui/icons';
-import prisma from '../../../lib/prisma';
 import { Promo, getPromosWithId } from '../../../lib/server/promo';
 import CustomButton from '../../../components/Button';
 import Layout from '../../../components/Layout';
@@ -57,17 +46,12 @@ type FormData = {
   dateRange: Date[];
 };
 
-enum PromoStatus {
-  Active,
-  Upcoming,
-  Expired,
-}
-
 type PromoProps = {
   promos: Promo[];
+  courseId: string;
 };
 
-const PromoPage = ({ promos }: PromoProps) => {
+const PromoPage = ({ promos, courseId }: PromoProps) => {
   const {
     register,
     handleSubmit,
@@ -75,54 +59,69 @@ const PromoPage = ({ promos }: PromoProps) => {
     control,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
-  const router = useRouter();
 
   const [search, setSearch] = useState('');
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [selectedPromo, setSelectedPromo] = useState('');
-
-  const [selectedDates, setSelectedDates] = useState<Date[]>([new Date(), new Date()]);
+  const [promoId, setPromoId] = useState('');
 
   const [isPermanent, setPermanence] = useState('true');
 
-  const setFormValues = (promo: Promo) => {
-    console.log('HEHEH');
+  const setFormValues = (promo: FormData) => {
     reset({ ...promo });
     onOpen();
   };
 
-  const color = (promo: Promo) => {
+  const getStatus = (promo: Promo) => {
     const today = new Date();
-    if (today.getTime() - promo.startDate.getTime()) {
+    const sDate = new Date(promo.startDate);
+    const eDate = new Date(promo.endDate);
+
+    if (eDate.getTime() - today.getTime() < 0) {
+      return ['#A9D357', 'Active'];
+    } else if (today.getTime() - sDate.getTime() < 0) {
+      return ['#000000', 'Upcoming'];
+    } else {
+      return ['#000000', 'Expired'];
     }
   };
 
+  const handleClose = () => {
+    setFormValues({} as FormData);
+    setPromoId('');
+    setPermanence('true');
+    onClose();
+  };
   const filteredPromos = useMemo(() => {
     return promos.filter(promo => promo.code.toLowerCase().includes(search.toLowerCase()));
   }, [search, promos]);
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
-    console.log('HEHEHE');
-    // try {
-    //   // const res = await signIn('credentials', {
-    //   //   email: data.email,
-    //   //   password: data.password,
-    //   //   redirect: false,
-    //   // });
-    // //   if (res?.error) {
-    // //     toast.error('Login failed. Please check your credentials and try again.');
-    // //   } else {
-    // //     toast.success('Login successful!');
-    // //     router.push('/');
-    // //   }
-    // // } catch (error) {
-    // //   console.error('Error during login:', error);
-    // //   toast.error('An unexpected error occurred during login.');
-    //   console.log("JHEJE")
-    // }
+    const promo: Promo = {
+      ...data,
+      id: promoId,
+      startDate: data.dateRange[0].toLocaleString(),
+      endDate: data.dateRange[1].toLocaleString(),
+    };
+    try {
+      let res: any;
+      if (promoId === '') {
+        res = await axios.post(`/api/promo`, { ...promo, courseId });
+      } else {
+        res = await axios.post(`/api/promo/${courseId}`, { ...promo });
+      }
+
+      if (res?.error) {
+        toast.error('Unable to add/update promo.');
+      } else {
+        handleClose();
+        toast.success('Promo added/updated!');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      toast.error('An unexpected error occurred when creating/updating promo. Please try again.');
+    }
   };
 
   return (
@@ -167,26 +166,39 @@ const PromoPage = ({ promos }: PromoProps) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredPromos.map((promo, index: number) => (
-                  <Tr key={index}>
-                    <Td width='30%'>{promo.code}</Td>
-                    <Td width='25%'>{promo.discount}</Td>
-                    <Td width='15%'>{promo.startDate}</Td>
-                    <Td width='15%'>{promo.endDate}</Td>
-                    <Td width='15%'>
-                      <Box>
-                        <Text></Text>
-                        <EditIcon className='opacity-0 hover:opacity-100' onClick={() => setFormValues(promo)} />
-                      </Box>
-                    </Td>
-                  </Tr>
-                ))}
+                {filteredPromos.map((promo, index: number) => {
+                  const [color, text] = getStatus(promo);
+                  return (
+                    <Tr key={index}>
+                      <Td width='30%'>{promo.code}</Td>
+                      <Td width='25%'>{promo.discount}</Td>
+                      <Td width='15%'>{promo.startDate}</Td>
+                      <Td width='15%'>{promo.endDate}</Td>
+                      <Td width='15%'>
+                        <HStack>
+                          <Text color={color}>{text}</Text>
+                          <EditIcon
+                            className='opacity-0 hover:opacity-100'
+                            onClick={() => {
+                              if (promo.endDate) {
+                                setPermanence('false');
+                                setPromoId(promo.id);
+                              }
+                              let obj: FormData = { dateRange: [new Date(promo.startDate), new Date(promo.endDate)], ...promo };
+                              setFormValues(obj);
+                            }}
+                          />
+                        </HStack>
+                      </Td>
+                    </Tr>
+                  );
+                })}
               </Tbody>
             </Table>
           </TableContainer>
         </div>
 
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <Modal isOpen={isOpen} onClose={handleClose} isCentered>
           <ModalContent width='full' padding='3rem'>
             <Box textAlign='left'>
               <form onSubmit={handleSubmit(onSubmit)} color='black'>
@@ -214,19 +226,20 @@ const PromoPage = ({ promos }: PromoProps) => {
                     Discount (%) *
                   </FormLabel>
                   <Flex my={5}>
-                    <Input
-                      id='discount'
-                      placeholder='Enter Discount'
-                      _placeholder={{ color: 'gray.500' }}
-                      focusBorderColor='#8EC12C'
-                      borderColor='grey'
-                      color='black'
-                      {...register('discount', {
-                        required: 'This is required.',
-                      })}
-                    />
+                    <NumberInput min={0} max={100} width='100%'>
+                      <NumberInputField
+                        {...register('discount', {
+                          required: 'This is required.',
+                          max: 100,
+                          min: 1,
+                          valueAsNumber: true,
+                        })}
+                        name='discount'
+                        placeholder='Discount in %'
+                      />
+                    </NumberInput>
                   </Flex>
-                  {errors.discount && <FormErrorMessage>Please input a valid discount in %.</FormErrorMessage>}
+                  {errors.discount && <FormErrorMessage>Please input a valid discount in % (1- 100).</FormErrorMessage>}
                 </FormControl>
                 <FormLabel htmlFor='discount' color='#3D3D3D'>
                   Validity Period
@@ -238,12 +251,14 @@ const PromoPage = ({ promos }: PromoProps) => {
                   </Stack>
                 </RadioGroup>
                 {isPermanent == 'false' && (
-                  <FormControl isInvalid={Boolean(errors.dateRange)} mt={4}>
+                  <FormControl isInvalid={Boolean(errors.dateRange)} my={5}>
                     <Controller
                       name='dateRange'
                       control={control}
+                      defaultValue={[new Date(), new Date()]}
                       render={({ field }) => (
                         <RangeDatepicker
+                          ref={field.ref}
                           {...field}
                           propsConfigs={{
                             dayOfMonthBtnProps: {
@@ -258,9 +273,8 @@ const PromoPage = ({ promos }: PromoProps) => {
                               },
                             },
                           }}
-                          selectedDates={selectedDates}
+                          selectedDates={field.value}
                           onDateChange={value => {
-                            setSelectedDates(value);
                             field.onChange(value);
                           }}
                         />
@@ -290,14 +304,12 @@ export default PromoPage;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-  console.log(session);
-  const id = context.params?.id as string;
-  const promos = await getPromosWithId(id);
-  console.log(promos);
+  const courseId = context.params?.id as string;
+  const promos = await getPromosWithId(courseId);
   if (!session) {
     return { redirect: { destination: '/home' } };
   }
   return {
-    props: { promos },
+    props: { promos, courseId },
   };
 }
