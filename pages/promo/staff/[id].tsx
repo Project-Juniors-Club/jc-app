@@ -39,6 +39,7 @@ import { Promo, getPromosWithId } from '../../../lib/server/promo';
 import CustomButton from '../../../components/Button';
 import Layout from '../../../components/Layout';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
+import { formatToJsStandard } from '../../../utils/dateFormat';
 
 type FormData = {
   code: string;
@@ -78,7 +79,7 @@ const PromoPage = ({ promos, courseId }: PromoProps) => {
     const sDate = new Date(promo.startDate);
     const eDate = new Date(promo.endDate);
 
-    if (eDate.getTime() - today.getTime() < 0) {
+    if (eDate.getTime() - today.getTime() > 0 && today.getTime() - sDate.getTime() > 0) {
       return ['#A9D357', 'Active'];
     } else if (today.getTime() - sDate.getTime() < 0) {
       return ['#000000', 'Upcoming'];
@@ -101,8 +102,8 @@ const PromoPage = ({ promos, courseId }: PromoProps) => {
     const promo: Promo = {
       ...data,
       id: promoId,
-      startDate: data.dateRange[0].toLocaleString(),
-      endDate: data.dateRange[1].toLocaleString(),
+      startDate: data.dateRange[0].toLocaleString('en-US'),
+      endDate: data.dateRange[1].toLocaleString('en-US'),
     };
     try {
       let res: any;
@@ -184,8 +185,13 @@ const PromoPage = ({ promos, courseId }: PromoProps) => {
                                 setPermanence('false');
                                 setPromoId(promo.id);
                               }
-                              let obj: FormData = { dateRange: [new Date(promo.startDate), new Date(promo.endDate)], ...promo };
+                              console.log(promo.startDate, promo.endDate);
+                              let obj: FormData = {
+                                dateRange: [new Date(formatToJsStandard(promo.startDate)), new Date(formatToJsStandard(promo.endDate))],
+                                ...promo,
+                              };
                               setFormValues(obj);
+                              console.log(obj);
                             }}
                           />
                         </HStack>

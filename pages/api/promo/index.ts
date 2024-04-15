@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const httpMethod = req.method;
     if (httpMethod == 'POST') {
       const { courseId, code, discount, startDate, endDate } = req.body;
-      console.log(req.body);
       // CREATE Promo
       const dataToCreate = {
         data: {
