@@ -30,13 +30,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Local imports
-import useSnackbar from '../../hooks/useSnackbar';
-import { URL } from '../../utils/links';
+import useSnackbar from '../../../hooks/useSnackbar';
+import { URL } from '../../../utils/links';
 import { getCsrfToken, getProviders, getSession, signIn } from 'next-auth/react';
 import { Provider } from 'next-auth/providers';
-import Modal from '../../components/Modal';
-import NavBarGeneral from '../../components/navbar/NavBarGeneral';
-import NavBar from '../../components/navbar/NavBar';
+import Modal from '../../../components/Modal';
+import NavBarGeneral from '../../../components/navbar/NavBarGeneral';
+import NavBar from '../../../components/navbar/NavBar';
 import NavBarAdmin from '../../../components/navbar/NavBarAdmin';
 import login from '../../login';
 import { EditIcon } from '@chakra-ui/icons';
