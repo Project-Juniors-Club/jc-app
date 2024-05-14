@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.type = token.type;
         session.user.id = token.id;
-        session.data = await findUniqueUser({id: token.id}, {id: true, dob: true});
+        session.data = await findUniqueUser({ id: token.id }, { id: true, dob: true });
       }
       return session;
     },

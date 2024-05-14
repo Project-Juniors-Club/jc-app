@@ -49,7 +49,6 @@ const CourseStaffView = ({ course, category, errors, courseContentOverview }: Co
       openErrorNotification('Failed to delete course', 'Please try again');
     }
   };
-  
 
   const [courseStatus, setCourseStatus] = useState(course.status);
 

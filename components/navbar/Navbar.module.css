@@ -1,0 +1,8 @@
+/* main-nav-menu ml-7 flex h-full items-center gap-6 */
+.navbarAdminIcon {
+  margin-left: 28px;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  gap: 24px;
+}

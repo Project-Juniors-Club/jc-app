@@ -13,13 +13,30 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
 }
 
-const Button = ({ className = '', variant = 'green-solid', isDisabled = false, isLoading = false, children = null, loadingText = '', ...rest }: Props) => {
+const Button = ({
+  className = '',
+  variant = 'green-solid',
+  isDisabled = false,
+  isLoading = false,
+  children = null,
+  loadingText = '',
+  ...rest
+}: Props) => {
   let toShow;
   if (isLoading) {
     if (variant === 'black-solid') {
-      toShow = <><Spinner color='#FFFFFF' />  {loadingText}</>;
+      toShow = (
+        <>
+          <Spinner color='#FFFFFF' /> {loadingText}
+        </>
+      );
     } else {
-      toShow = <><Spinner />{loadingText}</>;
+      toShow = (
+        <>
+          <Spinner />
+          {loadingText}
+        </>
+      );
     }
   } else {
     toShow = children;
