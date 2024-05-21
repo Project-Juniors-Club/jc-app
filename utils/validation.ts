@@ -1,5 +1,4 @@
 import { UserType } from '@prisma/client';
-import { NextRequestWithAuth } from 'next-auth/middleware';
 
 //Validate email address using regex pattern
 export const validateEmail = (email: string) =>
@@ -8,7 +7,7 @@ export const validateEmail = (email: string) =>
   );
 
 // Verify a user is an internal staff of Food Bank
-export const isInternal = (req: NextRequestWithAuth) => {
+export const isInternal = async (req) => {
   let role = req.nextauth.token?.type;
   if (role === UserType.staff || role === UserType.courseEditor || role === UserType.admin) {
     return true;
