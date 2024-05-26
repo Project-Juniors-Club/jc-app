@@ -11,16 +11,17 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async signIn({ user }) {
-      console.log(user);
       if (user) {
         return true;
       } else {
         return false;
       }
     },
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) {
-        token.type = user.type;
+        const metadata = await findUniqueUser({id: user.id});
+        token.type = metadata.type;
+        token.role = metadata.type;
         token.id = user.id;
       }
       return token;

@@ -45,7 +45,7 @@
     "konva": "^8.4.2",
     "lodash": "^4.17.21",
     "next": "^12.3.4",
-    "next-auth": "^4.22.1",
+    "next-auth": "^4.24.7",
     "nodemailer": "^6.7.8",
     "react": "^18.2.0",
     "react-bucket": "^0.0.11",

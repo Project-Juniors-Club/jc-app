@@ -24,9 +24,11 @@ declare module 'next-auth' {
     data?: any;
   }
 
-  /** Passed as a parameter to the `jwt` callback */
+  /** Passed as a parameter to the `jwt` callback and used in middleware */
   interface User {
     type?: UserType;
     id?: string;
+    role?: string;
+    type?: string;
   }
 }
