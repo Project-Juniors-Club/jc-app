@@ -6,7 +6,10 @@ import { useRouter } from 'next/router';
 
 const UserDropdown = () => {
   const router = useRouter();
-  const loginItems = [{ clickOption: 'My Profile', onClick: () => router.push('/users/manage') }, { clickOption: 'Log Out', onClick: () => signOut() }];
+  const loginItems = [
+    { clickOption: 'My Profile', onClick: () => router.push('/users/manage') },
+    { clickOption: 'Log Out', onClick: () => signOut({ callbackUrl: '/login' }) },
+  ];
   const { data: session } = useSession();
   let username: string | undefined = session?.user?.name;
 
