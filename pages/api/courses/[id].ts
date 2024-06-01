@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               courseId: id,
             },
           });
-        
+
           await prisma.course.delete({
             where: {
               id: id,
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } catch (error) {
           return res.status(500).json({ message: 'Failed to delete course' });
         }
-      }
+      };
       deleteCourse();
     } else if (httpMethod == 'PUT') {
       // UPDATE TITLE, DESCRIPTION
@@ -126,7 +126,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             : undefined,
           category: categoryId
             ? {
-                connect: categoryId,
+                connect: { id: categoryId },
               }
             : undefined,
           price: price,
