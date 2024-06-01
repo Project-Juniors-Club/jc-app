@@ -17,7 +17,13 @@ export const deleteOldAsset = async (oldAssetId: string, oldAssetType: AssetType
     const { key } = await tx.video.findUnique({ where: { assetId: oldAssetId }, select: { key: true } });
     s3.deleteObject({ Bucket: process.env.BUCKET_NAME, Key: key }).send();
   }
-  await tx.asset.delete({
+  await tx.game.delete({
+    where: {
+      assetId: oldAssetId,
+    },
+  });
+
+  return await tx.asset.delete({
     where: {
       id: oldAssetId,
     },
