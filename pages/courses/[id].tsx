@@ -1,6 +1,17 @@
 import axios from 'axios';
 import prisma from '../../lib/prisma';
-import { Image, Text, Box, Flex, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react';
+import {
+  Image,
+  Text,
+  Box,
+  Flex,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Checkbox,
+} from '@chakra-ui/react';
 import { GetServerSidePropsContext } from 'next';
 import { Category } from '@prisma/client';
 import { checkCourseInCart, getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
@@ -11,7 +22,7 @@ import NavBarCourse from '../../components/navbar/NavBar';
 import { DisplayedImage } from '../../components/course/homepage/InternalCourseCard';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type CourseViewProp = {
   course: any;
@@ -29,14 +40,37 @@ type CourseViewProp = {
       }[];
     }[];
   };
+  isPurchased: boolean;
 };
 
-const CourseView = ({ course, category, errors, courseContentOverview, userCourseId }: CourseViewProp) => {
+const CourseView = ({ course, category, errors, courseContentOverview, userCourseId, isPurchased = true }: CourseViewProp) => {
   const sess = useSession();
   const { chapters } = courseContentOverview;
   const [isAdded, setIsAdded] = useState(false);
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
   const router = useRouter();
+
+  // TODO: Implement the model
+  const [completion, setCompletion] = useState([
+    { chapterId: 'chapter1', pageId: 'page1', completed: true },
+    { chapterId: 'chapter1', pageId: 'page2', completed: true },
+    { chapterId: 'chapter2', pageId: 'page3', completed: true },
+  ]);
+  useEffect(() => {
+    if (userCourseId) {
+      setIsAdded(true);
+    }
+  }, [userCourseId]);
+
+  const isChapterCompleted = (chapterId: string) => {
+    const chapterPages = completion.filter(c => c.chapterId === chapterId);
+    return chapterPages.every(page => page.completed);
+  };
+
+  const isPageCompleted = (chapterId: string, pageId: string) => {
+    const pageCompletion = completion.find(c => c.chapterId === chapterId && c.pageId === pageId);
+    return pageCompletion?.completed || false;
+  };
 
   const addToCart = async () => {
     const {
@@ -96,48 +130,61 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
               {chapters.length} chapters | {duration} min
             </Box>
           </Box>
-          <Accordion allowMultiple className={styles.accordion}>
-            {chapters.map(chapter => {
-              return (
-                <>
-                  <AccordionItem className='bg-main-light-green'>
-                    <h2>
-                      <AccordionButton border='1px solid #C7C7C7'>
-                        <Box flex='1' textAlign='left' flexDirection={'column'}>
+
+          {isPurchased ? (
+            <Accordion allowMultiple className={styles.accordion}>
+              {chapters.map((chapter, chapterIndex) => (
+                <AccordionItem key={chapterIndex} className='bg-main-light-green'>
+                  <h2>
+                    <AccordionButton border='1px solid #C7C7C7'>
+                      <Box flex='1' textAlign='left' flexDirection={'column'}>
+                        <Box display='flex' alignItems='center'>
+                          <Checkbox colorScheme='gray' isChecked={isChapterCompleted(chapter.id)} isReadOnly mr={2} />
                           <Box as='span' flex='1' textAlign='left' className='text-lg font-bold'>
                             {chapter.name}
                           </Box>
-                          <Box flex='1' textAlign='left' className='color text-xs'>
-                            {`${chapter.pages.length} pages | ${chapter.pages.reduce((a, b) => a + b.duration, 0)}min`}
-                          </Box>
-                          <Box flex='1' textAlign='left' className='mt-2'>
-                            {chapter.description}
+                        </Box>
+                        <Box flex='1' textAlign='left' className='color text-xs'>
+                          {`${chapter.pages.length} pages | ${chapter.pages.reduce((a, b) => a + b.duration, 0)}min`}
+                        </Box>
+                        <Box flex='1' textAlign='left' className='mt-2'>
+                          {chapter.description}
+                        </Box>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  {chapter.pages.map((page, pageIndex) => (
+                    <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
+                      <Box flex='1' textAlign='left' flexDirection={'column'}>
+                        <Box display='flex' alignItems='center'>
+                          <Checkbox isChecked={isPageCompleted(chapter.id, page.id)} isReadOnly mr={2} />
+                          <Box as='span' flex='1' textAlign='left' className='text-sm'>
+                            <a href='/courses/${course.id}/chapters/${chapterIndex}/pages/${pageIndex}'>{page.name}</a>
                           </Box>
                         </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    {chapter.pages.map(page => {
-                      return (
-                        <>
-                          <AccordionPanel pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
-                            <Box flex='1' textAlign='left' flexDirection={'column'}>
-                              <Box as='span' flex='1' textAlign='left' className='text-sm'>
-                                {page.name}
-                              </Box>
-                              <Box flex='1' textAlign='left' className='color text-xs'>
-                                {`${page.duration}min`}
-                              </Box>
-                            </Box>
-                          </AccordionPanel>
-                        </>
-                      );
-                    })}
-                  </AccordionItem>
-                </>
-              );
-            })}
-          </Accordion>
+                        <Box flex='1' textAlign='left' className='color text-xs'>
+                          {`${page.duration}min`}
+                        </Box>
+                      </Box>
+                    </AccordionPanel>
+                  ))}
+                </AccordionItem>
+              ))}
+            </Accordion>
+          ) : (
+            <Flex mt='50px' justifyContent='center' alignItems='center' gap='24px'>
+              <Box className={styles.description} mr='20px'>
+                <Box>Price:</Box>
+                <Box mt='-5px' fontWeight='bold'>
+                  ${course.price}
+                </Box>
+              </Box>
+              <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
+                <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
+              </CustomButton>
+            </Flex>
+          )}
         </Box>
         <Box>
           <Box width='450px' height='240px' bgColor='#EBF8D3' borderRadius='16px'>
@@ -147,17 +194,6 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
               <></>
             )}
           </Box>
-          <Flex mt='50px' justifyContent='center' alignItems='center' gap='24px'>
-            <Box className={styles.description} mr='20px'>
-              <Box>Price:</Box>
-              <Box mt='-5px' fontWeight='bold'>
-                ${course.price}
-              </Box>
-            </Box>
-            <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
-              <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
-            </CustomButton>
-          </Flex>
         </Box>
       </Flex>
     </Layout>
@@ -179,6 +215,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         id: course.categoryId,
       },
     }));
+  const isPurchased = userCourse ? true : false;
   return {
     props: {
       course,
