@@ -15,7 +15,7 @@ import {
 import CustomButton from '../../components/Button';
 import { GetServerSidePropsContext } from 'next';
 import { Category } from '@prisma/client';
-import { checkCourseInCart, getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
+import { getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
 import Layout from '../../components/Layout';
 import styles from '../../components/Course.module.css';
 import NavBarCourse from '../../components/navbar/NavBar';
@@ -215,7 +215,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
             {course.coverImage?.url ? (
               <Image width='450px' height='240px' borderRadius='16px' src={course.coverImage.url} alt='testing' />
             ) : (
-              <></>
+              <div>No cover image available</div>
             )}
           </Box>
 
@@ -247,7 +247,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const isPurchased = await isCoursePurchased(userId, id);
   const course = await getCourseWithAuthorAndDate(id);
   const courseContentOverview = await getCourseContentOverview(id);
-  const userCourseId = await getUserCourseId(userId, id);
+  let userCourseId = await getUserCourseId(userId, id);
+  if (userCourseId === undefined) {
+    userCourseId = null;
+  }
   const category =
     course.categoryId &&
     (await prisma.category.findUnique({
