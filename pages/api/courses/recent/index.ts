@@ -9,8 +9,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const httpMethod = req.method;
     if (httpMethod == 'GET') {
-      const { userId } = req.body;
-      const courses = await getRecentlyUsedCourse(userId);
+      const { userId } = req.query;
+      const courses = await getRecentlyUsedCourse(userId as string);
       res.status(200).json({ message: entityMessageObj.getAllSuccess, data: courses });
     } else if (httpMethod == 'POST') {
       const { userId, courseId } = req.body;

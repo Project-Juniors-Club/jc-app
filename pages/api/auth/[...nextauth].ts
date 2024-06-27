@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        const metadata = await findUniqueUser({id: user.id});
+        const metadata = await findUniqueUser({ id: user.id });
         token.type = metadata.type;
         token.role = metadata.type;
         token.id = user.id;
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.type = token.type;
         session.user.id = token.id;
-        session.data = await findUniqueUser({id: token.id}, {id: true, dob: true});
+        session.data = await findUniqueUser({ id: token.id }, { id: true, dob: true });
       }
       return session;
     },
@@ -74,8 +74,6 @@ export const authOptions: NextAuthOptions = {
         password: {},
       },
       async authorize(credentials, req) {
-        console.log(JSON.stringify({ email: credentials.email, password: credentials.password }));
-        console.log('TESTING IN CONFIG');
         const user = await fetch(`${process.env.NEXTAUTH_URL}/api/users/check-credentials`, {
           method: 'POST',
           headers: {

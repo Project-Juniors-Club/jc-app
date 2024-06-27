@@ -14,6 +14,9 @@ export type SerializedCourse = {
   status: CourseStatus;
   categoryId: string;
   courseEditor: { adminId: string }[];
+  coverImage?: {
+    url: string;
+  };
   coverImageAssetId: string;
   createdBy?: {
     user: {
