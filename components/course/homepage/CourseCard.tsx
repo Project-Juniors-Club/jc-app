@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { updateLastSeen } from '../../../lib/courseRecent';
 import { SerializedCourse } from '../../../lib/server/course';
+import { Image, Box } from '@chakra-ui/react';
 import styles from './Course.module.css';
 
 const CourseCard = ({ course }: { course: SerializedCourse }) => {
@@ -19,8 +20,13 @@ const CourseCard = ({ course }: { course: SerializedCourse }) => {
         router.push('/courses/' + course.id);
       }}
     >
-      <div className='h-[10rem] bg-main-light-green'></div>
-      {/* <img/> */}
+      <Box width='450px' height='240px' bgColor='#EBF8D3' borderRadius='16px'>
+        {course.coverImage?.url ? (
+          <Image width='450px' height='240px' borderRadius='16px' src={course.coverImage.url} alt='testing' />
+        ) : (
+          <></>
+        )}
+      </Box>
       <div className='relative h-[10.5625rem] px-4'>
         <h3 className=' pt-6 pb-2 text-xl'>{course.title}</h3>
         <div className='absolute left-4 bottom-3 right-4 mb-3 flex items-center justify-between text-center'>

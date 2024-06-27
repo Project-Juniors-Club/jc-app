@@ -215,7 +215,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
             {course.coverImage?.url ? (
               <Image width='450px' height='240px' borderRadius='16px' src={course.coverImage.url} alt='testing' />
             ) : (
-              <div>No cover image available</div>
+              <></>
             )}
           </Box>
 
