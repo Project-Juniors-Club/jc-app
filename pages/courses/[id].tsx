@@ -16,11 +16,10 @@ import { GetServerSidePropsContext } from 'next';
 import { Category } from '@prisma/client';
 import { checkCourseInCart, getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
 import Layout from '../../components/Layout';
-import CustomButton from '../../components/Button';
 import styles from '../../components/Course.module.css';
 import NavBarCourse from '../../components/navbar/NavBar';
-import { DisplayedImage } from '../../components/course/homepage/InternalCourseCard';
 import { getSession, useSession } from 'next-auth/react';
+import { isCoursePurchased } from '../../lib/server/userCourses';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -43,7 +42,7 @@ type CourseViewProp = {
   isPurchased: boolean;
 };
 
-const CourseView = ({ course, category, errors, courseContentOverview, userCourseId, isPurchased = true }: CourseViewProp) => {
+const CourseView = ({ course, category, errors, courseContentOverview, userCourseId, isPurchased }: CourseViewProp) => {
   const sess = useSession();
   const { chapters } = courseContentOverview;
   const [isAdded, setIsAdded] = useState(false);
@@ -173,17 +172,48 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
               ))}
             </Accordion>
           ) : (
-            <Flex mt='50px' justifyContent='center' alignItems='center' gap='24px'>
-              <Box className={styles.description} mr='20px'>
-                <Box>Price:</Box>
-                <Box mt='-5px' fontWeight='bold'>
-                  ${course.price}
-                </Box>
-              </Box>
-              <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
-                <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
-              </CustomButton>
-            </Flex>
+            <Accordion allowMultiple className={styles.accordion}>
+              {chapters.map(chapter => {
+                return (
+                  <>
+                    <AccordionItem className='bg-main-light-green'>
+                      <h2>
+                        <AccordionButton border='1px solid #C7C7C7'>
+                          <Box flex='1' textAlign='left' flexDirection={'column'}>
+                            <Box as='span' flex='1' textAlign='left' className='text-lg font-bold'>
+                              {chapter.name}
+                            </Box>
+                            <Box flex='1' textAlign='left' className='color text-xs'>
+                              {`${chapter.pages.length} pages | ${chapter.pages.reduce((a, b) => a + b.duration, 0)}min`}
+                            </Box>
+                            <Box flex='1' textAlign='left' className='mt-2'>
+                              {chapter.description}
+                            </Box>
+                          </Box>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h2>
+                      {chapter.pages.map(page => {
+                        return (
+                          <>
+                            <AccordionPanel pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
+                              <Box flex='1' textAlign='left' flexDirection={'column'}>
+                                <Box as='span' flex='1' textAlign='left' className='text-sm'>
+                                  {page.name}
+                                </Box>
+                                <Box flex='1' textAlign='left' className='color text-xs'>
+                                  {`${page.duration}min`}
+                                </Box>
+                              </Box>
+                            </AccordionPanel>
+                          </>
+                        );
+                      })}
+                    </AccordionItem>
+                  </>
+                );
+              })}
+            </Accordion>
           )}
         </Box>
         <Box>
@@ -203,10 +233,10 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
   const id = context.params?.id as string;
-  console.log({ id });
+  const userId = session?.user?.id;
+  const isPurchased = await isCoursePurchased(userId, id);
   const course = await getCourseWithAuthorAndDate(id);
   const courseContentOverview = await getCourseContentOverview(id);
-  console.log({ course });
   const userCourse = await checkCourseInCart(session?.user?.id, id);
   const category =
     course.categoryId &&
@@ -215,13 +245,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         id: course.categoryId,
       },
     }));
-  const isPurchased = userCourse ? true : false;
   return {
     props: {
       course,
       category,
       courseContentOverview,
       userCourseId: userCourse?.id ?? '',
+      isPurchased,
     },
   };
 }
