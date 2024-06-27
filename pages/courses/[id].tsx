@@ -20,7 +20,7 @@ import Layout from '../../components/Layout';
 import styles from '../../components/Course.module.css';
 import NavBarCourse from '../../components/navbar/NavBar';
 import { getSession, useSession } from 'next-auth/react';
-import { isCoursePurchased } from '../../lib/server/userCourses';
+import { getUserCourseId, isCoursePurchased } from '../../lib/server/userCourses';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -32,9 +32,11 @@ type CourseViewProp = {
   userCourseId: string;
   courseContentOverview: {
     chapters: {
+      id: string;
       description: string;
       name: string;
       pages: {
+        id: string;
         name: string;
         duration: number;
       }[];
@@ -49,30 +51,19 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
   const [isAdded, setIsAdded] = useState(false);
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
   const router = useRouter();
+  const [chapterCompletionStatus, setChapterCompletionStatus] = useState({});
+  const [pageCompletionStatus, setPageCompletionStatus] = useState({});
 
-  // TODO: retrieve from backend
-  const [completion, setCompletion] = useState([
-    { chapterId: 'chapter1', pageId: 'page1', completed: true },
-    { chapterId: 'chapter1', pageId: 'page2', completed: true },
-    { chapterId: 'chapter2', pageId: 'page3', completed: true },
-  ]);
   useEffect(() => {
+    const fetchCompletionStatus = async () => {
+      const { data } = await axios.post('/api/course-completion', { userCourseId, chapters });
+      setChapterCompletionStatus(data.chapterStatus);
+      setPageCompletionStatus(data.pageStatus);
+    };
     if (userCourseId) {
-      setIsAdded(true);
+      fetchCompletionStatus();
     }
-  }, [userCourseId]);
-
-  // TODO: retrieve from backend
-  const isChapterCompleted = (chapterId: string) => {
-    const chapterPages = completion.filter(c => c.chapterId === chapterId);
-    return chapterPages.every(page => page.completed);
-  };
-
-  // TODO: retrieve from backend
-  const isPageCompleted = (chapterId: string, pageId: string) => {
-    const pageCompletion = completion.find(c => c.chapterId === chapterId && c.pageId === pageId);
-    return pageCompletion?.completed || false;
-  };
+  }, [userCourseId, chapters]);
 
   const addToCart = async () => {
     const {
@@ -141,7 +132,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                     <AccordionButton border='1px solid #C7C7C7'>
                       <Box flex='1' textAlign='left' flexDirection={'column'}>
                         <Box display='flex' alignItems='center'>
-                          <Checkbox colorScheme='gray' isChecked={isChapterCompleted(chapter.id)} isReadOnly mr={2} />
+                          <Checkbox colorScheme='gray' isChecked={chapterCompletionStatus[chapter.id]} isReadOnly mr={2} />
                           <Box as='span' flex='1' textAlign='left' className='text-lg font-bold'>
                             {chapter.name}
                           </Box>
@@ -160,7 +151,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                     <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
                       <Box flex='1' textAlign='left' flexDirection={'column'}>
                         <Box display='flex' alignItems='center'>
-                          <Checkbox isChecked={isPageCompleted(chapter.id, page.id)} isReadOnly mr={2} />
+                          <Checkbox isChecked={pageCompletionStatus[`${chapter.id}-${page.id}`]} isReadOnly mr={2} />
                           <Box as='span' flex='1' textAlign='left' className='text-sm'>
                             <a href='/courses/${course.id}/chapters/${chapterIndex}/pages/${pageIndex}'>{page.name}</a>
                           </Box>
@@ -256,7 +247,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const isPurchased = await isCoursePurchased(userId, id);
   const course = await getCourseWithAuthorAndDate(id);
   const courseContentOverview = await getCourseContentOverview(id);
-  const userCourse = await checkCourseInCart(session?.user?.id, id);
+  const userCourseId = await getUserCourseId(userId, id);
   const category =
     course.categoryId &&
     (await prisma.category.findUnique({
@@ -269,7 +260,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       course,
       category,
       courseContentOverview,
-      userCourseId: userCourse?.id ?? '',
+      userCourseId,
       isPurchased,
     },
   };

@@ -110,8 +110,8 @@ model UserCourse {
   course     Course   @relation(fields: [courseId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
   lastSeenBy DateTime
-  completedPages Page[] 
-  completedChapters Chapter[] 
+  completedPages Page[] @relation("CompletedPages")
+  completedChapters Chapter[] @relation("CompletedChapters")
 
   @@unique([userId, courseId])
   @@map("userCourses")
@@ -157,7 +157,7 @@ model Chapter {
   chapterNumber Int
   course        Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   pages         Page[]
-  userCourses   UserCourse[]
+  userCourses   UserCourse[] @relation("CompletedChapters")
 
   @@map("chapters")
 }
@@ -172,7 +172,7 @@ model Page {
   assetId     String   @unique
   asset       Asset    @relation(fields: [assetId], references: [id])
   chapter     Chapter? @relation(fields: [chapterId], references: [id])
-  userCourses UserCourse[]
+  userCourses UserCourse[] @relation("CompletedPages")
   @@map("pages")
 }
 
