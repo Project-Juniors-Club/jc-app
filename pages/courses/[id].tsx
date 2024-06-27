@@ -12,6 +12,7 @@ import {
   AccordionIcon,
   Checkbox,
 } from '@chakra-ui/react';
+import CustomButton from '../../components/Button';
 import { GetServerSidePropsContext } from 'next';
 import { Category } from '@prisma/client';
 import { checkCourseInCart, getCourseContentOverview, getCourseWithAuthorAndDate } from '../../lib/server/course';
@@ -49,7 +50,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
   const duration = chapters.reduce((acc, chapter) => acc + chapter.pages.reduce((a, b) => a + b.duration, 0), 0);
   const router = useRouter();
 
-  // TODO: Implement the model
+  // TODO: retrieve from backend
   const [completion, setCompletion] = useState([
     { chapterId: 'chapter1', pageId: 'page1', completed: true },
     { chapterId: 'chapter1', pageId: 'page2', completed: true },
@@ -61,11 +62,13 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
     }
   }, [userCourseId]);
 
+  // TODO: retrieve from backend
   const isChapterCompleted = (chapterId: string) => {
     const chapterPages = completion.filter(c => c.chapterId === chapterId);
     return chapterPages.every(page => page.completed);
   };
 
+  // TODO: retrieve from backend
   const isPageCompleted = (chapterId: string, pageId: string) => {
     const pageCompletion = completion.find(c => c.chapterId === chapterId && c.pageId === pageId);
     return pageCompletion?.completed || false;
@@ -224,6 +227,22 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
               <></>
             )}
           </Box>
+
+          {!isPurchased ? (
+            <Flex mt='50px' justifyContent='center' alignItems='center' gap='24px'>
+              <Box className={styles.description} mr='20px'>
+                <Box>Price:</Box>
+                <Box mt='-5px' fontWeight='bold'>
+                  ${course.price}
+                </Box>
+              </Box>
+              <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
+                <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
+              </CustomButton>
+            </Flex>
+          ) : (
+            <></>
+          )}
         </Box>
       </Flex>
     </Layout>
