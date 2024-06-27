@@ -79,13 +79,12 @@ const SignUp = ({ csrfToken, providers }: Props) => {
   const router = useRouter();
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data);
     const body = { ...data };
-    console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
+    const name = data.email.split('@')[0];
     const res = await fetch(`/api/users/create`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...data, name }),
     });
     if (res.ok) {
       await signIn('credentials', {
