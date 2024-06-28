@@ -83,6 +83,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           });
 
+          await prisma.page.deleteMany({
+            where: {
+              chapter: {
+                courseId: id,
+              },
+            },
+          });
+
+          await prisma.chapter.deleteMany({
+            where: {
+              courseId: id,
+            },
+          });
+
           await prisma.course.delete({
             where: {
               id: id,
