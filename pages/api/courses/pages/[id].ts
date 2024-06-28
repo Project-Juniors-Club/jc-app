@@ -2,14 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../lib/prisma';
 import { entityMessageCreator } from '../../../../utils/api-messages';
 import { errorMessageHandler } from '../../../../utils/error-message-handler';
-import formidable from 'formidable';
-import PersistentFile from 'formidable/PersistentFile';
-import axios from 'axios';
 import { S3 } from 'aws-sdk';
-import { createReadStream, fstat, readFile } from 'fs';
-import { file } from 'googleapis/build/src/apis/file';
 import { deleteOldAsset } from '../../../../lib/server/asset';
-import { updateDecorator } from 'typescript';
 
 const s3 = new S3({
   region: 'ap-southeast-1',
