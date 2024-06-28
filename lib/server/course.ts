@@ -107,6 +107,7 @@ export const getCourseContentOverview = async (id: string) => {
           description: true,
           pages: {
             select: {
+              id: true,
               name: true,
               duration: true,
             },
