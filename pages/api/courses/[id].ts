@@ -83,6 +83,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           });
 
+          await prisma.asset.deleteMany({
+            where: {
+              page: {
+                chapter: {
+                  courseId: id,
+                },
+              },
+            },
+          });
+
           await prisma.page.deleteMany({
             where: {
               chapter: {
@@ -96,6 +106,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               courseId: id,
             },
           });
+
+          const course = await prisma.course.findUnique({
+            where: {
+              id: id,
+            },
+            select: {
+              coverImageAssetId: true, // Select only the coverImageAssetId
+            },
+          });
+
+          if (course && course.coverImageAssetId) {
+            await prisma.image.delete({
+              where: {
+                assetId: course.coverImageAssetId, // Use the coverImageAssetId to delete the image
+              },
+            });
+          }
 
           await prisma.course.delete({
             where: {
