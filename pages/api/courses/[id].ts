@@ -77,6 +77,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           });
 
+          await prisma.userCourse.deleteMany({
+            where: {
+              courseId: id,
+            },
+          });
+
           await prisma.course.delete({
             where: {
               id: id,
