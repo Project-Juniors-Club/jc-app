@@ -41,6 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
         res.status(200).json({ message: entityMessageObj.getOneSuccess, data: { course, chapter, page, article } });
       }
+      if (assetType === 'video') {
+        const video = await prisma.video.findFirst({
+          where: { assetId: assetId },
+        });
+        res.status(200).json({ message: entityMessageObj.getOneSuccess, data: { course, chapter, page, video } });
+      }
     } else if (httpMethod == 'DELETE') {
       // DELETE PAGE
       const page = await prisma.page.delete({
