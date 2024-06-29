@@ -3,13 +3,21 @@ import { NextResponse } from 'next/server';
 import { isInternal } from './utils/validation';
 
 export default withAuth(
-  function middleware(req) {
+  async function middleware(req) {
+    const isInternalUser = await isInternal(req);
+    let whitelist = false;
     // Redirect if they don't have the appropriate role
-    if (req.nextUrl.pathname.startsWith('/internal') && !isInternal(req)) {
-      return NextResponse.redirect(new URL('/', req.url));
+    if (req.nextUrl.pathname.startsWith('/api/courses/') && req.method == 'GET') {
+      whitelist = true;
     }
-    if (req.nextUrl.pathname.startsWith('/api/internal') && !isInternal(req)) {
+    if (req.nextUrl.pathname.startsWith('/api/courses/recent')) {
+      whitelist = true;
+    }
+    if (req.nextUrl.pathname.startsWith('/api') && !isInternalUser && !whitelist) {
       return NextResponse.redirect(new URL('/api/error', req.url));
+    }
+    if (!isInternalUser && !whitelist) {
+      return NextResponse.redirect(new URL('/', req.url));
     }
   },
   {
@@ -21,5 +29,5 @@ export default withAuth(
 );
 //Paths middleware will run on
 export const config = {
-  matcher: ['/api/internal/:path*', '/internal/:path*'],
+  matcher: ['/api/internal/:path*', '/internal/:path*', '/courses/staff/:path*'],
 };
