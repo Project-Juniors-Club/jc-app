@@ -22,7 +22,7 @@ import { getCourseContentOverview } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
 import NavBarCourse from '../../../components/navbar/NavBarCourse';
 
-export default function Page({ userCourseId, courseChapters, course, chapter, page, article }) {
+export default function Page({ userCourseId, courseChapters, course, chapter, page, article, video }) {
   const { chapters } = courseChapters;
   const [chapterCompletionStatus, setChapterCompletionStatus] = useState({});
   const [pageCompletionStatus, setPageCompletionStatus] = useState({});
@@ -117,9 +117,17 @@ export default function Page({ userCourseId, courseChapters, course, chapter, pa
             <Text mb='15px' fontWeight='bold' fontSize='32px'>
               {page.name}
             </Text>
-            <Text mb='10px' fontSize='20px'>
-              {article.text}
-            </Text>
+            {article && (
+              <Text mb='10px' fontSize='20px'>
+                {article.text}
+              </Text>
+            )}
+            {video && (
+              <video width='100%' controls>
+                <source src={video.url} type='video/mp4' />
+                Your browser does not support the video tag.
+              </video>
+            )}
           </Box>
         </Flex>
       </Flex>
