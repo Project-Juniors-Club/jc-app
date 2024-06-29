@@ -19,7 +19,7 @@ After modifying the database, run:
 
 run `yarn add -D @prisma/client`
 
-# Noteworthy commands
+# Dev commands
 
 - `yarn dev` to start the server
 - `yarn build` to check for build errors (should be done before pushing)
