@@ -77,6 +77,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           });
 
+          await prisma.userCourse.deleteMany({
+            where: {
+              courseId: id,
+            },
+          });
+
+          await prisma.asset.deleteMany({
+            where: {
+              page: {
+                chapter: {
+                  courseId: id,
+                },
+              },
+            },
+          });
+
+          await prisma.page.deleteMany({
+            where: {
+              chapter: {
+                courseId: id,
+              },
+            },
+          });
+
+          await prisma.chapter.deleteMany({
+            where: {
+              courseId: id,
+            },
+          });
+
+          const course = await prisma.course.findUnique({
+            where: {
+              id: id,
+            },
+            select: {
+              coverImageAssetId: true, // Select only the coverImageAssetId
+            },
+          });
+
+          if (course && course.coverImageAssetId) {
+            await prisma.image.delete({
+              where: {
+                assetId: course.coverImageAssetId, // Use the coverImageAssetId to delete the image
+              },
+            });
+          }
+
           await prisma.course.delete({
             where: {
               id: id,

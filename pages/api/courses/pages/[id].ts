@@ -2,14 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../lib/prisma';
 import { entityMessageCreator } from '../../../../utils/api-messages';
 import { errorMessageHandler } from '../../../../utils/error-message-handler';
-import formidable from 'formidable';
-import PersistentFile from 'formidable/PersistentFile';
-import axios from 'axios';
 import { S3 } from 'aws-sdk';
-import { createReadStream, fstat, readFile } from 'fs';
-import { file } from 'googleapis/build/src/apis/file';
 import { deleteOldAsset } from '../../../../lib/server/asset';
-import { updateDecorator } from 'typescript';
 
 const s3 = new S3({
   region: 'ap-southeast-1',
@@ -30,7 +24,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const page = await prisma.page.findFirst({
         where: { id: pageId },
       });
-      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: page });
+      const assetId = page.assetId;
+      const asset = await prisma.asset.findFirst({
+        where: { id: assetId },
+      });
+      const assetType = asset.assetType;
+      const chapter = await prisma.chapter.findFirst({
+        where: { id: page.chapterId },
+      });
+      const course = await prisma.course.findFirst({
+        where: { id: chapter.courseId },
+      });
+      if (assetType === 'article') {
+        const article = await prisma.article.findFirst({
+          where: { assetId: assetId },
+        });
+        res.status(200).json({ message: entityMessageObj.getOneSuccess, data: { course, chapter, page, article } });
+      }
     } else if (httpMethod == 'DELETE') {
       // DELETE PAGE
       const page = await prisma.page.delete({

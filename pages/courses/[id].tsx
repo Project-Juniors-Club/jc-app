@@ -153,7 +153,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                         <Box display='flex' alignItems='center'>
                           <Checkbox isChecked={pageCompletionStatus[`${chapter.id}-${page.id}`]} isReadOnly mr={2} />
                           <Box as='span' flex='1' textAlign='left' className='text-sm'>
-                            <a href='/courses/${course.id}/chapters/${chapterIndex}/pages/${pageIndex}'>{page.name}</a>
+                            <a href={`/courses/pages/${page.id}`}>{page.name}</a>
                           </Box>
                         </Box>
                         <Box flex='1' textAlign='left' className='color text-xs'>
