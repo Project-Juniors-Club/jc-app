@@ -24,7 +24,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const page = await prisma.page.findFirst({
         where: { id: pageId },
       });
-      res.status(200).json({ message: entityMessageObj.getOneSuccess, data: page });
+      const assetId = page.assetId;
+      const asset = await prisma.asset.findFirst({
+        where: { id: assetId },
+      });
+      const assetType = asset.assetType;
+      if (assetType === 'article') {
+        const article = await prisma.article.findFirst({
+          where: { assetId: assetId },
+        });
+        console.log(article);
+        res.status(200).json({ message: entityMessageObj.getOneSuccess, data: { page, asset, article } });
+      }
     } else if (httpMethod == 'DELETE') {
       // DELETE PAGE
       const page = await prisma.page.delete({
