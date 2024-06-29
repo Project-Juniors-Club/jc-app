@@ -8,8 +8,10 @@ import styles from '../../../components/Course.module.css';
 
 import { useEffect, useState } from 'react';
 import { getCourseContentOverview } from '../../../lib/server/course';
+import Layout from '../../../components/Layout';
+import NavBarCourse from '../../../components/navbar/NavBarCourse';
 
-export default function Page({ userCourseId, courseChapters, course, chapter, page, asset, article }) {
+export default function Page({ userCourseId, courseChapters, course, chapter, page, article }) {
   const { chapters } = courseChapters
   const [chapterCompletionStatus, setChapterCompletionStatus] = useState({});
   const [pageCompletionStatus, setPageCompletionStatus] = useState({});
@@ -25,19 +27,21 @@ export default function Page({ userCourseId, courseChapters, course, chapter, pa
   }, [userCourseId, chapters]);
 
   return (
-    <>
+  <Layout title={course.title}>
+      <NavBarCourse />
+    
       <Head>
-        <title>{page.name}</title>
+         <title>{page.name}</title>
       </Head>
       <Flex direction="column" p="20px">
         <Text fontSize="sm" color="gray.600">{course.title} > {chapter.name}</Text>
         <Flex justifyContent="space-between" alignItems="center" mt="10px">
-          <Button size="sm" onClick={() => {/* handle previous */}}>Previous</Button>
-          <Button size="sm" onClick={() => {/* handle next */}}>Next</Button>
+          <Button background="transparent" onClick={() => {/* handle previous */}}> &lt; &nbsp; Previous</Button>
+          <Button background="transparent" onClick={() => {/* handle next */}}>Next &nbsp; &gt; </Button>
         </Flex>
         <Flex mt="20px">
-          <Box width="25%" borderRight="1px solid #C7C7C7" pr="20px">
-            <Text mb="15px" fontWeight="bold">{course.title}</Text>
+          <Box width="25%" pr="20px">
+           <Text mb="15px" fontWeight="bold" style={{ fontSize: '32px' }}>{course.title}</Text>
              <Accordion allowMultiple className={styles.accordion}>
                {chapters.map((chapter, chapterIndex) => (
                 <AccordionItem key={chapterIndex} className='bg-main-light-green'>
@@ -80,14 +84,15 @@ export default function Page({ userCourseId, courseChapters, course, chapter, pa
             </Accordion>
           </Box>
           <Box width="75%" pl="20px">
-            <Text mb="10px" fontWeight="bold">{page.name}</Text>
-            <Text mb="10px">
+            <Text mb="15px" fontWeight="bold" fontSize="32px">{page.name}</Text>
+            <Text mb="10px" fontSize="20px">
              {article.text}
             </Text>
           </Box>
         </Flex>
       </Flex>
-    </>
+     
+    </Layout>
   );
 }
 
