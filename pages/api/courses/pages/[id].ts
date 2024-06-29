@@ -29,12 +29,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: { id: assetId },
       });
       const assetType = asset.assetType;
+      const chapter = await prisma.chapter.findFirst({
+        where: { id: page.chapterId },
+      });
+      const course = await prisma.course.findFirst({
+        where: { id: chapter.courseId },
+      });
+      console.log(course);
+      console.log(chapter);
       if (assetType === 'article') {
         const article = await prisma.article.findFirst({
           where: { assetId: assetId },
         });
-        console.log(article);
-        res.status(200).json({ message: entityMessageObj.getOneSuccess, data: { page, asset, article } });
+        res.status(200).json({ message: entityMessageObj.getOneSuccess, data: { course, chapter, page, asset, article } });
       }
     } else if (httpMethod == 'DELETE') {
       // DELETE PAGE
