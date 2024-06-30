@@ -20,7 +20,7 @@ import styles from '../../../components/Course.module.css';
 import { useEffect, useState } from 'react';
 import { getCourseContentOverview } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
-import NavBarCourse from '../../../components/navbar/NavBarCourse';
+import NavBarCourse from '../../../components/navbar/NavBar';
 
 export default function Page({ userCourseId, courseChapters, course, chapter, page, article, video }) {
   const { chapters } = courseChapters;
