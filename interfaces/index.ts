@@ -36,9 +36,11 @@ export type NormalUser = {
 
 export type Admin = {
   userId: string;
-  user: {
-    username: string;
-  };
+  disabled: boolean;
+  role: string;
+  name: string;
+  type: UserType;
+  email: string;
 };
 
 export type UserCourse = {
