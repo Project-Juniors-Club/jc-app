@@ -1,19 +1,12 @@
 # Set up
-
-1. Setup Prettier on VScode and enable format on save for linting
-2. Install Yarn (for PRs, avoid using npm to prevent conflicts with yarn.lock file)
-3. Create `.env` file with `DATABASE_URL`, content can be found in Notion
-4. Create a `client_secret.json` file in the root directory, content can be found in Notion
-5. `yarn`
-6. `yarn dev` to start the server
+- Create `.env` file in folder root
+- `yarn dev` to start the server
 
 # Database
-
-Online Heroku Postgresql server
-
-After modifying the database, run:
-
+To generate db from schema:
 `npx prisma generate`
+
+Tip: `npx prisma studio` gives a nice gui for db
 
 # Fix Typescript error relating to `prisma.ts`
 
@@ -23,8 +16,6 @@ run `yarn add -D @prisma/client`
 
 - `yarn dev` to start the server
 - `yarn build` to check for build errors (should be done before pushing)
-- `npx eslint . --ext .ts,.tsx` to check for linting errors
-- `npx eslint . --ext .ts,.tsx --fix` to fix linting errors
 - `npx prisma show` to show the database schema in a GUI
 - `npx prisma migrate dev --name <name>` to create a new migration
 
