@@ -32,6 +32,10 @@ run `yarn add -D @prisma/client`
 
 - `/api` vs `/lib/server`: `/api` is for server-side routes, handlers, serverless functions while `/lib/server` is for server-side libraries and utilities
 
+# Figma
+
+- https://www.figma.com/file/3KomEN0Jj7gv1t0gOxLgee/JCP-Design-System?type=design&node-id=0-1
+
 # Guidelines
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
