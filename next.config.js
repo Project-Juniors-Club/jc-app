@@ -10,3 +10,9 @@ function interceptStdout(text) {
 
 // Intercept in dev and prod
 intercept(interceptStdout);
+
+const nextConfig = {
+  output: 'standalone',
+};
+
+module.exports = nextConfig;
