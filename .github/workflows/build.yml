@@ -1,4 +1,4 @@
-name: build
+name: Build and push to ECR
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DOCKER_IMAGE: ${{ vars.AWS_REGISTRY }}/jc-app:latest
+      DOCKER_IMAGE: ${{ vars.AWS_REGISTRY }}/jcp-project:latest
     steps:
       - uses: actions/checkout@v4
 
