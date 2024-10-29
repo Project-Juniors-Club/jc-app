@@ -16,4 +16,4 @@ jobs:
           node-version: '23'
           architecture: 'x64'
       - run: yarn
-      - run: yarn build
+      - run: yarn run build
