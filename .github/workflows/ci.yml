@@ -15,5 +15,9 @@ jobs:
         with:
           node-version: '23'
           architecture: 'x64'
+
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: yarn
       - run: yarn run build
