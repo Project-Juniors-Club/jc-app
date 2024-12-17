@@ -217,7 +217,7 @@ export async function getServerSideProps(context) {
   const { req } = context;
   const session = await getSession({ req });
   if (session) {
-    return { redirect: { destination: '/home' } };
+    return { redirect: { destination: '/courses' } };
   }
   const csrfToken = await getCsrfToken(context);
   const providers = await getProviders();

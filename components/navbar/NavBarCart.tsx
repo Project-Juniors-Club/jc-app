@@ -23,15 +23,15 @@ const NavBarCart = () => {
         <div className={`flex flex-row items-center gap-2 p-0 ${navBarItemStyle}`}>
           <Image src={'/assets/logos/course.svg'} width={24} height={24} alt='book' />
           <Link href='/courses' className='menu-item text-base'>
-            My Learning
+            My Courses
           </Link>
         </div>
-        <div className={`flex flex-row items-center gap-2 p-0 ${navBarItemStyle}`}>
-          <Image src={'/assets/logos/cart.svg'} width={24} height={24} alt='cart' />
-          <Link href='/view-cart' className='menu-item text-base'>
-            My Cart
-          </Link>
-        </div>
+        {/*<div className={`flex flex-row items-center gap-2 p-0 ${navBarItemStyle}`}>*/}
+        {/*  <Image src={'/assets/logos/cart.svg'} width={24} height={24} alt='cart' />*/}
+        {/*  <Link href='/view-cart' className='menu-item text-base'>*/}
+        {/*    My Cart*/}
+        {/*  </Link>*/}
+        {/*</div>*/}
         <UserDropdown />
       </div>
     </nav>

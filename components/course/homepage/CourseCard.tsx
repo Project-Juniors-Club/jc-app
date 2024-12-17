@@ -31,7 +31,7 @@ const CourseCard = ({ course }: { course: SerializedCourse }) => {
         <h3 className=' pt-6 pb-2 text-xl'>{course.title}</h3>
         <div className='absolute left-4 bottom-3 right-4 mb-3 flex items-center justify-between text-center'>
           <span className=' text-sm text-[#8e8e8e]'>{course.createdBy.user.name}</span>
-          <span className='text-2xl font-bold'>S${course.price}</span>
+          {/*<span className='text-2xl font-bold'>S${course.price}</span>*/}
         </div>
       </div>
     </article>

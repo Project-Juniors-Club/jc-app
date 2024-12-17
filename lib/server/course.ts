@@ -153,6 +153,19 @@ export const getCourseStructure = async (id: string) => {
   });
 };
 
+export const addUserCourse = async (userId: string, courseId: string) => {
+    return prisma.userCourse.create({
+        data: {
+          userId: userId,
+          courseId: courseId,
+          progress: 0,
+          correctQns: 0,
+          stars: 0,
+          lastSeenBy: new Date(),
+        },
+    });
+}
+
 export const getAllCourses = async (): Promise<SerializedCourse[]> => {
   const courses = await prisma.course.findMany({
     include: {

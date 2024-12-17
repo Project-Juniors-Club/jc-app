@@ -11,7 +11,7 @@ import {
   AccordionIcon,
   Checkbox,
   Flex,
-  Button,
+  Button, Link
 } from '@chakra-ui/react';
 import { getSession } from 'next-auth/react';
 import { getUserCourseId } from '../../../lib/server/userCourses';
@@ -21,11 +21,13 @@ import { useEffect, useState } from 'react';
 import { getCourseContentOverview } from '../../../lib/server/course';
 import Layout from '../../../components/Layout';
 import NavBarCourse from '../../../components/navbar/NavBar';
+import {useRouter} from "next/router";
 
 export default function Page({ userCourseId, courseChapters, course, chapter, page, article, video }) {
   const { chapters } = courseChapters;
   const [chapterCompletionStatus, setChapterCompletionStatus] = useState({});
   const [pageCompletionStatus, setPageCompletionStatus] = useState({});
+  const router = useRouter();
   useEffect(() => {
     const fetchCompletionStatus = async () => {
       const { data } = await axios.post('/api/course-completion', { userCourseId, chapters });
@@ -79,7 +81,7 @@ export default function Page({ userCourseId, courseChapters, course, chapter, pa
                     <AccordionButton border='1px solid #C7C7C7'>
                       <Box flex='1' textAlign='left' flexDirection={'column'}>
                         <Box display='flex' alignItems='center'>
-                          <Checkbox colorScheme='gray' isChecked={chapterCompletionStatus[chapter.id]} isReadOnly mr={2} />
+                          {chapterCompletionStatus[chapter.id] && <Checkbox colorScheme='gray' isChecked isReadOnly mr={2} />}
                           <Box as='span' flex='1' textAlign='left' className='text-lg font-bold'>
                             {chapter.name}
                           </Box>
@@ -95,10 +97,15 @@ export default function Page({ userCourseId, courseChapters, course, chapter, pa
                     </AccordionButton>
                   </h2>
                   {chapter.pages.map((page, pageIndex) => (
-                    <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
+                    <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'
+                                    onClick={() => {
+                                      if (router.asPath !== `/courses/pages/${page.id}`) {
+                                        router.push(`/courses/pages/${page.id}`);
+                                      }
+                                    }}>
                       <Box flex='1' textAlign='left' flexDirection={'column'}>
                         <Box display='flex' alignItems='center'>
-                          <Checkbox isChecked={pageCompletionStatus[`${chapter.id}-${page.id}`]} isReadOnly mr={2} />
+                          {pageCompletionStatus[`${chapter.id}-${page.id}`] && <Checkbox isChecked isReadOnly mr={2} /> }
                           <Box as='span' flex='1' textAlign='left' className='text-sm'>
                             <a href={`/courses/pages/${page.id}`}>{page.name}</a>
                           </Box>

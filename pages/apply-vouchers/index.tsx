@@ -8,6 +8,7 @@ import Layout from '../../components/Layout';
 import NavBarCart from '../../components/navbar/NavBarCart';
 import Button from '../../components/Button';
 import { createImportSpecifier } from 'typescript';
+import axios from "axios";
 
 const ApplyVouchers = () => {
   const router = useRouter();
@@ -33,8 +34,11 @@ const ApplyVouchers = () => {
   };
 
   const handleCheckout = () => {
-    router.push('/payment');
+    //disable payment as we are not implementing it yet
+    router.push('/courses');
   };
+
+  handleCheckout(); // skip voucher applying for now
 
   return (
     <Layout title='Apply Vouchers'>

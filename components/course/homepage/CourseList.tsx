@@ -62,7 +62,7 @@ const CourseList = ({ courses }: { courses: SerializedCourse[] }) => {
     <section aria-labelledby='course-home-explore-courses'>
       <div className='py-12'>
         <h2 id='course-home-explore-courses' className='text-[2rem] font-bold'>
-          Explore Courses:
+          All Courses:
         </h2>
 
         <div className={`${styles.search} my-6 flex h-12 w-[28rem] rounded-lg border border-solid border-black px-4`}>

@@ -46,6 +46,7 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
 model User {
   id            String       @id @default(cuid())
   email         String       @unique
@@ -63,7 +64,7 @@ model User {
   normalUser    NormalUser?
   userCourses   UserCourse[]
   coursesInCart Course[]     @relation("CoursesInCart")
-  deleted       Boolean?      @default(false)
+  deleted       Boolean?     @default(false)
   otp           String?
 
   @@map("users")
@@ -99,18 +100,17 @@ model CourseEditor {
   @@map("courseEditors")
 }
 
-
 model UserCourse {
-  id         String   @id @default(cuid())
-  userId     String
-  courseId   String
-  progress   Int
-  correctQns Int
-  stars      Int
-  course     Course   @relation(fields: [courseId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-  lastSeenBy DateTime
-  completedPages Page[] @relation("CompletedPages")
+  id                String    @id @default(cuid())
+  userId            String
+  courseId          String
+  progress          Int?
+  correctQns        Int?
+  stars             Int?
+  course            Course    @relation(fields: [courseId], references: [id])
+  user              User      @relation(fields: [userId], references: [id])
+  lastSeenBy        DateTime
+  completedPages    Page[]    @relation("CompletedPages")
   completedChapters Chapter[] @relation("CompletedChapters")
 
   @@unique([userId, courseId])
@@ -150,12 +150,12 @@ model Course {
 }
 
 model Chapter {
-  id            String @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String
   description   String
   courseId      String
   chapterNumber Int
-  course        Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course        Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   pages         Page[]
   userCourses   UserCourse[] @relation("CompletedChapters")
 
@@ -164,15 +164,16 @@ model Chapter {
 
 model Page {
   chapterId   String?
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   name        String
   pageNumber  Int
   description String?
   duration    Int
-  assetId     String   @unique
-  asset       Asset    @relation(fields: [assetId], references: [id])
-  chapter     Chapter? @relation(fields: [chapterId], references: [id])
+  assetId     String       @unique
+  asset       Asset        @relation(fields: [assetId], references: [id])
+  chapter     Chapter?     @relation(fields: [chapterId], references: [id])
   userCourses UserCourse[] @relation("CompletedPages")
+
   @@map("pages")
 }
 
@@ -240,21 +241,21 @@ model SpotTheDifferenceGame {
   gameId String @id
   game   Game   @relation(fields: [gameId], references: [assetId], onDelete: Cascade)
 
-  leftImage    Image   @relation("LeftImage", fields: [leftImageId], references: [assetId])
-  leftImageId  String  @unique
-  rightImage   Image   @relation("RightImage", fields: [rightImageId], references: [assetId])
-  rightImageId String  @unique
+  leftImage    Image                     @relation("LeftImage", fields: [leftImageId], references: [assetId])
+  leftImageId  String                    @unique
+  rightImage   Image                     @relation("RightImage", fields: [rightImageId], references: [assetId])
+  rightImageId String                    @unique
   differences  SpotTheDifferenceRegion[]
 }
 
 model SpotTheDifferenceRegion {
-  id           String    @id @default(cuid())
-  x            Float
-  y            Float
-  width        Float
-  height       Float
-  game         SpotTheDifferenceGame @relation(fields: [gameId], references: [gameId])
-  gameId       String
+  id     String                @id @default(cuid())
+  x      Float
+  y      Float
+  width  Float
+  height Float
+  game   SpotTheDifferenceGame @relation(fields: [gameId], references: [gameId])
+  gameId String
 }
 
 model MatchingGame {

@@ -10,7 +10,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Checkbox,
+  Checkbox, Link,
 } from '@chakra-ui/react';
 import CustomButton from '../../components/Button';
 import { GetServerSidePropsContext } from 'next';
@@ -78,6 +78,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
     });
     if (updatedCourse) {
       setIsAdded(true);
+      //location.reload();
     }
   };
 
@@ -129,15 +130,15 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
             </Box>
           </Box>
 
-          {isPurchased ? (
-            <Accordion allowMultiple className={styles.accordion}>
+          {1==1 ? (
+            <Accordion allowMultiple defaultIndex={chapters.map((_, index) => index)} className={styles.accordion}>
               {chapters.map((chapter, chapterIndex) => (
                 <AccordionItem key={chapterIndex} className='bg-main-light-green'>
                   <h2>
                     <AccordionButton border='1px solid #C7C7C7'>
                       <Box flex='1' textAlign='left' flexDirection={'column'}>
                         <Box display='flex' alignItems='center'>
-                          <Checkbox colorScheme='gray' isChecked={chapterCompletionStatus[chapter.id]} isReadOnly mr={2} />
+                          {chapterCompletionStatus[chapter.id] && <Checkbox colorScheme='gray' isChecked isReadOnly mr={2} />}
                           <Box as='span' flex='1' textAlign='left' className='text-lg font-bold'>
                             {chapter.name}
                           </Box>
@@ -153,18 +154,24 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                     </AccordionButton>
                   </h2>
                   {chapter.pages.map((page, pageIndex) => (
-                    <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'>
-                      <Box flex='1' textAlign='left' flexDirection={'column'}>
-                        <Box display='flex' alignItems='center'>
-                          <Checkbox isChecked={pageCompletionStatus[`${chapter.id}-${page.id}`]} isReadOnly mr={2} />
-                          <Box as='span' flex='1' textAlign='left' className='text-sm'>
-                            <a href={`/courses/pages/${page.id}`}>{page.name}</a>
+                    <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'
+                                    onClick={async () => {
+                                      if (!(userId !== null && (isAdded || userCourseId !== null))) {
+                                        await addToCart();
+                                      }
+                                      await router.push(`/courses/pages/${page.id}`);
+                                    }}>
+                        <Box flex='1' textAlign='left' flexDirection={'column'}>
+                          <Box display='flex' alignItems='center'>
+                            {pageCompletionStatus[`${chapter.id}-${page.id}`] && <Checkbox isChecked isReadOnly mr={2} /> }
+                            <Box as='span' flex='1' textAlign='left' className='text-sm'>
+                              <a href={`/courses/pages/${page.id}`}>{page.name}</a>
+                            </Box>
+                          </Box>
+                          <Box flex='1' textAlign='left' className='color text-xs'>
+                            {`${page.duration}min`}
                           </Box>
                         </Box>
-                        <Box flex='1' textAlign='left' className='color text-xs'>
-                          {`${page.duration}min`}
-                        </Box>
-                      </Box>
                     </AccordionPanel>
                   ))}
                 </AccordionItem>
@@ -224,16 +231,16 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
             )}
           </Box>
 
-          {!isPurchased ? (
+          {1==1 ? (
             <Flex mt='50px' justifyContent='center' alignItems='center' gap='24px'>
               <Box className={styles.description} mr='20px'>
-                <Box>Price:</Box>
+                {/*<Box>Price:</Box>
                 <Box mt='-5px' fontWeight='bold'>
                   ${course.price}
-                </Box>
+                </Box>*/}
               </Box>
               <CustomButton variant={'green-solid'} onClick={addToCart} disabled={userId !== null && (isAdded || userCourseId !== null)}>
-                <Box color={'#000000'}>{userId !== null && (isAdded || userCourseId !== null) ? 'Added to Cart' : 'Join'}</Box>
+                <Box color={'#000000'}>{userId !== null && (isAdded || userCourseId !== null) ? 'Joined' : 'Join'}</Box>
               </CustomButton>
             </Flex>
           ) : (

@@ -25,8 +25,8 @@ const CourseHomePage = ({ courses }) => {
     <>
       <NavBar />
       <div className='px-40 py-16'>
-        <WelcomeMessage isUnfinishedCoursesEmpty={recentCourses.length > 0} />
-        <ViewedCourseList courses={recentCourses} />
+        <WelcomeMessage full_name={sess.data?.user.name} />
+        <ViewedCourseList courses={recentCourses} full_name={sess.data?.user.name} />
         <CourseList courses={courses} />
       </div>
     </>
