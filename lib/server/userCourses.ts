@@ -1,6 +1,9 @@
 import prisma from '../prisma';
 
 export const isCoursePurchased = async (userId: string, courseId: string) => {
+  if (userId === null || userId === undefined || courseId === null || courseId === undefined) {
+    return false;
+  }
   const userCourse = await prisma.userCourse.findUnique({
     where: {
       userId_courseId: {
@@ -13,6 +16,9 @@ export const isCoursePurchased = async (userId: string, courseId: string) => {
 };
 
 export const getUserCourseId = async (userId: string, courseId: string) => {
+  if (userId === undefined || courseId === undefined || userId === null || courseId === null) {
+    return '';
+  }
   const userCourse = await prisma.userCourse.findUnique({
     where: {
       userId_courseId: {

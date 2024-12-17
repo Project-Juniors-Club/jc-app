@@ -30,6 +30,7 @@ type CourseViewProp = {
   category: Category;
   errors: any;
   userCourseId: string;
+  userId: string;
   courseContentOverview: {
     chapters: {
       id: string;
@@ -45,7 +46,7 @@ type CourseViewProp = {
   isPurchased: boolean;
 };
 
-const CourseView = ({ course, category, errors, courseContentOverview, userCourseId, isPurchased }: CourseViewProp) => {
+const CourseView = ({ course, category, errors, courseContentOverview, userCourseId, userId, isPurchased }: CourseViewProp) => {
   const sess = useSession();
   const { chapters } = courseContentOverview;
   const [isAdded, setIsAdded] = useState(false);
@@ -66,6 +67,10 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
   }, [userCourseId, chapters]);
 
   const addToCart = async () => {
+    if (sess?.data === null) {
+      router.push('/login');
+      return;
+    }
     const {
       data: { data: updatedCourse },
     } = await axios.post(`/api/cart/${router.query.id}`, {
@@ -227,8 +232,8 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                   ${course.price}
                 </Box>
               </Box>
-              <CustomButton variant={'green-solid'} onClick={addToCart} disabled={isAdded || userCourseId !== ''}>
-                <Box color={'#000000'}>{isAdded || userCourseId !== '' ? 'Added' : 'Add To Cart'}</Box>
+              <CustomButton variant={'green-solid'} onClick={addToCart} disabled={userId !== null && (isAdded || userCourseId !== null)}>
+                <Box color={'#000000'}>{userId !== null && (isAdded || userCourseId !== null) ? 'Added to Cart' : 'Join'}</Box>
               </CustomButton>
             </Flex>
           ) : (
@@ -243,7 +248,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
   const id = context.params?.id as string;
-  const userId = session?.user?.id;
+  const userId = session?.user?.id ? session.user.id : null;
   const isPurchased = await isCoursePurchased(userId, id);
   const course = await getCourseWithAuthorAndDate(id);
   const courseContentOverview = await getCourseContentOverview(id);
@@ -264,6 +269,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       category,
       courseContentOverview,
       userCourseId,
+      userId,
       isPurchased,
     },
   };

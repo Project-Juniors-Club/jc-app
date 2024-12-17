@@ -38,9 +38,6 @@ const LandingPage = () => {
                     Empowering our future leaders through education to make a difference in Singapore’s food industry
                   </Text>
                   <Box className='h-1' />
-                  <CustomButton variant={'black-solid'} onClick={() => router.push('/sign-up')}>
-                    <Text color={'#FFFFFF'}>Sign Up</Text>
-                  </CustomButton>
                 </VStack>
                 <Box className='h-full w-5/12 rounded-lg'>
                   <Image alt='login left' src='/assets/login_left.jpg' className='h-full max-h-max w-full rounded-xl' />
@@ -78,7 +75,7 @@ const LandingPage = () => {
                   <VStack>{/* Put course cards here later */}</VStack>
                 </Box>
                 <CustomButton onClick={() => router.push('/courses')} variant={'black-solid'}>
-                  <Text color={'#FFFFFF'}>View More Courses</Text>
+                  <Text color={'#FFFFFF'}>View Courses</Text>
                 </CustomButton>
               </VStack>
             </Center>
