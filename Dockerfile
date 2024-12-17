@@ -1,4 +1,4 @@
-FROM node:23-alpine AS base
+FROM node:18.12.1-alpine3.16 AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -20,8 +20,6 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
-# Install OpenSSL for Prisma
-RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing openssl1.1-compat
 # Build the application
 RUN yarn run build;
 
