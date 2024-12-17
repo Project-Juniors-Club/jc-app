@@ -13,6 +13,7 @@ intercept(interceptStdout);
 
 const nextConfig = {
   output: 'standalone',
+  staticPageGenerationTimeout: 1000,
   eslint: {
     ignoreDuringBuilds: true,
   },
