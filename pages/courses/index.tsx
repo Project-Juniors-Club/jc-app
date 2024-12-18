@@ -33,12 +33,11 @@ const CourseHomePage = ({ courses }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const courses = await getAllPublishedCourses();
 
   return {
     props: { courses },
-    revalidate: 86400,
   };
 }
 
