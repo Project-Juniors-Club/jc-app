@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DOCKER_IMAGE: ${{ vars.AWS_REGISTRY }}/jcp-project:latest
+      DOCKER_IMAGE: ${{ vars.AWS_REGISTRY }}/jcp-project:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
