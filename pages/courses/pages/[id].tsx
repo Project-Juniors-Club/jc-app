@@ -147,7 +147,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
   const userId = session?.user?.id;
   const { id } = context.params;
   try {
-    const res = await axios.get(`http://localhost:3000/api/courses/pages/${id}`);
+    const res = await axios.get(`${process.env.NEXTAUTH_URL}/api/courses/pages/${id}`);
     const { data } = res.data;
 
     if (!data) {

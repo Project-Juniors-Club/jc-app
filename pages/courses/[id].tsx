@@ -156,7 +156,7 @@ const CourseView = ({ course, category, errors, courseContentOverview, userCours
                   {chapter.pages.map((page, pageIndex) => (
                     <AccordionPanel key={pageIndex} pb={4} className='bg-white' border='0.5px solid #C7C7C7'
                                     onClick={async () => {
-                                      if (!(userId !== null && (isAdded || userCourseId !== null))) {
+                                      if (userId !== null && userCourseId == null) {
                                         await addToCart();
                                       }
                                       await router.push(`/courses/pages/${page.id}`);
